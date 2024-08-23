@@ -1,4 +1,5 @@
 import React from 'react'
+import { signOut } from 'next-auth/react'
 import {
   CAvatar,
   CBadge,
@@ -93,7 +94,7 @@ const AppHeaderDropdown = () => {
           <CIcon icon={cilLockLocked} className="me-2" />
           Lock Account
         </CDropdownItem>
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" onClick={() => signOut()}>
           <CIcon icon={cilAccountLogout} className="me-2" />
           Logout
         </CDropdownItem>

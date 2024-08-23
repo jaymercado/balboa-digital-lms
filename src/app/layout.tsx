@@ -4,6 +4,7 @@ import Script from 'next/script'
 
 import { Provider } from 'react-redux'
 import store from './../store'
+import { SessionProvider } from 'next-auth/react'
 import './../styles/style.scss'
 // We use those styles to show code examples, you should remove them in your application.
 import './../styles/examples.scss'
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Provider store={store}>{children}</Provider>
+        <SessionProvider>
+          <Provider store={store}>{children}</Provider>
+        </SessionProvider>
       </body>
     </html>
   )
