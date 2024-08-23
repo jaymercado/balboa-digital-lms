@@ -33,9 +33,7 @@ const Tabs = () => {
                   <CTab itemKey="home">Home</CTab>
                   <CTab itemKey="profile">Profile</CTab>
                   <CTab itemKey="contact">Contact</CTab>
-                  <CTab disabled itemKey="disabled">
-                    Disabled
-                  </CTab>
+                  <CTab itemKey="disabled">Disabled</CTab>
                 </CTabList>
                 <CTabContent>
                   <CTabPanel className="p-3" itemKey="home">
@@ -72,9 +70,7 @@ const Tabs = () => {
                   <CTab itemKey="home">Home</CTab>
                   <CTab itemKey="profile">Profile</CTab>
                   <CTab itemKey="contact">Contact</CTab>
-                  <CTab disabled itemKey="disabled">
-                    Disabled
-                  </CTab>
+                  <CTab itemKey="disabled">Disabled</CTab>
                 </CTabList>
                 <CTabContent>
                   <CTabPanel className="p-3" itemKey="home">
@@ -116,7 +112,7 @@ const Tabs = () => {
                   <CTab aria-controls="contact-tab-pane" itemKey={3}>
                     Contact
                   </CTab>
-                  <CTab aria-controls="disabled-tab-pane" disabled itemKey={4}>
+                  <CTab aria-controls="disabled-tab-pane" itemKey={4}>
                     Disabled
                   </CTab>
                 </CTabList>
@@ -160,7 +156,7 @@ const Tabs = () => {
                   <CTab aria-controls="contact-tab-pane" itemKey={3}>
                     Contact
                   </CTab>
-                  <CTab aria-controls="disabled-tab-pane" disabled itemKey={4}>
+                  <CTab aria-controls="disabled-tab-pane" itemKey={4}>
                     Disabled
                   </CTab>
                 </CTabList>
@@ -204,7 +200,7 @@ const Tabs = () => {
                   <CTab aria-controls="contact-tab-pane" itemKey={3}>
                     Contact
                   </CTab>
-                  <CTab aria-controls="disabled-tab-pane" disabled itemKey={4}>
+                  <CTab aria-controls="disabled-tab-pane" itemKey={4}>
                     Disabled
                   </CTab>
                 </CTabList>
