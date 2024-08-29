@@ -10,11 +10,12 @@ import {
   CSidebarToggler,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
+import Image from 'next/image'
 
 import AppSidebarNav from './AppSidebarNav'
 
-import { logo } from '@/public/brand/logo'
-import { sygnet } from '@/public/brand/sygnet'
+import balboaDigitalLogo from '@/public/images/bd_logo.png'
+import balboaDigitalLogoSM from '@/public/images/bd_logo_sm.png'
 
 // sidebar nav config
 import navigation from '../_nav'
@@ -37,8 +38,20 @@ const AppSidebar = (): JSX.Element => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand as={Link} href="/">
-          <CIcon customClassName="sidebar-brand-full" icon={logo} height={32} />
-          <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} />
+          <Image
+            src={balboaDigitalLogo.src}
+            alt="Logo"
+            className="sidebar-brand-full"
+            width={137}
+            height={32}
+          />
+          <Image
+            src={balboaDigitalLogoSM.src}
+            alt="Logo"
+            className="sidebar-brand-narrow"
+            width={32}
+            height={32}
+          />
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"

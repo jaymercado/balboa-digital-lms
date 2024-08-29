@@ -34,13 +34,13 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Enrolled',
+    name: 'Enrolled Courses',
     href: '/theme/colors',
     icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
-    name: 'Managed',
+    name: 'Managed Courses',
     href: '/theme/typography',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },

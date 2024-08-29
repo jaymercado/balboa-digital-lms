@@ -6,13 +6,12 @@ import { Provider } from 'react-redux'
 import store from './../store'
 import { SessionProvider } from 'next-auth/react'
 import './../styles/style.scss'
-// We use those styles to show code examples, you should remove them in your application.
-import './../styles/examples.scss'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/images/bd_logo_sm.png" />
         <title>Balboa Digtal - LMS</title>
         <Script
           id="get-color-scheme"
