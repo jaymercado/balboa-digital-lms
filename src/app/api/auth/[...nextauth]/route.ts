@@ -1,5 +1,7 @@
 import NextAuth from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
+import connectMongo from '@/utils/mongodb'
+import User from '@/models/User'
 
 const handler = NextAuth({
   providers: [
@@ -9,26 +11,23 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn(data) {
-      return true
-      //   try {
-      //     const { email, name, image } = user
-      //     await connectMongo()
-      //     const userFound = await UserModel.find({ email: email })
-      //     if (userFound?.length === 0) {
-      //       const newUser = new UserModel({
-      //         email,
-      //         name,
-      //         image,
-      //         cart: [],
-      //       })
-      //       await newUser.save()
-      //     }
-      //   } catch (error) {
-      //     console.log('Error in signIn callback', error)
-      //   } finally {
-      //     return true
-      //   }
+    async signIn({ user }) {
+      try {
+        const { email, name } = user
+        await connectMongo()
+        const userFound = await User.find({ email: email })
+        if (userFound?.length === 0) {
+          const newUser = new User({
+            email,
+            name,
+          })
+          await newUser.save()
+        }
+      } catch (error) {
+        console.log('Error in signIn callback', error)
+      } finally {
+        return true
+      }
     },
     async redirect({ url, baseUrl }) {
       console.log('redirect', { url, baseUrl })

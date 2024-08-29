@@ -14,23 +14,26 @@ import {
   cilAccountLogout,
   cilBell,
   cilCreditCard,
-  cilCommentSquare,
   cilEnvelopeOpen,
   cilFile,
-  cilLockLocked,
   cilSettings,
   cilTask,
   cilUser,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-
-import avatar8 from '@/public/images/avatars/8.jpg'
+import { useSession } from 'next-auth/react'
+import profilePicturePlaceholder from '@/public/images/profile-picture-placeholder.png'
 
 const AppHeaderDropdown = () => {
+  const { data: session } = useSession()
+
   return (
     <CDropdown variant="nav-item" alignment="end">
       <CDropdownToggle className="py-0" caret={false}>
-        <CAvatar src={avatar8.src} size="md" />
+        <CAvatar
+          src={session?.user?.image ? session?.user?.image : profilePicturePlaceholder?.src}
+          size="md"
+        />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0">
         <CDropdownHeader className="bg-body-secondary text-body-secondary fw-semibold rounded-top mb-2">
@@ -54,13 +57,6 @@ const AppHeaderDropdown = () => {
           <CIcon icon={cilTask} className="me-2" />
           Tasks
           <CBadge color="danger-gradient" className="ms-2">
-            42
-          </CBadge>
-        </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilCommentSquare} className="me-2" />
-          Comments
-          <CBadge color="warning-gradient" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
@@ -90,10 +86,6 @@ const AppHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="#">
-          <CIcon icon={cilLockLocked} className="me-2" />
-          Lock Account
-        </CDropdownItem>
         <CDropdownItem href="#" onClick={() => signOut()}>
           <CIcon icon={cilAccountLogout} className="me-2" />
           Logout
