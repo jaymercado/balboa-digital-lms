@@ -1,7 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 import { useDispatch } from 'react-redux'
-import { useTypedSelector } from './../store'
 import {
   CCloseButton,
   CSidebar,
@@ -9,21 +10,36 @@ import {
   CSidebarHeader,
   CSidebarToggler,
 } from '@coreui/react-pro'
-import CIcon from '@coreui/icons-react'
-import Image from 'next/image'
-
+import { useTypedSelector } from './../store'
 import AppSidebarNav from './AppSidebarNav'
-
 import balboaDigitalLogo from '@/public/images/bd_logo.png'
 import balboaDigitalLogoSM from '@/public/images/bd_logo_sm.png'
+import generateNav from '../_nav'
 
-// sidebar nav config
-import navigation from '../_nav'
+interface SessionData {
+  data: {
+    user: {
+      name: string
+      email: string
+      image: string
+      role: string
+    }
+    exprires: string
+  }
+  status: string
+}
 
 const AppSidebar = (): JSX.Element => {
+  const { data: session, status } = useSession()
   const dispatch = useDispatch()
   const unfoldable = useTypedSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useTypedSelector((state) => state.sidebarShow)
+
+  console.log(session?.user?.role)
+
+  if (status === 'loading') {
+    return <></>
+  }
 
   return (
     <CSidebar
@@ -62,7 +78,7 @@ const AppSidebar = (): JSX.Element => {
           onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}
         />
       </CSidebarHeader>
-      <AppSidebarNav items={navigation} />
+      <AppSidebarNav items={generateNav(session?.user?.role || '')} />
     </CSidebar>
   )
 }

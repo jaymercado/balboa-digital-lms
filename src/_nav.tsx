@@ -17,33 +17,40 @@ export type NavItem = {
   items?: NavItem[]
 }
 
-const _nav = [
-  {
-    component: CNavItem,
-    name: 'Dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info-gradient',
-      text: 'NEW',
+export const generateNav = (role: string) => {
+  const nav = [
+    {
+      component: CNavItem,
+      name: 'Dashboard',
+      icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+      badge: {
+        color: 'info-gradient',
+        text: 'NEW',
+      },
+      href: '/',
     },
-    href: '/',
-  },
-  {
-    component: CNavTitle,
-    name: 'Courses',
-  },
-  {
-    component: CNavItem,
-    name: 'Enrolled Courses',
-    href: '/theme/colors',
-    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Managed Courses',
-    href: '/theme/typography',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-  },
-]
+    {
+      component: CNavTitle,
+      name: 'Courses',
+    },
+    {
+      component: CNavItem,
+      name: 'Enrolled Courses',
+      href: '/theme/colors',
+      icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+    },
+  ]
 
-export default _nav
+  if (role === 'instructor') {
+    nav.push({
+      component: CNavItem,
+      name: 'Managed Courses',
+      href: '/theme/typography',
+      icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+    })
+  }
+
+  return nav
+}
+
+export default generateNav

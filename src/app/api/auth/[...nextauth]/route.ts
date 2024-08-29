@@ -32,10 +32,12 @@ const handler = NextAuth({
     async redirect({ url, baseUrl }) {
       return baseUrl
     },
-    async session({ session, user, token }) {
-      return session
+    async session({ session }) {
+      await connectMongo()
+      const foundUser = await User.findOne({ email: session?.user?.email })
+      return { ...session, user: { ...session.user, role: foundUser.role } }
     },
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token }) {
       return token
     },
   },
