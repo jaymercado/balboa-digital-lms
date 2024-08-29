@@ -22,7 +22,7 @@ import CIcon from '@coreui/icons-react'
 
 import { useTypedSelector } from './../store'
 
-import { AppHeaderDropdown } from './header/'
+import AppHeaderDropdown from './AppHeaderDropdown'
 
 const AppHeader = (): JSX.Element => {
   const headerRef = useRef<HTMLDivElement>(null)
