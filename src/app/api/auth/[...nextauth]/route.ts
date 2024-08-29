@@ -24,21 +24,18 @@ const handler = NextAuth({
           await newUser.save()
         }
       } catch (error) {
-        console.log('Error in signIn callback', error)
+        console.error('Error in signIn callback', error)
       } finally {
         return true
       }
     },
     async redirect({ url, baseUrl }) {
-      console.log('redirect', { url, baseUrl })
       return baseUrl
     },
     async session({ session, user, token }) {
-      console.log('session', { session, user, token })
       return session
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      console.log('jwt', { token, user, account, profile, isNewUser })
+    async jwt({ token, user, account, profile }) {
       return token
     },
   },
