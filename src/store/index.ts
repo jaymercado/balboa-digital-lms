@@ -4,14 +4,12 @@ import { useSelector, TypedUseSelectorHook } from 'react-redux'
 type state = {
   sidebarShow: boolean
   sidebarUnfoldable: boolean
-  asideShow: boolean
   theme: string
 }
 
 const initialState: state = {
   sidebarShow: true,
   sidebarUnfoldable: false,
-  asideShow: false,
   theme: 'default',
 }
 
@@ -38,12 +36,7 @@ export type AppState = ReturnType<typeof store.getState>
 
 export type AppDispatch = typeof store.dispatch
 
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  AppState,
-  unknown,
-  Action<string>
->
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action<string>>
 
 export default store
 

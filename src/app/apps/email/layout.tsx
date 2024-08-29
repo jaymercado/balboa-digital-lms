@@ -24,7 +24,7 @@ import CIcon from '@coreui/icons-react'
 import { logo } from '@/public/brand/logo'
 import { sygnet } from '@/public/brand/sygnet'
 
-import { AppAside, AppFooter, AppHeader } from '@/components'
+import { AppFooter, AppHeader } from '@/components'
 import {
   cilBookmark,
   cilInbox,
@@ -121,7 +121,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <AppFooter />
       </div>
-      <AppAside />
     </>
   )
 }

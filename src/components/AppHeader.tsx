@@ -17,32 +17,21 @@ import {
   CInputGroupText,
   useColorModes,
 } from '@coreui/react-pro'
-import {
-  cilContrast,
-  cilApplicationsSettings,
-  cilMenu,
-  cilMoon,
-  cilSearch,
-  cilSun,
-} from '@coreui/icons'
+import { cilMenu, cilMoon, cilSearch, cilSun } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
 import { useTypedSelector } from './../store'
 
-import {
-  AppHeaderDropdown,
-  AppHeaderDropdownMssg,
-  AppHeaderDropdownNotif,
-  AppHeaderDropdownTasks,
-} from './header/'
+import { AppHeaderDropdown } from './header/'
 
 const AppHeader = (): JSX.Element => {
   const headerRef = useRef<HTMLDivElement>(null)
-  const { colorMode, setColorMode } = useColorModes('coreui-pro-next-js-admin-template-theme-modern')
+  const { colorMode, setColorMode } = useColorModes(
+    'coreui-pro-next-js-admin-template-theme-modern',
+  )
 
   const dispatch = useDispatch()
   const sidebarShow = useTypedSelector((state) => state.sidebarShow)
-  const asideShow = useTypedSelector((state) => state.asideShow)
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -76,21 +65,11 @@ const AppHeader = (): JSX.Element => {
             />
           </CInputGroup>
         </CForm>
-        <CHeaderNav className="d-none d-md-flex ms-auto">
-          <AppHeaderDropdownNotif />
-          <AppHeaderDropdownTasks />
-          <AppHeaderDropdownMssg />
-        </CHeaderNav>
         <CHeaderNav className="ms-auto ms-md-0">
-          <li className="nav-item py-1">
-            <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
-          </li>
           <CDropdown variant="nav-item" placement="bottom-end">
             <CDropdownToggle caret={false}>
               {colorMode === 'dark' ? (
                 <CIcon icon={cilMoon} size="lg" />
-              ) : colorMode === 'auto' ? (
-                <CIcon icon={cilContrast} size="lg" />
               ) : (
                 <CIcon icon={cilSun} size="lg" />
               )}
@@ -114,15 +93,6 @@ const AppHeader = (): JSX.Element => {
               >
                 <CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
               </CDropdownItem>
-              <CDropdownItem
-                active={colorMode === 'auto'}
-                className="d-flex align-items-center"
-                as="button"
-                type="button"
-                onClick={() => setColorMode('auto')}
-              >
-                <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
-              </CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
           <li className="nav-item py-1">
@@ -130,12 +100,6 @@ const AppHeader = (): JSX.Element => {
           </li>
           <AppHeaderDropdown />
         </CHeaderNav>
-        <CHeaderToggler
-          onClick={() => dispatch({ type: 'set', asideShow: !asideShow })}
-          style={{ marginInlineEnd: '-12px' }}
-        >
-          <CIcon icon={cilApplicationsSettings} size="lg" />
-        </CHeaderToggler>
       </CContainer>
     </CHeader>
   )
