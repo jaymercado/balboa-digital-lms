@@ -1,8 +1,9 @@
 'use client'
 
 import Script from 'next/script'
-
 import { Provider } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import store from './../store'
 import { SessionProvider } from 'next-auth/react'
 import './../styles/style.scss'
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <SessionProvider>
+          <ToastContainer />
           <Provider store={store}>{children}</Provider>
         </SessionProvider>
       </body>

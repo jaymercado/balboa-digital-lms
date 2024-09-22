@@ -1,34 +1,55 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import useGetUsers from '@/hooks/useGetUsers'
+import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 
-export default function CreateCourse() {
+export default function EditCourse() {
+  const params = useParams()
+  const courseId = params.id as string
+
+  const { courses, fetchingCourses } = useGetCourses({ courseId })
   const { users, fetchingUsers } = useGetUsers()
-  const [creatingCourse, setCreatingCourse] = useState(false)
+  const [updatingCourse, setUpdatingCourse] = useState(false)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setCreatingCourse(true)
-    fetch('/api/courses', {
-      method: 'POST',
+    setUpdatingCourse(true)
+    fetch(`/api/courses/${courseId}`, {
+      method: 'PUT',
       body: JSON.stringify(data),
     })
-      .then(() => {
-        toast('success', 'Course created successfully')
+      .then((res) => {
+        toast('success', 'Course updated successfully')
       })
       .catch((err) => {
-        toast('error', 'Error creating course')
+        toast('error', 'Error updating course')
         console.error(err)
       })
-      .finally(() => setCreatingCourse(false))
+      .finally(() => setUpdatingCourse(false))
+  }
+
+  useEffect(() => {
+    if (!fetchingCourses && courses.length > 0) {
+      const course = courses[0]
+      setValue('title', course.title)
+      setValue('description', course.description)
+      setValue('enrollees', course.enrollees)
+      setValue('instructors', course.instructors)
+    }
+  }, [fetchingCourses, courses, setValue])
+
+  if (fetchingCourses) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -79,8 +100,8 @@ export default function CreateCourse() {
         {errors.instructors && <span>This field is required</span>}
       </div>
 
-      <button type="submit" disabled={creatingCourse}>
-        Create
+      <button type="submit" disabled={updatingCourse}>
+        submit
       </button>
     </form>
   )

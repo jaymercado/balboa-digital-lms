@@ -1,7 +1,7 @@
 export interface Course {
   _id: string
-  name: string
+  title: string
   description: string
-  createdAt: Date
-  updatedAt: Date
+  enrollees: string[]
+  instructors: string[]
 }
