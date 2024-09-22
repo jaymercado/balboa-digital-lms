@@ -45,7 +45,7 @@ export const generateNav = (role: string) => {
     nav.push({
       component: CNavItem,
       name: 'Managed Courses',
-      href: '/theme/typography',
+      href: '/managed-courses',
       icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
     })
   }

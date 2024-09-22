@@ -16,26 +16,11 @@ import balboaDigitalLogo from '@/public/images/bd_logo.png'
 import balboaDigitalLogoSM from '@/public/images/bd_logo_sm.png'
 import generateNav from '../_nav'
 
-interface SessionData {
-  data: {
-    user: {
-      name: string
-      email: string
-      image: string
-      role: string
-    }
-    exprires: string
-  }
-  status: string
-}
-
 const AppSidebar = (): JSX.Element => {
   const { data: session, status } = useSession()
   const dispatch = useDispatch()
   const unfoldable = useTypedSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useTypedSelector((state) => state.sidebarShow)
-
-  console.log(session?.user?.role)
 
   if (status === 'loading') {
     return <></>
