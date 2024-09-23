@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { Course } from '@/types/courseType'
+import { Course } from '@/types/course'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 

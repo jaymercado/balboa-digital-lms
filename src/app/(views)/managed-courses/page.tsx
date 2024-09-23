@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { CCard, CCardHeader, CCardBody } from '@coreui/react-pro'
-import { Course } from '@/types/courseType'
+import { Course } from '@/types/course'
 import { CreateLink } from '@/components'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
