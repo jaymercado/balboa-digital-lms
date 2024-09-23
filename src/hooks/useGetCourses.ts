@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Course as CourseType } from '@/types/course'
+import { Course as CourseType } from '@/types/courseType'
 
 export default function useGetCourses({
   type,
