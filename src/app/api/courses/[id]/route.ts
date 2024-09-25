@@ -7,6 +7,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     await connectMongo()
     const course = await CategoryModel.findOne({ _id: params.id })
+      .populate('enrollees')
+      .populate('instructors')
+      console.log(course)
     return NextResponse.json([course], { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (GET): ', error)

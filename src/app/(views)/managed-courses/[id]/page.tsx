@@ -21,7 +21,7 @@ export default function EditCourse() {
       method: 'DELETE',
     })
       .then((res) => res.json())
-      .then((deletedCourse: Course) => {
+      .then(() => {
         toast('success', 'Course deleted successfully')
         router.push('/managed-courses')
       })
@@ -49,8 +49,18 @@ export default function EditCourse() {
       <p>Course ID: {courseId}</p>
       <p>Title: {courses[0]?.title}</p>
       <p>Description: {courses[0]?.description}</p>
-      <p>Enrollees: {courses[0]?.enrollees}</p>
-      <p>Instructors: {courses[0]?.instructors}</p>
+      <p>
+        Enrollees:
+        {courses[0]?.enrollees.map((enrollee) => (
+          <span key={enrollee._id}>{enrollee?.name} </span>
+        ))}
+      </p>
+      <p>
+        Instructors:
+        {courses[0]?.instructors.map((instructor) => (
+          <span key={instructor._id}>{instructor?.name} </span>
+        ))}
+      </p>
     </div>
   )
 }

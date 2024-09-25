@@ -24,10 +24,18 @@ export async function GET(req: NextRequest) {
 
     let courses: string[] = []
     if (type === 'managed') {
-      courses = await CourseModel.find({ instructors: user._id })
+      courses = await CourseModel.find({ instructors: user._id }).populate([
+        'instructors',
+        'enrollees',
+      ])
     } else {
-      courses = await CourseModel.find({ enrollees: user._id })
+      courses = await CourseModel.find({ enrollees: user._id }).populate([
+        'instructors',
+        'enrollees',
+      ])
     }
+
+    console.log(JSON.stringify(courses))
 
     return NextResponse.json(courses, { status: 200 })
   } catch (error) {

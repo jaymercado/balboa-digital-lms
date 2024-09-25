@@ -2,10 +2,26 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import {
+  CForm,
+  CInputGroup,
+  CFormLabel,
+  CFormInput,
+  CButton,
+  CSpinner,
+  CFormText,
+} from '@coreui/react-pro'
+import Select, { MultiValue } from 'react-select'
 import useGetUsers from '@/hooks/useGetUsers'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
+
+type UserOption = {
+  value: string
+  label: string
+  role: 'user' | 'instructor' | 'admin'
+}
 
 export default function EditCourse() {
   const params = useParams()
@@ -20,6 +36,7 @@ export default function EditCourse() {
     handleSubmit,
     formState: { errors },
     setValue,
+    control,
   } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
@@ -43,8 +60,14 @@ export default function EditCourse() {
       const course = courses[0]
       setValue('title', course.title)
       setValue('description', course.description)
-      setValue('enrollees', course.enrollees)
-      setValue('instructors', course.instructors)
+      setValue(
+        'enrollees',
+        course.enrollees.map((enrollee) => enrollee._id),
+      )
+      setValue(
+        'instructors',
+        course.instructors.map((instructor) => instructor._id),
+      )
     }
   }, [fetchingCourses, courses, setValue])
 
@@ -52,58 +75,86 @@ export default function EditCourse() {
     return <div>Loading...</div>
   }
 
+  const userOptions: UserOption[] = users.map((user) => ({
+    value: user._id,
+    label: user.name,
+    role: user.role,
+  }))
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label htmlFor="title">Title</label>
-        <input id="title" {...register('title', { required: true })} />
-        {errors.title && <span>This field is required</span>}
-      </div>
+    <CForm onSubmit={handleSubmit(onSubmit)}>
+      <CInputGroup>
+        <CFormLabel htmlFor="title">Title</CFormLabel>
+        <CFormInput id="title" {...register('title', { required: true })} />
+        {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
+      </CInputGroup>
 
-      <div>
-        <label htmlFor="description">Description</label>
-        <input id="description" {...register('description', { required: true })} />
-        {errors.description && <span>This field is required</span>}
-      </div>
-
-      <div>
-        <label htmlFor="enrollees">Enrollees</label>
-        {fetchingUsers ? (
-          <div>Loading users...</div>
-        ) : (
-          <select id="enrollees" multiple {...register('enrollees', { required: true })}>
-            {users.map((user, index) => (
-              <option key={`user-${index}`} value={user._id}>
-                {user.name}
-              </option>
-            ))}
-          </select>
+      <CInputGroup>
+        <CFormLabel htmlFor="description">Description</CFormLabel>
+        <CFormInput id="description" {...register('description', { required: true })} />
+        {errors.description && (
+          <CFormText className="text-danger">This field is required</CFormText>
         )}
-        {errors.enrollees && <span>This field is required</span>}
-      </div>
+      </CInputGroup>
 
-      <div>
-        <label htmlFor="instructors">Instructors</label>
+      <CInputGroup>
+        <CFormLabel htmlFor="enrollees">Enrollees</CFormLabel>
         {fetchingUsers ? (
-          <div>Loading users...</div>
+          <CSpinner color="primary" />
         ) : (
-          <select id="instructors" multiple {...register('instructors', { required: true })}>
-            {users
-              .filter((user) => user.role === 'instructor')
-              .map((user, index) => (
-                <option key={`user-${index}`} value={user._id}>
-                  {user.name}
-                </option>
-              ))}
-          </select>
+          <Controller
+            name="enrollees"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select
+                id="enrollees"
+                isMulti
+                options={userOptions}
+                onChange={(selectedOptions: MultiValue<UserOption>) => {
+                  field.onChange(selectedOptions.map((option) => option.value))
+                }}
+                onBlur={field.onBlur}
+                value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+              />
+            )}
+          />
         )}
-        {errors.instructors && <span>This field is required</span>}
-      </div>
+        {errors.enrollees && <CFormText className="text-danger">This field is required</CFormText>}
+      </CInputGroup>
 
-      <button type="submit" disabled={updatingCourse}>
-        submit
-      </button>
-    </form>
+      <CInputGroup>
+        <CFormLabel htmlFor="instructors">Instructors</CFormLabel>
+        {fetchingUsers ? (
+          <CSpinner color="primary" />
+        ) : (
+          <Controller
+            name="instructors"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select
+                id="instructors"
+                isMulti
+                options={userOptions.filter((user) => user.role === 'instructor')}
+                onChange={(selectedOptions: MultiValue<UserOption>) => {
+                  field.onChange(selectedOptions.map((option) => option.value))
+                }}
+                onBlur={field.onBlur}
+                value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+              />
+            )}
+          />
+        )}
+        {errors.instructors && (
+          <CFormText className="text-danger">This field is required</CFormText>
+        )}
+      </CInputGroup>
+
+      <CButton type="submit" color="primary" disabled={updatingCourse}>
+        {updatingCourse ? <CSpinner size="sm" /> : 'Create'}
+      </CButton>
+    </CForm>
   )
 }
 

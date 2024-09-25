@@ -2,7 +2,18 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { CCard, CCardHeader, CCardBody } from '@coreui/react-pro'
+import {
+  CCard,
+  CCardHeader,
+  CCardBody,
+  CTable,
+  CTableHead,
+  CTableRow,
+  CTableHeaderCell,
+  CTableBody,
+  CTableDataCell,
+  CButton,
+} from '@coreui/react-pro'
 import { Course } from '@/types/course'
 import { CreateLink } from '@/components'
 import useGetCourses from '@/hooks/useGetCourses'
@@ -33,48 +44,64 @@ export default function ManagedCourses() {
     <CCard className="mb-4">
       <CCardHeader>
         Courses
-        <CreateLink href="/managed-courses/create" text="Create" />
+        <CButton
+          color="primary"
+          variant="outline"
+          size="sm"
+          href="/managed-courses/create"
+        >
+          Create
+        </CButton>
       </CCardHeader>
       <CCardBody>
         {fetchingCourses ? (
           <div>Loading...</div>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+          <CTable>
+            <CTableHead>
+              <CTableRow>
+                <CTableHeaderCell>ID</CTableHeaderCell>
+                <CTableHeaderCell>Title</CTableHeaderCell>
+                <CTableHeaderCell>Description</CTableHeaderCell>
+                <CTableHeaderCell>Actions</CTableHeaderCell>
+              </CTableRow>
+            </CTableHead>
+            <CTableBody>
               {courses.length === 0 && (
-                <tr>
-                  <td colSpan={3}>No courses found</td>
-                </tr>
+                <CTableRow>
+                  <CTableDataCell colSpan={4}>No courses found</CTableDataCell>
+                </CTableRow>
               )}
               {courses.map((course) => (
-                <tr key={course._id}>
-                  <td>
+                <CTableRow key={course._id}>
+                  <CTableDataCell>
                     <Link href={`/managed-courses/${course._id}`}>{course._id}</Link>
-                  </td>
-                  <td>{course.title}</td>
-                  <td>{course.description}</td>
-                  <td>
-                    <Link href={`/managed-courses/${course._id}/edit`}>Edit</Link> /
-                    <button
-                      type="button"
+                  </CTableDataCell>
+                  <CTableDataCell>{course.title}</CTableDataCell>
+                  <CTableDataCell>{course.description}</CTableDataCell>
+                  <CTableDataCell>
+                    <CButton
+                      color="primary"
+                      variant="outline"
+                      size="sm"
+                      href={`/managed-courses/${course._id}/edit`}
+                    >
+                      Edit
+                    </CButton>
+                    <CButton
+                      color="danger"
+                      variant="outline"
+                      size="sm"
                       onClick={() => deleteCourse(course._id)}
                       disabled={deletingCourse === course._id}
                     >
                       Delete
-                    </button>
-                  </td>
-                </tr>
+                    </CButton>
+                  </CTableDataCell>
+                </CTableRow>
               ))}
-            </tbody>
-          </table>
+            </CTableBody>
+          </CTable>
         )}
       </CCardBody>
     </CCard>
