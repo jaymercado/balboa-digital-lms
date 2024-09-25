@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import ReactQuill from 'react-quill'
 import {
   CForm,
   CInputGroup,
@@ -54,14 +55,17 @@ export default function CreateCourse() {
     role: user.role,
   }))
 
+  const [value, setValue] = useState('')
+
   return (
     <CForm onSubmit={handleSubmit(onSubmit)}>
+      <ReactQuill theme="snow" value={value} onChange={setValue} />
+
       <CInputGroup>
         <CFormLabel htmlFor="title">Title</CFormLabel>
         <CFormInput id="title" {...register('title', { required: true })} />
         {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
       </CInputGroup>
-
       <CInputGroup>
         <CFormLabel htmlFor="description">Description</CFormLabel>
         <CFormInput id="description" {...register('description', { required: true })} />
@@ -69,7 +73,6 @@ export default function CreateCourse() {
           <CFormText className="text-danger">This field is required</CFormText>
         )}
       </CInputGroup>
-
       <CInputGroup>
         <CFormLabel htmlFor="enrollees">Enrollees</CFormLabel>
         {fetchingUsers ? (
@@ -95,7 +98,6 @@ export default function CreateCourse() {
         )}
         {errors.enrollees && <CFormText className="text-danger">This field is required</CFormText>}
       </CInputGroup>
-
       <CInputGroup>
         <CFormLabel htmlFor="instructors">Instructors</CFormLabel>
         {fetchingUsers ? (
@@ -123,7 +125,6 @@ export default function CreateCourse() {
           <CFormText className="text-danger">This field is required</CFormText>
         )}
       </CInputGroup>
-
       <CButton type="submit" color="primary" disabled={creatingCourse}>
         {creatingCourse ? <CSpinner size="sm" /> : 'Create'}
       </CButton>

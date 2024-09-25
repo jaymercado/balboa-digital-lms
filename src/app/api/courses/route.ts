@@ -35,8 +35,6 @@ export async function GET(req: NextRequest) {
       ])
     }
 
-    console.log(JSON.stringify(courses))
-
     return NextResponse.json(courses, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses (GET): ', error)
