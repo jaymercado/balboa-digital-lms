@@ -1,4 +1,5 @@
 import { User } from './user'
+import { Module } from './module'
 
 export interface Course {
   _id: string
@@ -6,6 +7,7 @@ export interface Course {
   description: string
   enrollees: string[] | User[]
   instructors: string[] | User[]
+  modules: Module[]
 }
 
 export interface CourseWithEnrolleesAndInstructors {
@@ -14,4 +16,5 @@ export interface CourseWithEnrolleesAndInstructors {
   description: string
   enrollees: User[]
   instructors: User[]
+  modules: Module[]
 }

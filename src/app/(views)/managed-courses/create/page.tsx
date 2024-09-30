@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import ReactQuill from 'react-quill'
 import {
@@ -16,13 +17,8 @@ import Select, { MultiValue } from 'react-select'
 import useGetUsers from '@/hooks/useGetUsers'
 import toast from '@/utils/toast'
 
-type UserOption = {
-  value: string
-  label: string
-  role: 'user' | 'instructor' | 'admin'
-}
-
 export default function CreateCourse() {
+  const router = useRouter()
   const { users, fetchingUsers } = useGetUsers()
   const [creatingCourse, setCreatingCourse] = useState(false)
 
@@ -46,7 +42,10 @@ export default function CreateCourse() {
         toast('error', 'Error creating course')
         console.error(err)
       })
-      .finally(() => setCreatingCourse(false))
+      .finally(() => {
+        setCreatingCourse(false)
+        router.push('/managed-courses')
+      })
   }
 
   const userOptions: UserOption[] = users.map((user) => ({
@@ -130,6 +129,12 @@ export default function CreateCourse() {
       </CButton>
     </CForm>
   )
+}
+
+type UserOption = {
+  value: string
+  label: string
+  role: 'user' | 'instructor' | 'admin'
 }
 
 type Inputs = {

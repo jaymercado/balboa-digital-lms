@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { Course } from '@/types/course'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 
@@ -61,6 +60,35 @@ export default function EditCourse() {
           <span key={instructor._id}>{instructor?.name} </span>
         ))}
       </p>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses[0]?.modules.map((module) => (
+            <tr key={module._id}>
+              <td>
+                <Link href={`/managed-courses/${courses[0]?._id}/modules/${module._id}`}>
+                  {module._id}
+                </Link>
+              </td>
+              <td>{module.title}</td>
+              <td>{module.type}</td>
+              <td>
+                <Link href={`/managed-courses/${courses[0]?._id}/modules/${module._id}/edit`}>
+                  Edit
+                </Link>
+                <button type="button" onClick={() => {}}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

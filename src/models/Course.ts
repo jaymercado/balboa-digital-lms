@@ -5,8 +5,9 @@ const courseSchema = new Schema({
   description: { type: String },
   enrollees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   instructors: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  modules: [{ type: Schema.Types.ObjectId, ref: 'Module' }],
 })
 
-const User = models['Course'] || model('Course', courseSchema)
+const Course = models['Course'] || model('Course', courseSchema)
 
-export default User
+export default Course
