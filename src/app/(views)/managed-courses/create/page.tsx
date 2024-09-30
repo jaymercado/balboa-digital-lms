@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
-import ReactQuill from 'react-quill'
+// import ReactQuill from 'react-quill'
 import {
   CForm,
   CInputGroup,
@@ -58,7 +58,7 @@ export default function CreateCourse() {
 
   return (
     <CForm onSubmit={handleSubmit(onSubmit)}>
-      <ReactQuill theme="snow" value={value} onChange={setValue} />
+      {/* <ReactQuill theme="snow" value={value} onChange={setValue} /> */}
 
       <CInputGroup>
         <CFormLabel htmlFor="title">Title</CFormLabel>
