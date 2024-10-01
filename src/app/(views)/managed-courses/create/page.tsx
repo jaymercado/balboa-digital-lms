@@ -34,17 +34,16 @@ export default function CreateCourse() {
       method: 'POST',
       body: JSON.stringify(data),
     })
-      .then(() => {
+      .then((res) => res.json())
+      .then((course) => {
         toast('success', 'Course created successfully')
+        router.push(`/managed-courses/${course._id}`)
       })
       .catch((err) => {
         toast('error', 'Error creating course')
         console.error(err)
       })
-      .finally(() => {
-        setCreatingCourse(false)
-        router.push('/managed-courses')
-      })
+      .finally(() => setCreatingCourse(false))
   }
 
   const userOptions: UserOption[] = users.map((user) => ({

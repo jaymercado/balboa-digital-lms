@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import {
   CForm,
   CInputGroup,
@@ -11,15 +11,17 @@ import {
   CButton,
   CSpinner,
   CFormText,
+  CFormSelect,
 } from '@coreui/react-pro'
-import Select, { MultiValue } from 'react-select'
 import toast from '@/utils/toast'
+import ModuleContentInput from '@/components/ModuleContentInput'
 
 const typeOptions = [
-  { value: 'video', label: 'Video' },
-  { value: 'quiz', label: 'Quiz' },
+  { value: '', label: '-- Select --' },
   { value: 'text', label: 'Text' },
-  { value: 'file', label: 'File' },
+  { value: 'video', label: 'Video' },
+  { value: 'image', label: 'Image' },
+  { value: 'pdf', label: 'PDF' },
 ]
 
 export default function CreateModule() {
@@ -30,14 +32,15 @@ export default function CreateModule() {
     register,
     handleSubmit,
     formState: { errors },
-    control,
+    watch,
+    setValue,
   } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     setCreatingModule(true)
     fetch(`/api/courses/${id}/modules`, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, courseId: id }),
     })
       .then(() => {
         toast('success', 'Module created successfully')
@@ -66,36 +69,23 @@ export default function CreateModule() {
 
       <CInputGroup>
         <CFormLabel htmlFor="type">Type</CFormLabel>
-        <Controller
-          name="type"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <Select
-              id="enrollees"
-              isMulti
-              options={typeOptions}
-              onChange={(selectedOptions: MultiValue<TypeOption>) => {
-                field.onChange(selectedOptions.map((option) => option.value))
-              }}
-              onBlur={field.onBlur}
-              value={typeOptions.filter((option) => field?.value?.includes(option?.value))}
-            />
-          )}
-        />
+        <CFormSelect id="type" {...register('type', { required: true })}>
+          {typeOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </CFormSelect>
         {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
       </CInputGroup>
+
+      <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
 
       <CButton type="submit" color="primary" disabled={creatingModule}>
         {creatingModule ? <CSpinner size="sm" /> : 'Create'}
       </CButton>
     </CForm>
   )
-}
-
-type TypeOption = {
-  value: string
-  label: string
 }
 
 type Inputs = {

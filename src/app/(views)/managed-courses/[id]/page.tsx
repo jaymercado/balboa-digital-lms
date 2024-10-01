@@ -63,6 +63,11 @@ export default function EditCourse() {
       <table>
         <thead>
           <tr>
+            <th colSpan={3}>
+              <Link href={`/managed-courses/${courses[0]?._id}/modules/create`}>Create Module</Link>
+            </th>
+          </tr>
+          <tr>
             <th>ID</th>
             <th>Title</th>
             <th>Type</th>
@@ -83,7 +88,9 @@ export default function EditCourse() {
                 <Link href={`/managed-courses/${courses[0]?._id}/modules/${module._id}/edit`}>
                   Edit
                 </Link>
-                <button type="button" onClick={() => {}}>Delete</button>
+                <button type="button" onClick={() => {}}>
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
