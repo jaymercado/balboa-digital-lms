@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import {
   CForm,
   CInputGroup,
@@ -28,7 +28,7 @@ export default function CreateCourse() {
     control,
   } = useForm<Inputs>()
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  function onSubmit(data: Inputs) {
     setCreatingCourse(true)
     fetch('/api/courses', {
       method: 'POST',

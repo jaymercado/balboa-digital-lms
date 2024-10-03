@@ -15,7 +15,6 @@ import {
   CButton,
 } from '@coreui/react-pro'
 import { Course } from '@/types/course'
-import { CreateLink } from '@/components'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 
@@ -44,12 +43,7 @@ export default function ManagedCourses() {
     <CCard className="mb-4">
       <CCardHeader>
         Courses
-        <CButton
-          color="primary"
-          variant="outline"
-          size="sm"
-          href="/managed-courses/create"
-        >
+        <CButton color="primary" variant="outline" size="sm" href="/managed-courses/create">
           Create
         </CButton>
       </CCardHeader>

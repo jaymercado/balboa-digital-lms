@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import {
   CForm,
   CInputGroup,
@@ -25,7 +25,7 @@ type UserOption = {
 
 export default function EditCourse() {
   const params = useParams()
-  const courseId = params.id as string
+  const { courseId } = params as { courseId: string }
 
   const { courses, fetchingCourses } = useGetCourses({ courseId })
   const { users, fetchingUsers } = useGetUsers()
@@ -39,7 +39,7 @@ export default function EditCourse() {
     control,
   } = useForm<Inputs>()
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  function onSubmit(data: Inputs) {
     setUpdatingCourse(true)
     fetch(`/api/courses/${courseId}`, {
       method: 'PUT',

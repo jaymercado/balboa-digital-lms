@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectMongo from '@/utils/mongodb'
 import ModuleModel from '@/models/Module'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { moduleId: string } }) {
   try {
     await connectMongo()
-    const courseModule = await ModuleModel.findOne({ _id: params.id })
+    const courseModule = await ModuleModel.findOne({ _id: params.moduleId })
     return NextResponse.json([courseModule], { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (GET): ', error)

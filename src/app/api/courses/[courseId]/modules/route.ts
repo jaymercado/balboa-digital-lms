@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { Module } from '@/types/module'
+import { Course } from '@/types/course'
 import connectMongo from '@/utils/mongodb'
 import UserModel from '@/models/User'
 import ModuleModel from '@/models/Module'
 import CourseModel from '@/models/Course'
 import { getServerSession } from 'next-auth'
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
     const session = await getServerSession()
 
@@ -20,7 +22,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const modules: string[] = []
+    const courses: Course[] = await CourseModel.findById(params.courseId).populate('modules')
+    const modules: Module[] = courses[0]?.modules || []
 
     return NextResponse.json(modules, { status: 200 })
   } catch (error) {

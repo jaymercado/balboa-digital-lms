@@ -6,10 +6,10 @@ import { useParams, useRouter } from 'next/navigation'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 
-export default function EditCourse() {
+export default function Course() {
   const router = useRouter()
   const params = useParams()
-  const courseId = params.id as string
+  const { courseId } = params as { courseId: string }
 
   const { courses, fetchingCourses } = useGetCourses({ courseId })
   const [deletingCourse, setDeletingCourse] = useState('')
@@ -98,11 +98,4 @@ export default function EditCourse() {
       </table>
     </div>
   )
-}
-
-type Inputs = {
-  title: string
-  description: string
-  enrollees: string[]
-  instructors: string[]
 }

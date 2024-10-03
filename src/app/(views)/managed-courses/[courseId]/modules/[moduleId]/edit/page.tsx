@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import {
   CForm,
   CInputGroup,
@@ -15,6 +15,7 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
+import useGetModules from '@/hooks/useGetModules'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -24,9 +25,12 @@ const typeOptions = [
   { value: 'pdf', label: 'PDF' },
 ]
 
-export default function CreateModule() {
-  const { id } = useParams()
-  const [creatingModule, setCreatingModule] = useState(false)
+export default function EditModule() {
+  const params = useParams()
+  const { courseId, moduleId } = params as { courseId: string; moduleId: string }
+
+  const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
+  const [updatingModule, setUpdatingModule] = useState(false)
 
   const {
     register,
@@ -36,20 +40,34 @@ export default function CreateModule() {
     setValue,
   } = useForm<Inputs>()
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setCreatingModule(true)
-    fetch(`/api/courses/${id}/modules`, {
-      method: 'POST',
-      body: JSON.stringify({ ...data, courseId: id }),
+  function onSubmit(data: Inputs) {
+    setUpdatingModule(true)
+    fetch(`/api/courses/${courseId}/modules`, {
+      method: 'PUT',
+      body: JSON.stringify({ ...data, courseId }),
     })
       .then(() => {
-        toast('success', 'Module created successfully')
+        toast('success', 'Module updated successfully')
       })
       .catch((err) => {
-        toast('error', 'Error creating module')
+        toast('error', 'Error updating module')
         console.error(err)
       })
-      .finally(() => setCreatingModule(false))
+      .finally(() => setUpdatingModule(false))
+  }
+
+  useEffect(() => {
+    if (!fetchingModules && courseModules.length > 0) {
+      const coursModule = courseModules[0]
+      setValue('title', coursModule.title)
+      setValue('description', coursModule.description)
+      setValue('type', coursModule.type)
+      setValue('content', coursModule.content)
+    }
+  }, [fetchingModules, courseModules, setValue])
+
+  if (fetchingModules) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -79,10 +97,10 @@ export default function CreateModule() {
         {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
       </CInputGroup>
 
-      <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
+      {/* <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} /> */}
 
-      <CButton type="submit" color="primary" disabled={creatingModule}>
-        {creatingModule ? <CSpinner size="sm" /> : 'Create'}
+      <CButton type="submit" color="primary" disabled={updatingModule}>
+        {updatingModule ? <CSpinner size="sm" /> : 'Update'}
       </CButton>
     </CForm>
   )
