@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { UseFormSetValue } from 'react-hook-form'
 import RichTextInput from './RichTextInput'

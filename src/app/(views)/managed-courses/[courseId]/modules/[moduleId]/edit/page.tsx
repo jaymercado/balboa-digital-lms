@@ -97,7 +97,7 @@ export default function EditModule() {
         {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
       </CInputGroup>
 
-      {/* <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} /> */}
+      <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
 
       <CButton type="submit" color="primary" disabled={updatingModule}>
         {updatingModule ? <CSpinner size="sm" /> : 'Update'}

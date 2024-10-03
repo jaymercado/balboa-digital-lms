@@ -10,12 +10,12 @@ export default function Course() {
   const router = useRouter()
   const params = useParams()
   const { courseId } = params as { courseId: string }
-
   const { courses, fetchingCourses } = useGetCourses({ courseId })
-  const [deletingCourse, setDeletingCourse] = useState('')
+  const course = courses[0]
+  const [deletingCourse, setDeletingCourse] = useState(false)
 
   function deleteCourse(courseId: string) {
-    setDeletingCourse(courseId)
+    setDeletingCourse(true)
     fetch(`/api/courses/${courseId}`, {
       method: 'DELETE',
     })
@@ -28,35 +28,31 @@ export default function Course() {
         console.error(err)
         toast('error', 'Error deleting course')
       })
-      .finally(() => setDeletingCourse(''))
+      .finally(() => setDeletingCourse(false))
   }
 
-  if (fetchingCourses) {
+  if (fetchingCourses || !course) {
     return <div>Loading...</div>
   }
 
   return (
     <div>
-      <Link href={`/managed-courses/${courses[0]?._id}/edit`}>Edit</Link> /
-      <button
-        type="button"
-        onClick={() => deleteCourse(courses[0]?._id)}
-        disabled={deletingCourse === courses[0]?._id}
-      >
+      <Link href={`/managed-courses/${course._id}/edit`}>Edit</Link> /
+      <button type="button" onClick={() => deleteCourse(course._id)} disabled={deletingCourse}>
         Delete
       </button>
       <p>Course ID: {courseId}</p>
-      <p>Title: {courses[0]?.title}</p>
-      <p>Description: {courses[0]?.description}</p>
+      <p>Title: {course.title}</p>
+      <p>Description: {course.description}</p>
       <p>
         Enrollees:
-        {courses[0]?.enrollees.map((enrollee) => (
+        {course.enrollees.map((enrollee) => (
           <span key={enrollee._id}>{enrollee?.name} </span>
         ))}
       </p>
       <p>
         Instructors:
-        {courses[0]?.instructors.map((instructor) => (
+        {course.instructors.map((instructor) => (
           <span key={instructor._id}>{instructor?.name} </span>
         ))}
       </p>
@@ -64,7 +60,7 @@ export default function Course() {
         <thead>
           <tr>
             <th colSpan={3}>
-              <Link href={`/managed-courses/${courses[0]?._id}/modules/create`}>Create Module</Link>
+              <Link href={`/managed-courses/${course._id}/modules/create`}>Create Module</Link>
             </th>
           </tr>
           <tr>
@@ -75,19 +71,17 @@ export default function Course() {
           </tr>
         </thead>
         <tbody>
-          {courses[0]?.modules.map((module) => (
+          {course.modules.map((module) => (
             <tr key={module._id}>
               <td>
-                <Link href={`/managed-courses/${courses[0]?._id}/modules/${module._id}`}>
+                <Link href={`/managed-courses/${course._id}/modules/${module._id}`}>
                   {module._id}
                 </Link>
               </td>
               <td>{module.title}</td>
               <td>{module.type}</td>
               <td>
-                <Link href={`/managed-courses/${courses[0]?._id}/modules/${module._id}/edit`}>
-                  Edit
-                </Link>
+                <Link href={`/managed-courses/${course._id}/modules/${module._id}/edit`}>Edit</Link>
                 <button type="button" onClick={() => {}}>
                   Delete
                 </button>
