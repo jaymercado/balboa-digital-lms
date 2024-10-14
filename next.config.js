@@ -4,6 +4,14 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'preview.webpixels.io',
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig
