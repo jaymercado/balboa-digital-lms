@@ -1,1 +1,35 @@
-// Here you can add other styles
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.float-animation {
+  animation: float 10s ease-in-out infinite;
+}
+
+.bg {
+  background-color: #ffffff;
+  opacity: 0.4;
+  background-image: radial-gradient(#008ed2 0.8px, #ffffff 0.8px);
+  background-size: 16px 16px;
+}
+
+.pattern {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+
+  background-color: #ffffff;
+  opacity: 0.4;
+  background-image: linear-gradient(#dddddd 1.2000000000000002px, transparent 1.2000000000000002px),
+    linear-gradient(to right, #dddddd 1.2000000000000002px, #ffffff 1.2000000000000002px);
+  background-size: 24px 24px;
+}
