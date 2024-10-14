@@ -1,15 +1,6 @@
 import React from 'react'
-import { AppHeader, AppFooter } from '@/components'
-import {
-  CContainer,
-  CRow,
-  CCol,
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CCardText,
-  CButton,
-} from '@coreui/react-pro'
+import { AppFooter } from '@/components'
+import { CContainer, CRow, CCol, CCard, CCardBody } from '@coreui/react-pro'
 import hero from '@/public/images/hero.svg'
 import Image from 'next/image'
 import productivity from '@/public/images/productivity.png'

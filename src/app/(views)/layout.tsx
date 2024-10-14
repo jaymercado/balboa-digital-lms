@@ -1,10 +1,9 @@
 'use client'
 import { useEffect } from 'react'
-import { useSession, signIn } from 'next-auth/react'
-import { AppSidebar, AppFooter, AppHeader, AppBreadcrumb } from '@/components'
+import { useSession } from 'next-auth/react'
+import { AppSidebar, AppHeader, AppBreadcrumb } from '@/components'
 import LandingPage from '@/components/LandingPage'
 import { CContainer } from '@coreui/react-pro'
-import { CButton } from '@coreui/react-pro'
 import Nav from '@/components/Nav'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -12,8 +11,6 @@ import 'aos/dist/aos.css'
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data, status } = useSession()
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     AOS.init({ duration: 500 })
   }, [])
 
@@ -40,7 +37,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {children}
             </CContainer>
           </div>
-          {/* <AppFooter /> */}
         </div>
       </>
     )
