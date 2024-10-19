@@ -14,11 +14,11 @@ export async function GET(req: NextRequest, { params }: { params: { moduleId: st
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { moduleId: string } }) {
   try {
     const body = await req.json()
     await connectMongo()
-    const res = await ModuleModel.findOneAndUpdate({ _id: params.id }, body, { new: true })
+    const res = await ModuleModel.findOneAndUpdate({ _id: params.moduleId }, body, { new: true })
     return NextResponse.json(res, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (PUT): ', error)
@@ -26,11 +26,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { moduleId: string } }) {
   try {
     await connectMongo()
-    const deleteCategory = await ModuleModel.findByIdAndDelete(params.id)
-    return NextResponse.json(deleteCategory, { status: 200 })
+    const deleteModule = await ModuleModel.findByIdAndDelete(params.moduleId)
+    return NextResponse.json(deleteModule, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (DELETE): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
