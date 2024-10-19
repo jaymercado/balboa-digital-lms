@@ -15,6 +15,7 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
+import Loading from '@/components/Loading'
 import useGetModules from '@/hooks/useGetModules'
 
 const typeOptions = [
@@ -42,11 +43,12 @@ export default function EditModule() {
 
   function onSubmit(data: Inputs) {
     setUpdatingModule(true)
-    fetch(`/api/courses/${courseId}/modules`, {
+    fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
       method: 'PUT',
       body: JSON.stringify({ ...data, courseId }),
     })
-      .then(() => {
+      .then((res) => {
+        console.log(res)
         toast('success', 'Module updated successfully')
       })
       .catch((err) => {
@@ -67,7 +69,7 @@ export default function EditModule() {
   }, [fetchingModules, courseModules, setValue])
 
   if (fetchingModules) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (
@@ -100,7 +102,7 @@ export default function EditModule() {
       <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
 
       <CButton type="submit" color="primary" disabled={updatingModule}>
-        {updatingModule ? <CSpinner size="sm" /> : 'Update'}
+        {updatingModule ? <CSpinner size="sm" /> : 'Save'}
       </CButton>
     </CForm>
   )
