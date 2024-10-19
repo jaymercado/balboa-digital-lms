@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
+import { Loading } from '@/components'
 
 export default function Course() {
   const router = useRouter()
@@ -13,6 +14,7 @@ export default function Course() {
   const { courses, fetchingCourses } = useGetCourses({ courseId })
   const course = courses[0]
   const [deletingCourse, setDeletingCourse] = useState(false)
+  const [deletingModule, setDeletingModule] = useState(false)
 
   function deleteCourse(courseId: string) {
     setDeletingCourse(true)
@@ -31,8 +33,25 @@ export default function Course() {
       .finally(() => setDeletingCourse(false))
   }
 
+  function deleteModule(moduleId: string) {
+    setDeletingModule(true)
+    fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
+      method: 'DELETE',
+    })
+      .then((res) => res.json())
+      .then(() => {
+        toast('success', 'Module deleted successfully')
+        router.push(`/managed-courses/${courseId}`)
+      })
+      .catch((err) => {
+        console.error(err)
+        toast('error', 'Error deleting course')
+      })
+      .finally(() => setDeletingModule(false))
+  }
+
   if (fetchingCourses || !course) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (
@@ -82,8 +101,12 @@ export default function Course() {
               <td>{module.type}</td>
               <td>
                 <Link href={`/managed-courses/${course._id}/modules/${module._id}/edit`}>Edit</Link>
-                <button type="button" onClick={() => {}}>
-                  Delete
+                <button
+                  type="button"
+                  onClick={() => deleteModule(module._id)}
+                  disabled={deletingModule}
+                >
+                  {deletingModule ? 'Deleting...' : 'Delete'}
                 </button>
               </td>
             </tr>

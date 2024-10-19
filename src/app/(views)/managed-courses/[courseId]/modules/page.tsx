@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import useGetCourses from '@/hooks/useGetCourses'
-
+import { Loading } from '@/components'
 export default function Modules() {
   const params = useParams()
   const { courseId } = params as { courseId: string }
@@ -12,7 +12,7 @@ export default function Modules() {
   const { courses, fetchingCourses } = useGetCourses({ courseId })
 
   if (fetchingCourses) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (

@@ -5,16 +5,9 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import useGetModules from '@/hooks/useGetModules'
 import toast from '@/utils/toast'
+import { Loading } from '@/components'
 
-const typeOptions = [
-  { value: '', label: '-- Select --' },
-  { value: 'text', label: 'Text' },
-  { value: 'video', label: 'Video' },
-  { value: 'image', label: 'Image' },
-  { value: 'pdf', label: 'PDF' },
-]
-
-export default function EditModule() {
+export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
@@ -40,7 +33,7 @@ export default function EditModule() {
   }
 
   if (fetchingModules || !courseModule) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (
@@ -62,11 +55,4 @@ export default function EditModule() {
       </section>
     </div>
   )
-}
-
-type Inputs = {
-  title: string
-  description: string
-  type: string
-  content: string
 }

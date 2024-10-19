@@ -16,7 +16,7 @@ import Select, { MultiValue } from 'react-select'
 import useGetUsers from '@/hooks/useGetUsers'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
-
+import { Loading } from '@/components'
 type UserOption = {
   value: string
   label: string
@@ -72,7 +72,7 @@ export default function EditCourse() {
   }, [fetchingCourses, courses, setValue])
 
   if (fetchingCourses) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   const userOptions: UserOption[] = users.map((user) => ({
@@ -152,7 +152,7 @@ export default function EditCourse() {
       </CInputGroup>
 
       <CButton type="submit" color="primary" disabled={updatingCourse}>
-        {updatingCourse ? <CSpinner size="sm" /> : 'Create'}
+        {updatingCourse ? <CSpinner size="sm" /> : 'Save'}
       </CButton>
     </CForm>
   )

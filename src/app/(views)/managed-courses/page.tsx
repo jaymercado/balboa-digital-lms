@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import {
   CCard,
@@ -17,6 +17,7 @@ import {
 import { Course } from '@/types/course'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
+import { Loading } from '@/components'
 
 export default function ManagedCourses() {
   const [deletingCourse, setDeletingCourse] = useState('')
@@ -49,7 +50,7 @@ export default function ManagedCourses() {
       </CCardHeader>
       <CCardBody>
         {fetchingCourses ? (
-          <div>Loading...</div>
+          <Loading />
         ) : (
           <CTable>
             <CTableHead>
