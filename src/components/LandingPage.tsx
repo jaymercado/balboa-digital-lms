@@ -16,7 +16,7 @@ const poppins = Poppins({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
-const LandingPage: React.FC = () => {
+export default function LandingPage() {
   return (
     <div className={`${poppins.className}`}>
       <div className="pattern"></div>
@@ -178,8 +178,8 @@ const LandingPage: React.FC = () => {
                 data-aos-delay="100"
               >
                 Empower your workforce with flexible, interactive, and accessible learning solutions
-                that cater to today&apos;s fast-paced work environment, ensuring compliance and skill
-                development.
+                that cater to today&apos;s fast-paced work environment, ensuring compliance and
+                skill development.
               </p>
             </CCol>
           </CRow>
@@ -279,5 +279,3 @@ const LandingPage: React.FC = () => {
     </div>
   )
 }
-
-export default LandingPage
