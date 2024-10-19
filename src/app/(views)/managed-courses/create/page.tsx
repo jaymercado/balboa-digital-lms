@@ -119,7 +119,7 @@ export default function CreateCourse() {
         )}
       </CInputGroup>
       <CButton type="submit" color="primary" disabled={creatingCourse}>
-        {creatingCourse ? <CSpinner size="sm" /> : 'Create'}
+        {creatingCourse ? <CSpinner size="sm" /> : 'Save'}
       </CButton>
     </CForm>
   )
