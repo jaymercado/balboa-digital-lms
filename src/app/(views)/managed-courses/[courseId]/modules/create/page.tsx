@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import {
   CForm,
@@ -25,7 +25,8 @@ const typeOptions = [
 ]
 
 export default function CreateModule() {
-  const { id } = useParams()
+  const router = useRouter()
+  const { courseId } = useParams()
   const [creatingModule, setCreatingModule] = useState(false)
 
   const {
@@ -38,12 +39,14 @@ export default function CreateModule() {
 
   function onSubmit(data: Inputs) {
     setCreatingModule(true)
-    fetch(`/api/courses/${id}/modules`, {
+    console.log(data)
+    fetch(`/api/courses/${courseId}/modules`, {
       method: 'POST',
-      body: JSON.stringify({ ...data, courseId: id }),
+      body: JSON.stringify({ ...data, courseId }),
     })
       .then(() => {
         toast('success', 'Module created successfully')
+        router.push(`/managed-courses/${courseId}`)
       })
       .catch((err) => {
         toast('error', 'Error creating module')
@@ -82,7 +85,7 @@ export default function CreateModule() {
       <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
 
       <CButton type="submit" color="primary" disabled={creatingModule}>
-        {creatingModule ? <CSpinner size="sm" /> : 'Create'}
+        {creatingModule ? <CSpinner size="sm" /> : 'Save'}
       </CButton>
     </CForm>
   )
