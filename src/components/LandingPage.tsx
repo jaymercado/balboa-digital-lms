@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { AppFooter } from '@/components'
 import { CContainer, CRow, CCol, CCard, CCardBody } from '@coreui/react-pro'
