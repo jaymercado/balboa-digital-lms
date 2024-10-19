@@ -6,8 +6,15 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import store from './../store'
 import { SessionProvider } from 'next-auth/react'
-import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.snow.css'
 import './../styles/style.scss'
+import { GeistSans } from 'geist/font/sans'
+import { Poppins } from 'next/font/google'
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+})
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -42,8 +49,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
           strategy="afterInteractive"
         />
-        <Script src="https://unpkg.com/react-quill@1.3.3/dist/react-quill.js" strategy="afterInteractive" />
-        <Script src="https://unpkg.com/babel-standalone@6/babel.min.js" strategy="afterInteractive" />
+        <Script
+          src="https://unpkg.com/react-quill@1.3.3/dist/react-quill.js"
+          strategy="afterInteractive"
+        />
+        <Script
+          src="https://unpkg.com/babel-standalone@6/babel.min.js"
+          strategy="afterInteractive"
+        />
         <Script type="text/babel" src="/my-scripts.js" strategy="afterInteractive" />
       </body>
     </html>
