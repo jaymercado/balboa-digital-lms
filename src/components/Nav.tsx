@@ -1,18 +1,18 @@
 'use client'
+
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
 import { ClientSafeProvider } from 'next-auth/react'
 import { Poppins } from 'next/font/google'
+import balboaDigitalLogo from '@/public/images/bd_logo.png'
+import googleLogo from '@/public/images/search.png'
 
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 })
-
-import balboaDigitalLogo from '@/public/images/bd_logo.png'
-import googleLogo from '@/public/images/search.png'
 
 const Nav = () => {
   const { data: session } = useSession()
