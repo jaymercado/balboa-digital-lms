@@ -76,7 +76,7 @@ const LandingPage: React.FC = () => {
                 Why Learning Matters
               </h1>
               <p className="fs-5 text-muted" data-aos="fade-up" data-aos-delay="50">
-                In today's fast-paced business world, continuous development is key to staying
+                In today&apos;s fast-paced business world, continuous development is key to staying
                 ahead. Our platform ensures your team is equipped with the knowledge and skills
                 needed to excel in their roles, fostering a culture of growth and innovation.
               </p>
@@ -178,7 +178,7 @@ const LandingPage: React.FC = () => {
                 data-aos-delay="100"
               >
                 Empower your workforce with flexible, interactive, and accessible learning solutions
-                that cater to today's fast-paced work environment, ensuring compliance and skill
+                that cater to today&apos;s fast-paced work environment, ensuring compliance and skill
                 development.
               </p>
             </CCol>
