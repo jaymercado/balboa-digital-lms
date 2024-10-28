@@ -1,15 +1,16 @@
 'use client'
-import { useEffect } from 'react'
+
+import React, { useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { AppSidebar, AppHeader, AppBreadcrumb } from '@/components'
+import { Nav, AppSidebar, AppHeader, AppBreadcrumb } from '@/components'
 import LandingPage from '@/components/LandingPage'
 import { CContainer } from '@coreui/react-pro'
-import Nav from '@/components/Nav'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data, status } = useSession()
+
   useEffect(() => {
     AOS.init({ duration: 500 })
   }, [])

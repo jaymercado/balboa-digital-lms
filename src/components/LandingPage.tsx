@@ -1,17 +1,16 @@
 'use client'
 
 import React from 'react'
-import { AppFooter } from '@/components'
+import Image from 'next/image'
+import { Poppins } from 'next/font/google'
 import { CContainer, CRow, CCol, CCard, CCardBody } from '@coreui/react-pro'
 import hero from '@/public/images/hero.svg'
-import Image from 'next/image'
 import productivity from '@/public/images/productivity.png'
 import collaboration from '@/public/images/collaboration.png'
 import adapt from '@/public/images/adapt1.png'
 import care from '@/public/images/care.png'
 import learning from '@/public/images/learning.svg'
-
-import { Poppins } from 'next/font/google'
+import { AppFooter } from '@/components'
 
 const poppins = Poppins({
   subsets: ['latin'],
