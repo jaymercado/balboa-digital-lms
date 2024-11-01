@@ -4,12 +4,12 @@ import React from 'react'
 import Image from 'next/image'
 import { Poppins } from 'next/font/google'
 import { CContainer, CRow, CCol, CCard, CCardBody } from '@coreui/react-pro'
-import hero from '@/public/images/hero.svg'
+import hero from '@/public/images/network-robot-assistant-working-on-laptop.gif'
 import productivity from '@/public/images/productivity.png'
 import collaboration from '@/public/images/collaboration.png'
 import adapt from '@/public/images/adapt1.png'
 import care from '@/public/images/care.png'
-import learning from '@/public/images/learning.svg'
+import learning from '@/public/images/network-expenses-and-income-monitoring-on-diagrams.gif'
 import { AppFooter } from '@/components'
 
 const poppins = Poppins({
@@ -20,50 +20,51 @@ const poppins = Poppins({
 export default function LandingPage() {
   return (
     <div className={`${poppins.className}`}>
-      <div className="pattern"></div>
-
-      <CContainer className="mb-5 pt-5">
-        <CRow className="text-left mb-4">
-          <CCol className="mt-5" sm={12} lg={6}>
-            <span
-              className="fs-6 text-primary fw-semibold bg-primary-subtle rounded-pill py-1 px-2"
-              data-aos="fade-up"
-              data-aos-delay="0"
-            >
-              Balboa Digital LMS
-            </span>
-            <h1 className="fw-bold display-3 lh-1 mt-2" data-aos="fade-up" data-aos-delay="200">
-              Empower Your Workforce Through{' '}
+      <div className="bg">
+        <CContainer className="mb-5 pt-1 mt-lg-5 pb-4  ">
+          <CRow className="text-left mb-4">
+            <CCol className="mt-5 pt-5" sm={12} lg={6}>
               <span
-                className="text-primary"
-                style={{
-                  background: '-webkit-linear-gradient(left, #06639b, #A6C31F)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
+                className="fs-6 text-primary fw-semibold bg-primary-subtle rounded-pill py-1 px-2"
+                data-aos="fade-up"
+                data-aos-delay="0"
               >
-                Learning
+                Balboa Digital LMS
               </span>
-            </h1>
-            <p className="mt-3 fs-5 text-secondary" data-aos="fade-up" data-aos-delay="300">
-              Unlock potential, enhance skills, and drive growth with a seamless learning experience
-              designed for your team.
-            </p>
-          </CCol>
-          <CCol sm={12} lg={6} data-aos="fade-up-left" data-aos-delay="500">
-            <Image
-              src={hero}
-              alt="e-learning image"
-              width={500}
-              height={400}
-              className="float-animation"
-              layout="responsive"
-            />
-          </CCol>
-        </CRow>
-      </CContainer>
+              <h1 className="fw-bold display-3 lh-1 mt-2" data-aos="fade-up" data-aos-delay="200">
+                Empower Your Workforce Through{' '}
+                <span
+                  className="text-primary"
+                  style={{
+                    background: '-webkit-linear-gradient(left, #06639b, #80D28A)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Learning
+                </span>
+              </h1>
+              <p className="mt-3 fs-5 text-secondary" data-aos="fade-up" data-aos-delay="300">
+                Unlock potential, enhance skills, and drive growth with a seamless learning
+                experience designed for your team.
+              </p>
+            </CCol>
+            <CCol sm={12} lg={6} data-aos="fade-up-left" data-aos-delay="500" className="mt-lg-5">
+              <Image
+                src={hero}
+                alt="e-learning image"
+                width={600}
+                height={600}
+                className="float-animation"
+                layout="responsive"
+                unoptimized={true}
+              />
+            </CCol>
+          </CRow>
+        </CContainer>
+      </div>
 
-      <div className=" pb-5 mb-5">
+      <div className="pt-5 mt-5 pb-5 mb-5">
         <CContainer className="container">
           <CRow className="mb-5">
             <CCol lg={8} md={10}>
@@ -186,7 +187,14 @@ export default function LandingPage() {
           </CRow>
           <CRow className="g-10 align-items-center justify-content-between">
             <CCol lg={5} className="mb-5 mb-lg-0" data-aos="zoom-in-right">
-              <Image alt="Demo card" src={learning} width={500} height={400} layout="responsive" />
+              <Image
+                alt="Demo card"
+                src={learning}
+                width={400}
+                height={400}
+                layout="responsive"
+                unoptimized={true}
+              />
             </CCol>
             <CCol lg={6}>
               <div className="d-flex mb-2" data-aos="fade-right" data-aos-delay="0">
