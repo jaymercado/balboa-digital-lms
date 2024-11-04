@@ -11,14 +11,23 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
 
     const foundCourses = await supabase
       .from('courses')
-      .select
-      // '*, courseInstructors(users(id, name, role, email, createdAt)), enrollments(users(id, name, role, email, createdAt))',
-      ()
+      .select(
+        `
+        *,
+        courseInstructors(users (id)),
+        enrollments(users (id)),
+        modules(*)
+      `,
+      )
       .eq('id', params.courseId)
-    console.log(foundCourses)
-    const courses = foundCourses.data
 
-    return NextResponse.json(courses, { status: 200 })
+    const formattedCourses = foundCourses.data?.map((course) => ({
+      ...course,
+      instructors: course.courseInstructors.map((instructor: any) => instructor.users.id),
+      enrollees: course.enrollments.map((enrollment: any) => enrollment.users.id),
+    }))
+
+    return NextResponse.json(formattedCourses, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[courseId] (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
