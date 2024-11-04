@@ -41,13 +41,13 @@ export default function Module() {
       <Link href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}>Edit</Link> /
       <button
         type="button"
-        onClick={() => deleteModule(courseModule._id)}
+        onClick={() => deleteModule(courseModule.id)}
         disabled={deletingModule}
       >
         Delete
       </button>
       <section>
-        <p>ID: {courseModule._id}</p>
+        <p>ID: {courseModule.id}</p>
         <p>Title: {courseModule.title}</p>
         <p>Description: {courseModule.description}</p>
         <p>Type: {courseModule.type}</p>

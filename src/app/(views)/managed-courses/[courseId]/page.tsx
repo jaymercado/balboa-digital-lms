@@ -56,8 +56,8 @@ export default function Course() {
 
   return (
     <div>
-      <Link href={`/managed-courses/${course._id}/edit`}>Edit</Link> /
-      <button type="button" onClick={() => deleteCourse(course._id)} disabled={deletingCourse}>
+      <Link href={`/managed-courses/${course.id}/edit`}>Edit</Link> /
+      <button type="button" onClick={() => deleteCourse(course.id)} disabled={deletingCourse}>
         Delete
       </button>
       <p>Course ID: {courseId}</p>
@@ -66,20 +66,20 @@ export default function Course() {
       <p>
         Enrollees:
         {course.enrollees.map((enrollee) => (
-          <span key={enrollee._id}>{enrollee?.name} </span>
+          <span key={enrollee.id}>{enrollee?.name} </span>
         ))}
       </p>
       <p>
         Instructors:
         {course.instructors.map((instructor) => (
-          <span key={instructor._id}>{instructor?.name} </span>
+          <span key={instructor.id}>{instructor?.name} </span>
         ))}
       </p>
       <table>
         <thead>
           <tr>
             <th colSpan={3}>
-              <Link href={`/managed-courses/${course._id}/modules/create`}>Create Module</Link>
+              <Link href={`/managed-courses/${course.id}/modules/create`}>Create Module</Link>
             </th>
           </tr>
           <tr>
@@ -91,19 +91,17 @@ export default function Course() {
         </thead>
         <tbody>
           {course.modules.map((module) => (
-            <tr key={module._id}>
+            <tr key={module.id}>
               <td>
-                <Link href={`/managed-courses/${course._id}/modules/${module._id}`}>
-                  {module._id}
-                </Link>
+                <Link href={`/managed-courses/${course.id}/modules/${module.id}`}>{module.id}</Link>
               </td>
               <td>{module.title}</td>
               <td>{module.type}</td>
               <td>
-                <Link href={`/managed-courses/${course._id}/modules/${module._id}/edit`}>Edit</Link>
+                <Link href={`/managed-courses/${course.id}/modules/${module.id}/edit`}>Edit</Link>
                 <button
                   type="button"
-                  onClick={() => deleteModule(module._id)}
+                  onClick={() => deleteModule(module.id)}
                   disabled={deletingModule}
                 >
                   {deletingModule ? 'Deleting...' : 'Delete'}

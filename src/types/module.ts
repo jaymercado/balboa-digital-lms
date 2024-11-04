@@ -1,5 +1,5 @@
 export interface Module {
-  _id: string
+  id: string
   title: string
   description: string
   type: 'text' | 'video' | 'image' | 'pdf'

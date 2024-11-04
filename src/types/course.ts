@@ -2,7 +2,7 @@ import { User } from './user'
 import { Module } from './module'
 
 export interface Course {
-  _id: string
+  id: string
   title: string
   description: string
   enrollees: string[] | User[]
@@ -11,7 +11,7 @@ export interface Course {
 }
 
 export interface CourseWithEnrolleesAndInstructors {
-  _id: string
+  id: string
   title: string
   description: string
   enrollees: User[]

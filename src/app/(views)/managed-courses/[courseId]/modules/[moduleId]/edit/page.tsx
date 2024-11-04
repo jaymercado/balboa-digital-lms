@@ -48,7 +48,6 @@ export default function EditModule() {
       body: JSON.stringify({ ...data, courseId }),
     })
       .then((res) => {
-        console.log(res)
         toast('success', 'Module updated successfully')
       })
       .catch((err) => {

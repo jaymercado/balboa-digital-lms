@@ -62,11 +62,11 @@ export default function EditCourse() {
       setValue('description', course.description)
       setValue(
         'enrollees',
-        course.enrollees.map((enrollee) => enrollee._id),
+        course.enrollees.map((enrollee) => enrollee.id),
       )
       setValue(
         'instructors',
-        course.instructors.map((instructor) => instructor._id),
+        course.instructors.map((instructor) => instructor.id),
       )
     }
   }, [fetchingCourses, courses, setValue])
@@ -76,7 +76,7 @@ export default function EditCourse() {
   }
 
   const userOptions: UserOption[] = users.map((user) => ({
-    value: user._id,
+    value: user.id,
     label: user.name,
     role: user.role,
   }))

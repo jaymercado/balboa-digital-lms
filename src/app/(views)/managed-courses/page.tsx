@@ -30,7 +30,7 @@ export default function ManagedCourses() {
     })
       .then((res) => res.json())
       .then((deletedCourse: Course) => {
-        setCourses(courses.filter((course) => course?._id !== deletedCourse?._id))
+        setCourses(courses.filter((course) => course?.id !== deletedCourse?.id))
         toast('success', 'Course deleted successfully')
       })
       .catch((err) => {
@@ -68,9 +68,9 @@ export default function ManagedCourses() {
                 </CTableRow>
               )}
               {courses.map((course) => (
-                <CTableRow key={course._id}>
+                <CTableRow key={course.id}>
                   <CTableDataCell>
-                    <Link href={`/managed-courses/${course._id}`}>{course._id}</Link>
+                    <Link href={`/managed-courses/${course.id}`}>{course.id}</Link>
                   </CTableDataCell>
                   <CTableDataCell>{course.title}</CTableDataCell>
                   <CTableDataCell>{course.description}</CTableDataCell>
@@ -79,7 +79,7 @@ export default function ManagedCourses() {
                       color="primary"
                       variant="outline"
                       size="sm"
-                      href={`/managed-courses/${course._id}/edit`}
+                      href={`/managed-courses/${course.id}/edit`}
                     >
                       Edit
                     </CButton>
@@ -87,8 +87,8 @@ export default function ManagedCourses() {
                       color="danger"
                       variant="outline"
                       size="sm"
-                      onClick={() => deleteCourse(course._id)}
-                      disabled={deletingCourse === course._id}
+                      onClick={() => deleteCourse(course.id)}
+                      disabled={deletingCourse === course.id}
                     >
                       Delete
                     </CButton>

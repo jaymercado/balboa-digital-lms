@@ -37,7 +37,7 @@ export default function CreateCourse() {
       .then((res) => res.json())
       .then((course) => {
         toast('success', 'Course created successfully')
-        router.push(`/managed-courses/${course._id}`)
+        router.push(`/managed-courses/${course.id}`)
       })
       .catch((err) => {
         toast('error', 'Error creating course')
@@ -47,7 +47,7 @@ export default function CreateCourse() {
   }
 
   const userOptions: UserOption[] = users.map((user) => ({
-    value: user._id,
+    value: user.id,
     label: user.name,
     role: user.role,
   }))

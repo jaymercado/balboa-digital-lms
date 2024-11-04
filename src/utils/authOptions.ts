@@ -1,7 +1,6 @@
 import { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import connectMongo from '@/utils/mongodb'
-import { User } from '@/models'
+import connectSupabase from '@/utils/databaseConnection'
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -14,17 +13,16 @@ const authOptions: NextAuthOptions = {
     async signIn({ user }) {
       try {
         const { email, name } = user
-        await connectMongo()
-        const userFound = await User.find({ email: email })
-        if (userFound?.length === 0) {
-          const newUser = new User({
-            email,
-            name,
-          })
-          await newUser.save()
+        const supabase = await connectSupabase()
+        if (!supabase) throw new Error('Failed to connect to Supabase')
+
+        const foundUser = await supabase.from('users').select('*').eq('email', email)
+        if (!foundUser.data?.length) {
+          await supabase.from('users').insert({ email, name })
         }
       } catch (error) {
         console.error('Error in signIn callback', error)
+        return false
       } finally {
         return true
       }
@@ -33,9 +31,10 @@ const authOptions: NextAuthOptions = {
       return baseUrl
     },
     async session({ session }) {
-      await connectMongo()
-      const foundUser = await User.findOne({ email: session?.user?.email })
-      return { ...session, user: { ...session.user, role: foundUser.role } }
+      const supabase = await connectSupabase()
+      if (!supabase) throw new Error('Failed to connect to Supabase')
+      const foundUser = await supabase.from('users').select('*').eq('email', session?.user?.email)
+      return { ...session, user: { ...session.user, role: foundUser.data?.[0].role } }
     },
     async jwt({ token }) {
       return token

@@ -20,8 +20,8 @@ export default function useGetCourses({
       url += type ? `?type=${type}` : ''
 
       const res = await fetch(url)
+      console.log(res)
       const fetchedCourses = ((await res.json()) as CourseType[]) || []
-
       setCourses(fetchedCourses)
     }
 

@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { Module } from '@/types/module'
 import { Course } from '@/types/course'
-import connectMongo from '@/utils/mongodb'
-import UserModel from '@/models/User'
-import ModuleModel from '@/models/Module'
-import CourseModel from '@/models/Course'
+import connectSupabase from '@/utils/databaseConnection'
 import { getServerSession } from 'next-auth'
 
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
@@ -16,16 +13,19 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
       return NextResponse.json({ error: 'Session not found' }, { status: 400 })
     }
 
-    await connectMongo()
-    const user = await UserModel.findOne({ email: session.user.email })
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    // TODO
+    const supabase = await connectSupabase()
+    if (!supabase) {
+      return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    const courses: Course[] = await CourseModel.findById(params.courseId).populate('modules')
-    const modules: Module[] = courses[0]?.modules || []
+    const courseModulesDB = await supabase
+      .from('modules')
+      .select('*')
+      .eq('courseId', params.courseId)
+    const courseModules = courseModulesDB.data
 
-    return NextResponse.json(modules, { status: 200 })
+    return NextResponse.json(courseModules, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
@@ -35,12 +35,16 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    await connectMongo()
-    const courseModule = await ModuleModel.create(body)
-    console.log(1234567890, courseModule, body)
-    await CourseModel.findByIdAndUpdate(body.courseId, {
-      $push: { modules: courseModule._id },
-    })
+
+    const supabase = await connectSupabase()
+    if (!supabase) {
+      return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
+    }
+
+    // TODO
+    const courseModuleDB = await supabase.from('modules').insert(body)
+    const courseModule = courseModuleDB.data
+
     return NextResponse.json(courseModule, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses (POST): ', error)
