@@ -27,12 +27,17 @@ export async function GET(req: NextRequest) {
 
     let courses: string[] = []
     if (type === 'managed') {
-      // TODO: Add instructor filter
-      const foundCourses = await supabase.from('courses').select('*')
+      // Get courses where the user is an instructor of
+      const foundCourses = await supabase
+        .from('courses')
+        .select('*, courseInstructors!inner(instructorId)')
+        .eq('courseInstructors.instructorId', user.data?.[0].id)
       courses = foundCourses.data ?? []
     } else {
-      // TODO: Add enrollee filter
-      const foundCourses = await supabase.from('courses').select('*')
+      const foundCourses = await supabase
+        .from('courses')
+        .select('*, enrollments!inner(studentId)')
+        .eq('enrollments.studentId', user.data?.[0].id)
       courses = foundCourses.data ?? []
     }
 
