@@ -63,13 +63,18 @@ export async function POST(req: NextRequest) {
 
     const requests: PostgrestFilterBuilder<any, any, null, 'courseInstructors', unknown>[] = []
     // Add enrollments
-    enrollees.forEach((studentId: string) => {
-      requests.push(supabase.from('enrollments').insert({ courseId, studentId }))
-    })
+    requests.push(
+      supabase
+        .from('enrollments')
+        .insert(enrollees.map((studentId: string) => ({ courseId, studentId }))),
+    )
+
     // Add courseInstructors
-    instructors.forEach((instructorId: string) => {
-      requests.push(supabase.from('courseInstructors').insert({ courseId, instructorId }))
-    })
+    requests.push(
+      supabase
+        .from('courseInstructors')
+        .insert(instructors.map((instructorId: string) => ({ courseId, instructorId }))),
+    )
 
     await Promise.all(requests)
 

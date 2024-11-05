@@ -13,16 +13,12 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
       return NextResponse.json({ error: 'Session not found' }, { status: 400 })
     }
 
-    // TODO
     const supabase = await connectSupabase()
     if (!supabase) {
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    const courseModulesDB = await supabase
-      .from('modules')
-      .select('*')
-      .eq('courseId', params.courseId)
+    const courseModulesDB = await supabase.from('modules').select().eq('courseId', params.courseId)
     const courseModules = courseModulesDB.data
 
     return NextResponse.json(courseModules, { status: 200 })
@@ -41,9 +37,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    // TODO
-    const courseModuleDB = await supabase.from('modules').insert(body)
-    const courseModule = courseModuleDB.data
+    const courseModuleDB = await supabase.from('modules').insert(body).select()
+    const courseModule = courseModuleDB.data?.[0]
 
     return NextResponse.json(courseModule, { status: 200 })
   } catch (error) {

@@ -9,11 +9,10 @@ export async function GET(req: NextRequest, { params }: { params: { moduleId: st
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    // TODO
-    const courseModuleDb = await supabase.from('modules').select('*').eq('id', params.moduleId)
-    const courseModule = courseModuleDb.data?.[0]
+    const courseModuleDb = await supabase.from('modules').select().eq('id', params.moduleId)
+    const courseModules = courseModuleDb.data
 
-    return NextResponse.json(courseModule, { status: 200 })
+    return NextResponse.json(courseModules, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
@@ -23,14 +22,18 @@ export async function GET(req: NextRequest, { params }: { params: { moduleId: st
 export async function PUT(req: NextRequest, { params }: { params: { moduleId: string } }) {
   try {
     const body = await req.json()
+    const { title, description, type, content } = body
 
     const supabase = await connectSupabase()
     if (!supabase) {
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    // TODO
-    const courseModuleDb = await supabase.from('modules').update(body).eq('id', params.moduleId)
+    const courseModuleDb = await supabase
+      .from('modules')
+      .update({ title, description, type, content })
+      .eq('id', params.moduleId)
+      .select()
     const courseModule = courseModuleDb.data?.[0]
 
     return NextResponse.json(courseModule, { status: 200 })
@@ -47,8 +50,11 @@ export async function DELETE(req: NextRequest, { params }: { params: { moduleId:
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    // TODO
-    const courseModuleDb = await supabase.from('modules').delete().eq('id', params.moduleId)
+    const courseModuleDb = await supabase
+      .from('modules')
+      .delete()
+      .eq('id', params.moduleId)
+      .select()
     const courseModule = courseModuleDb.data?.[0]
 
     return NextResponse.json(courseModule, { status: 200 })

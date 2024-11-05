@@ -17,8 +17,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    // TODO
-    const usersDb = await supabase.from('users').select('*')
+    const usersDb = await supabase.from('users').select()
     const users = usersDb.data
 
     return NextResponse.json(users, { status: 200 })

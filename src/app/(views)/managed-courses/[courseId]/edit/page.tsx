@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import {
   CForm,
@@ -24,6 +24,7 @@ type UserOption = {
 }
 
 export default function EditCourse() {
+  const router = useRouter()
   const params = useParams()
   const { courseId } = params as { courseId: string }
 
@@ -45,14 +46,16 @@ export default function EditCourse() {
       method: 'PUT',
       body: JSON.stringify(data),
     })
-      .then((res) => {
+      .then(() => {
+        setUpdatingCourse(false)
         toast('success', 'Course updated successfully')
+        router.push(`/managed-courses/${courseId}`)
       })
       .catch((err) => {
+        setUpdatingCourse(false)
         toast('error', 'Error updating course')
         console.error(err)
       })
-      .finally(() => setUpdatingCourse(false))
   }
 
   useEffect(() => {
