@@ -20,7 +20,7 @@ export default function Modules() {
       <thead>
         <tr>
           <th colSpan={3}>
-            <Link href={`/managed-courses/${courses[0]?._id}/modules/create`}>Create Module</Link>
+            <Link href={`/managed-courses/${courses[0]?.id}/modules/create`}>Create Module</Link>
           </th>
         </tr>
         <tr>
@@ -32,16 +32,16 @@ export default function Modules() {
       </thead>
       <tbody>
         {courses[0]?.modules.map((module) => (
-          <tr key={module._id}>
+          <tr key={module.id}>
             <td>
-              <Link href={`/managed-courses/${courses[0]?._id}/modules/${module._id}`}>
-                {module._id}
+              <Link href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}>
+                {module.id}
               </Link>
             </td>
             <td>{module.title}</td>
             <td>{module.type}</td>
             <td>
-              <Link href={`/managed-courses/${courses[0]?._id}/modules/${module._id}/edit`}>
+              <Link href={`/managed-courses/${courses[0]?.id}/modules/${module.id}/edit`}>
                 Edit
               </Link>
               <button type="button" onClick={() => {}}>

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import {
   CForm,
@@ -27,6 +27,7 @@ const typeOptions = [
 ]
 
 export default function EditModule() {
+  const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
 
@@ -48,14 +49,15 @@ export default function EditModule() {
       body: JSON.stringify({ ...data, courseId }),
     })
       .then((res) => {
-        console.log(res)
+        setUpdatingModule(false)
         toast('success', 'Module updated successfully')
+        router.push(`/managed-courses/${courseId}/modules/${moduleId}`)
       })
       .catch((err) => {
+        setUpdatingModule(false)
         toast('error', 'Error updating module')
         console.error(err)
       })
-      .finally(() => setUpdatingModule(false))
   }
 
   useEffect(() => {

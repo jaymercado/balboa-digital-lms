@@ -39,7 +39,6 @@ export default function CreateModule() {
 
   function onSubmit(data: Inputs) {
     setCreatingModule(true)
-    console.log(data)
     fetch(`/api/courses/${courseId}/modules`, {
       method: 'POST',
       body: JSON.stringify({ ...data, courseId }),
