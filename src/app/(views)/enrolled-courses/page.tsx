@@ -4,14 +4,10 @@ import React from 'react'
 import Link from 'next/link'
 import {
   CCard,
-  CCardHeader,
   CCardBody,
-  CTable,
-  CTableHead,
-  CTableRow,
-  CTableHeaderCell,
-  CTableBody,
-  CTableDataCell,
+  CCardTitle,
+  CCardText,
+  CProgress
 } from '@coreui/react-pro'
 import useGetCourses from '@/hooks/useGetCourses'
 import { Loading } from '@/components'
@@ -20,39 +16,61 @@ export default function ManagedCourses() {
   const { courses, fetchingCourses } = useGetCourses({ type: 'enrolled' })
 
   return (
-    <CCard className="mb-4">
-      <CCardHeader>Courses</CCardHeader>
-      <CCardBody>
+    <div>
+      <h2 className="mb-4 text-center">Featured Courses</h2>
+
+      <div className="d-grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', justifyContent: 'left' }}>
         {fetchingCourses ? (
           <Loading />
+        ) : courses.length === 0 ? (
+          <CCard className="mb-4" style={{ width: '100%' }}>
+            <CCardBody>No courses found</CCardBody>
+          </CCard>
         ) : (
-          <CTable>
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell>ID</CTableHeaderCell>
-                <CTableHeaderCell>Title</CTableHeaderCell>
-                <CTableHeaderCell>Description</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {courses.length === 0 && (
-                <CTableRow>
-                  <CTableDataCell colSpan={4}>No courses found</CTableDataCell>
-                </CTableRow>
-              )}
-              {courses.map((course) => (
-                <CTableRow key={course.id}>
-                  <CTableDataCell>
-                    <Link href={`/enrolled-courses/${course.id}`}>{course.id}</Link>
-                  </CTableDataCell>
-                  <CTableDataCell>{course.title}</CTableDataCell>
-                  <CTableDataCell>{course.description}</CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
+          courses.map((course) => (
+            <Link
+              key={course.id}
+              href={`/enrolled-courses/${course.id}`}
+              passHref
+              style={{ textDecoration: 'none' }} 
+            >
+              <CCard className="mb-4" style={{ width: '100%', cursor: 'pointer' }}>
+                <div
+                  style={{
+                    height: '150px',
+                    backgroundImage: 'url(https://via.placeholder.com/150)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    width: '100%',
+                  }}
+                  className="card-img-top"
+                />
+                <CCardBody>
+                  <CProgress value={course.progress || 0} max={100} style={{ position: 'relative' }}>
+                    {course.progress === 100 && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          color: 'white',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        Completed
+                      </span>
+                    )}
+                  </CProgress>
+                  <div className="mb-3" />
+                  <CCardTitle>{course.title}</CCardTitle>
+                  <CCardText>{course.description}</CCardText>
+                </CCardBody>
+              </CCard>
+            </Link>
+          ))
         )}
-      </CCardBody>
-    </CCard>
+      </div>
+    </div>
   )
 }
