@@ -37,22 +37,24 @@ export default function Module() {
   }
 
   return (
-    <div>
-      <Link href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}>Edit</Link> /
-      <button
-        type="button"
-        onClick={() => deleteModule(courseModule.id)}
-        disabled={deletingModule}
-      >
-        Delete
-      </button>
-      <section>
-        <p>ID: {courseModule.id}</p>
-        <p>Title: {courseModule.title}</p>
-        <p>Description: {courseModule.description}</p>
-        <p>Type: {courseModule.type}</p>
-        <p>Content: {courseModule.content}</p>
-      </section>
-    </div>
+    <>
+      <div>
+        <Link href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}>Edit</Link> /
+        <button
+          type="button"
+          onClick={() => deleteModule(courseModule.id)}
+          disabled={deletingModule}
+        >
+          Delete
+        </button>
+        <section>
+          <p>ID: {courseModule.id}</p>
+          <p>Title: {courseModule.title}</p>
+          <p>Description: {courseModule.description}</p>
+          <p>Type: {courseModule.type}</p>
+          <p>Content: {courseModule.content}</p>
+        </section>
+      </div>
+    </>
   )
 }
