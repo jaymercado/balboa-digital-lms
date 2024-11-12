@@ -10,33 +10,23 @@ import {
   CCardText,
   CCardTitle,
   CCol,
-  CContainer,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
   CRow,
-  CProgress,
 } from '@coreui/react-pro'
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 import { Course } from '@/types/course'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
-import { cilPlus, cilPencil, cilTrash } from '@coreui/icons'
+import { cilPlus } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
 export default function ManagedCourses() {
-  const [deletingCourse, setDeletingCourse] = useState('')
+  const [deletingCourse, setDeletingCourse] = useState(false)
   const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
   function deleteCourse(courseId: string) {
-    setDeletingCourse(courseId)
+    setDeletingCourse(true)
     fetch(`/api/courses/${courseId}`, {
       method: 'DELETE',
     })
@@ -49,7 +39,7 @@ export default function ManagedCourses() {
         console.error(err)
         toast('error', 'Error deleting course')
       })
-      .finally(() => setDeletingCourse(''))
+      .finally(() => setDeletingCourse(false))
   }
 
   return (
@@ -73,9 +63,9 @@ export default function ManagedCourses() {
           <Loading />
         ) : (
           <CRow xs={{ cols: 1 }} md={{ cols: 2 }} lg={{ cols: 4 }} className="g-3">
-            <>
-              {courses.map((course) => (
-                <>
+            {courses.length > 0 ? (
+              courses.map((course) => (
+                <div>
                   <CCol key={course.id}>
                     <CCard className="h-100">
                       <Link
@@ -89,7 +79,10 @@ export default function ManagedCourses() {
                           href={`/managed-courses/${course.id}`}
                           style={{ textDecoration: 'none', color: 'inherit' }}
                         >
-                          <CCardTitle className="text-dark-emphasis" style={{ fontSize: '1rem' }}>
+                          <CCardTitle
+                            className="text-dark-emphasis text-truncate"
+                            style={{ fontSize: '1rem' }}
+                          >
                             {course.title}
                           </CCardTitle>
                           <CCardText
@@ -108,56 +101,21 @@ export default function ManagedCourses() {
                             <small className="text-secondary d-none d-sm-inline">View Course</small>
                             <i className="bi bi-chevron-right text-secondary"></i>
                           </Link>
-                          {/* <CDropdown alignment="end">
-                      <CDropdownToggle caret={false} className="rounded">
-                        <i className="bi bi-three-dots-vertical fs-5"></i>
-                        <span className="visually-hidden">Course options</span>
-                      </CDropdownToggle>
-                      <CDropdownMenu>
-                        <CDropdownItem href={`/managed-courses/${course.id}/edit`}>
-                          <CIcon icon={cilPencil} className="me-2" />
-                          Edit
-                        </CDropdownItem>
-                        <CDropdownItem
-                          onClick={() => setIsDeleteModalVisible(true)}
-                          disabled={deletingCourse === course.id}
-                        >
-                          <CIcon icon={cilTrash} className="me-2" />
-                          Delete
-                        </CDropdownItem>
-                      </CDropdownMenu>
-                    </CDropdown> */}
                         </div>
                       </CCardBody>
                     </CCard>
                   </CCol>
-
-                  <CModal
-                    alignment="center"
+                  <ConfirmDeleteModal
                     visible={isDeleteModalVisible}
                     onClose={() => setIsDeleteModalVisible(false)}
-                  >
-                    <CModalHeader>
-                      <CModalTitle>Confirm Deletion</CModalTitle>
-                    </CModalHeader>
-                    <CModalBody>
-                      Are you sure you want to delete this course? This action cannot be undone.
-                    </CModalBody>
-                    <CModalFooter>
-                      <CButton color="secondary" onClick={() => setIsDeleteModalVisible(false)}>
-                        Cancel
-                      </CButton>
-                      <CButton
-                        color="danger"
-                        onClick={() => [deleteCourse(course.id), setIsDeleteModalVisible(false)]}
-                      >
-                        Delete
-                      </CButton>
-                    </CModalFooter>
-                  </CModal>
-                </>
-              ))}
-            </>
+                    onConfirm={() => [deleteCourse(course.id), setIsDeleteModalVisible(false)]}
+                    disabled={deletingCourse}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="text-center">No courses found</div>
+            )}
           </CRow>
         )}
       </CCardBody>

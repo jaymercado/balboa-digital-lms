@@ -80,110 +80,68 @@ export default function EditModule() {
   }
 
   return (
-    <>
-      {/* <CForm onSubmit={handleSubmit(onSubmit)}>
-        <CInputGroup>
-          <CFormLabel htmlFor="title">Title</CFormLabel>
-          <CFormInput id="title" {...register('title', { required: true })} />
-          {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
-        </CInputGroup>
-        <CInputGroup>
-          <CFormLabel htmlFor="description">Description</CFormLabel>
-          <CFormInput id="description" {...register('description', { required: true })} />
-          {errors.description && (
-            <CFormText className="text-danger">This field is required</CFormText>
-          )}
-        </CInputGroup>
+    <CForm onSubmit={handleSubmit(onSubmit)}>
+      <CCard className="p-4">
+        <CRow>
+          <CCol>
+            <CCardTitle className="mb-4 fw-semibold"> Module Details</CCardTitle>
+            <CFormLabel htmlFor="title" className="">
+              Title
+            </CFormLabel>
+            <CFormInput id="title" {...register('title', { required: true })} />
+            {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
+          </CCol>
+        </CRow>
 
-        <CInputGroup>
-          <CFormLabel htmlFor="type">Type</CFormLabel>
-          <CFormSelect id="type" {...register('type', { required: true })}>
-            {typeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </CFormSelect>
-          {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
-        </CInputGroup>
+        <CRow className="mt-3">
+          <CCol>
+            <CFormLabel htmlFor="description" className="">
+              Description
+            </CFormLabel>
+            <CFormTextarea
+              id="description"
+              {...register('description', { required: true })}
+              placeholder="Enter course description"
+            />
+            {errors.description && (
+              <CFormText className="text-danger">This field is required</CFormText>
+            )}
+          </CCol>
+        </CRow>
+        <CRow className="mt-3">
+          <CCol>
+            <CFormLabel htmlFor="type" className="">
+              Type
+            </CFormLabel>
+            <CInputGroup className="mb-3">
+              <CFormSelect id="type" {...register('type', { required: true })}>
+                {typeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </CFormSelect>
+              {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
+            </CInputGroup>
 
-        <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
+            <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
+          </CCol>
+        </CRow>
 
-        <CButton type="submit" color="primary" disabled={updatingModule}>
-          {updatingModule ? <CSpinner size="sm" /> : 'Save'}
-        </CButton>
-      </CForm> */}
-      <CForm onSubmit={handleSubmit(onSubmit)}>
-        <CCard className="p-4">
-          <CRow>
-            <CCol>
-              <CCardTitle className="mb-4 fw-semibold"> Module Details</CCardTitle>
-              <CFormLabel htmlFor="title" className="">
-                Title
-              </CFormLabel>
-              <CFormInput id="title" {...register('title', { required: true })} />
-              {errors.title && (
-                <CFormText className="text-danger">This field is required</CFormText>
-              )}
-            </CCol>
-          </CRow>
-
-          <CRow className="mt-3">
-            <CCol>
-              <CFormLabel htmlFor="description" className="">
-                Description
-              </CFormLabel>
-              <CFormTextarea
-                id="description"
-                {...register('description', { required: true })}
-                placeholder="Enter course description"
-              />
-              {errors.description && (
-                <CFormText className="text-danger">This field is required</CFormText>
-              )}
-            </CCol>
-          </CRow>
-          <CRow className="mt-3">
-            <CCol>
-              <CFormLabel htmlFor="type" className="">
-                Type
-              </CFormLabel>
-              <CInputGroup className="mb-3">
-                <CFormSelect id="type" {...register('type', { required: true })}>
-                  {typeOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </CFormSelect>
-                {errors.type && (
-                  <CFormText className="text-danger">This field is required</CFormText>
-                )}
-              </CInputGroup>
-
-              <ModuleContentInput
-                type={watch('type')}
-                value={watch('content')}
-                setValue={setValue}
-              />
-            </CCol>
-          </CRow>
-
-          <CRow className="mt-4">
-            <CCol xs={12} sm={3} md={1}>
-              <CButton
-                type="submit"
-                color="primary"
-                className="w-100 text-white"
-                disabled={updatingModule}
-              >
-                {updatingModule ? <CSpinner size="sm" /> : 'Save'}
-              </CButton>
-            </CCol>
-          </CRow>
-        </CCard>
-      </CForm>
-    </>
+        <CRow className="mt-4">
+          <CCol xs={12} sm={3} md={1}>
+            <CButton
+              type="submit"
+              color="primary"
+              className="w-100 text-white"
+              disabled={updatingModule}
+            >
+              {updatingModule ? <CSpinner size="sm" /> : 'Save'}
+            </CButton>
+          </CCol>
+        </CRow>
+      </CCard>
+    </CForm>
   )
 }
 
