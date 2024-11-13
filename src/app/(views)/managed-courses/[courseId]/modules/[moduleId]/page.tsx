@@ -1,11 +1,27 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import useGetModules from '@/hooks/useGetModules'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
+import { cilPencil, cilTrash } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
+import {
+  CRow,
+  CCol,
+  CCard,
+  CCardBody,
+  CCardTitle,
+  CButton,
+  CCardText,
+  CTab,
+  CTabContent,
+  CTabList,
+  CTabPanel,
+  CTabs,
+} from '@coreui/react-pro'
 
 export default function Module() {
   const router = useRouter()
@@ -14,6 +30,7 @@ export default function Module() {
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const courseModule = courseModules[0]
   const [deletingModule, setDeletingModule] = useState(false)
+  const [visible, setVisible] = useState(false)
 
   function deleteModule(moduleId: string) {
     setDeletingModule(true)
@@ -37,22 +54,60 @@ export default function Module() {
   }
 
   return (
-    <div>
-      <Link href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}>Edit</Link> /
-      <button
-        type="button"
-        onClick={() => deleteModule(courseModule.id)}
-        disabled={deletingModule}
-      >
-        Delete
-      </button>
-      <section>
-        <p>ID: {courseModule.id}</p>
-        <p>Title: {courseModule.title}</p>
-        <p>Description: {courseModule.description}</p>
-        <p>Type: {courseModule.type}</p>
-        <p>Content: {courseModule.content}</p>
-      </section>
-    </div>
+    <CRow>
+      <CCol>
+        <CCard className="mb-4">
+          <CCardBody>
+            <CRow>
+              <CCol>
+                <CCardTitle style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+                  {courseModule.title}
+                </CCardTitle>
+              </CCol>
+              <CCol xs="auto">
+                <CButton
+                  color="light"
+                  className="me-2"
+                  href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}
+                >
+                  <CIcon icon={cilPencil} size="sm" className="" /> Edit
+                </CButton>
+                <CButton color="danger" onClick={() => setVisible(!visible)} className="text-light">
+                  <CIcon icon={cilTrash} className="text-white" /> Delete
+                </CButton>
+              </CCol>
+            </CRow>
+            <ConfirmDeleteModal
+              visible={visible}
+              onClose={() => setVisible(false)}
+              onConfirm={() => [deleteModule(courseModule.id), setVisible(false)]}
+              disabled={deletingModule}
+            />
+            <CTabs activeItemKey={1}>
+              <CTabList variant="underline-border">
+                <CTab aria-controls="content-tab-pane" itemKey={1}>
+                  <small>Module Content</small>
+                </CTab>
+                <CTab aria-controls="description-tab-pane" itemKey={2}>
+                  <small>Description</small>
+                </CTab>
+              </CTabList>
+              <CTabContent>
+                <CTabPanel className="py-3" aria-labelledby="content-tab-pane" itemKey={1}>
+                  {courseModule.content === '<p><br></p>' ? (
+                    <CCardText>This module has no content</CCardText>
+                  ) : (
+                    <div dangerouslySetInnerHTML={{ __html: courseModule.content }}></div>
+                  )}
+                </CTabPanel>
+                <CTabPanel className="py-3" aria-labelledby="description-tab-pane" itemKey={2}>
+                  <CCardText>{courseModule.description}</CCardText>
+                </CTabPanel>
+              </CTabContent>
+            </CTabs>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   )
 }
