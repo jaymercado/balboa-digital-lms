@@ -1,5 +1,4 @@
 'use client'
-
 import React from 'react'
 import Link from 'next/link'
 import {
@@ -46,8 +45,27 @@ export default function ManagedCourses() {
                   className="card-img-top"
                 />
                 <CCardBody>
-                  <CProgress value={course.progress || 0} max={100} style={{ position: 'relative' }}>
-                    {course.progress === 100 && (
+                  <CProgress 
+                    value={100} 
+                    style={{
+                      position: 'relative', 
+                      backgroundColor: '#e9ecef',
+                      height: '20px',
+                      borderRadius: '5px',
+                    }}
+                  >
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: '#007bff',
+                        borderRadius: '5px',
+                      }}
+                    />
+                    {100 === 100 && (
                       <span
                         style={{
                           position: 'absolute',
