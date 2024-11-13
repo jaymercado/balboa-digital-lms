@@ -70,16 +70,3 @@ export default function Module() {
     </CRow>
   )
 }
-  //   <div>
-  //     <section>
-  //       <p>ID: {courseModule.id}</p>
-  //       <p>Title: {courseModule.title}</p>
-  //       <p>Description: {courseModule.description}</p>
-  //       <p>Type: {courseModule.type}</p>
-  //       <p>
-  //         <strong>Content:</strong>
-  //       </p>
-  //       <p dangerouslySetInnerHTML={{ __html: courseModule.content }} />
-  //     </section>
-  //   </div>
-  // )

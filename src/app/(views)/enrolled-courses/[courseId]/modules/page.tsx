@@ -46,9 +46,7 @@ export default function Course() {
 
   if (fetchingCourses || !course) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-        <Loading />
-      </div>
+        <Loading />     
     )
   }
 
@@ -118,7 +116,7 @@ export default function Course() {
                       >
                         {module.description}
                       </small>
-                    </Link>{' '}
+                    </Link>
                   </CTableDataCell>
                   <CTableDataCell>
                     {module.type === 'video' && <CIcon icon={cilVideo} size="sm" color="dark" />}

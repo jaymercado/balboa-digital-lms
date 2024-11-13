@@ -46,9 +46,7 @@ export default function Course() {
 
   if (fetchingCourses || !course) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
         <Loading />
-      </div>
     )
   }
 

@@ -21,9 +21,7 @@ export default function ManagedCourses() {
 
       <div className="d-grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', justifyContent: 'left' }}>
         {fetchingCourses ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
           <Loading />
-        </div>
         ) : courses.length === 0 ? (
           <CCard className="mb-4" style={{ width: '100%' }}>
             <CCardBody>No courses found</CCardBody>
