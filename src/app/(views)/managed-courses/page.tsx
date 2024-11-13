@@ -65,8 +65,8 @@ export default function ManagedCourses() {
           <CRow xs={{ cols: 1 }} md={{ cols: 2 }} lg={{ cols: 4 }} className="g-3">
             {courses.length > 0 ? (
               courses.map((course) => (
-                <div>
-                  <CCol key={course.id}>
+                <div key={course.id}>
+                  <CCol>
                     <CCard className="h-100">
                       <Link
                         href={`/managed-courses/${course.id}`}
