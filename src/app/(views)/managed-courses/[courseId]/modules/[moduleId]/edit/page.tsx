@@ -48,6 +48,11 @@ export default function EditModule() {
   } = useForm<Inputs>()
 
   function onSubmit(data: Inputs) {
+    const content = watch('content')
+    if (!content || content === '<p><br></p>' || content.trim() === '') {
+      data.content = ''
+    }
+
     setUpdatingModule(true)
     fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
       method: 'PUT',

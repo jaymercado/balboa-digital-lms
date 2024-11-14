@@ -68,35 +68,25 @@ export default function ManagedCourses() {
                 <div key={course.id}>
                   <CCol>
                     <CCard className="h-100">
-                      <Link
-                        href={`/managed-courses/${course.id}`}
-                        style={{ textDecoration: 'none' }}
-                      >
+                      <Link href={`/managed-courses/${course.id}`} className="text-decoration-none">
                         <CCardImage orientation="top" src="/images/react.jpg" alt={course.title} />
                       </Link>
                       <CCardBody className="d-flex flex-column">
                         <Link
                           href={`/managed-courses/${course.id}`}
-                          style={{ textDecoration: 'none', color: 'inherit' }}
+                          className="text-decoration-none text-body"
                         >
-                          <CCardTitle
-                            className="text-dark-emphasis text-truncate"
-                            style={{ fontSize: '1rem' }}
-                          >
+                          <CCardTitle className="text-dark-emphasis text-truncate fs-6 fw-semibold">
                             {course.title}
                           </CCardTitle>
-                          <CCardText
-                            className="text-secondary text-truncate mb-2"
-                            style={{ fontSize: '0.9rem' }}
-                          >
+                          <CCardText className="text-secondary text-truncate mb-2 fs-6">
                             {course.description}
                           </CCardText>
                         </Link>
                         <div className="d-flex justify-content-end mt-auto">
                           <Link
                             href={`/managed-courses/${course.id}`}
-                            className="me-2 d-flex align-items-center gap-1"
-                            style={{ textDecoration: 'none' }}
+                            className="me-2 d-flex align-items-center gap-1 text-decoration-none"
                           >
                             <small className="text-secondary d-none d-sm-inline">View Course</small>
                             <i className="bi bi-chevron-right text-secondary"></i>

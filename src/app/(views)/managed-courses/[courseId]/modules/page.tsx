@@ -39,7 +39,6 @@ export default function Modules() {
     fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
       method: 'DELETE',
     })
-      .then((res) => res.json())
       .then(() => {
         toast('success', 'Module deleted successfully')
         router.push(`/managed-courses/${courseId}`)
@@ -99,13 +98,10 @@ export default function Modules() {
                   <CTableDataCell>
                     <Link
                       href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}
-                      style={{ textDecoration: 'none' }}
+                      className="text-decoration-none"
                     >
                       <span className="fw-semibold">{module.title}</span>
-                      <small
-                        className="d-block text-truncate text-secondary"
-                        style={{ maxWidth: '150px' }}
-                      >
+                      <small className="d-block text-truncate text-secondary description">
                         {module.description}
                       </small>
                     </Link>

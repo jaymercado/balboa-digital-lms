@@ -60,9 +60,7 @@ export default function Module() {
           <CCardBody>
             <CRow>
               <CCol>
-                <CCardTitle style={{ fontSize: '1.5rem', fontWeight: 600 }}>
-                  {courseModule.title}
-                </CCardTitle>
+                <CCardTitle className="fw-semibold fs-4">{courseModule.title}</CCardTitle>
               </CCol>
               <CCol xs="auto">
                 <CButton
@@ -94,7 +92,7 @@ export default function Module() {
               </CTabList>
               <CTabContent>
                 <CTabPanel className="py-3" aria-labelledby="content-tab-pane" itemKey={1}>
-                  {courseModule.content === '<p><br></p>' ? (
+                  {courseModule.content === '' ? (
                     <CCardText>This module has no content</CCardText>
                   ) : (
                     <div dangerouslySetInnerHTML={{ __html: courseModule.content }}></div>

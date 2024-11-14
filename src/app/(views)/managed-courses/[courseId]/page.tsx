@@ -101,12 +101,10 @@ export default function Course() {
           <CCardBody>
             <CRow>
               <CCol>
-                <CBadge color="primary" shape="rounded-pill" className="text-normal mb-1">
+                <CBadge color="primary" shape="rounded-pill" className="text-normal mb-2">
                   Course ID: {courseId}
                 </CBadge>
-                <CCardTitle style={{ fontSize: '1.5rem', fontWeight: 600 }}>
-                  {course.title}
-                </CCardTitle>
+                <CCardTitle className="fw-semibold fs-4">{course.title}</CCardTitle>
               </CCol>
               <CCol xs="auto">
                 <CButton color="light" className="me-2" href={`/managed-courses/${course.id}/edit`}>
@@ -149,8 +147,7 @@ export default function Course() {
             <div className="fs-4 fw-bold">Modules</div>
             <Link
               href={`/managed-courses/${course.id}/modules`}
-              className="me-2"
-              style={{ textDecoration: 'none' }}
+              className="me-2 text-decoration-none"
             >
               <small className="text-secondary d-none d-sm-inline">View All Modules</small>
               <small className="text-secondary d-inline d-sm-none">View All</small>
@@ -195,16 +192,13 @@ export default function Course() {
                   <CTableDataCell>
                     <Link
                       href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}
-                      style={{ textDecoration: 'none' }}
+                      className="text-decoration-none"
                     >
                       <span className="fw-semibold">{module.title}</span>
-                      <small
-                        className="d-block text-truncate text-secondary"
-                        style={{ maxWidth: '150px' }}
-                      >
+                      <small className="d-block text-truncate text-secondary description">
                         {module.description}
                       </small>
-                    </Link>{' '}
+                    </Link>
                   </CTableDataCell>
                   <CTableDataCell>
                     {module.type === 'video' && <CIcon icon={cilVideo} size="sm" color="dark" />}
