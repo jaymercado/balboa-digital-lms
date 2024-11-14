@@ -30,7 +30,7 @@ export default function Module() {
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const courseModule = courseModules[0]
   const [deletingModule, setDeletingModule] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
   function deleteModule(moduleId: string) {
     setDeletingModule(true)
@@ -70,15 +70,19 @@ export default function Module() {
                 >
                   <CIcon icon={cilPencil} size="sm" className="" /> Edit
                 </CButton>
-                <CButton color="danger" onClick={() => setVisible(!visible)} className="text-light">
+                <CButton
+                  color="danger"
+                  onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
+                  className="text-light"
+                >
                   <CIcon icon={cilTrash} className="text-white" /> Delete
                 </CButton>
               </CCol>
             </CRow>
             <ConfirmDeleteModal
-              visible={visible}
-              onClose={() => setVisible(false)}
-              onConfirm={() => [deleteModule(courseModule.id), setVisible(false)]}
+              visible={showDeleteModuleModal}
+              onClose={() => setShowDeleteModuleModal(false)}
+              onConfirm={() => [deleteModule(courseModule.id), setShowDeleteModuleModal(false)]}
               disabled={deletingModule}
             />
             <CTabs activeItemKey={1}>

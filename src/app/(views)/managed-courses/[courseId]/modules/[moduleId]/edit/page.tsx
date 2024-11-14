@@ -35,7 +35,6 @@ export default function EditModule() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 

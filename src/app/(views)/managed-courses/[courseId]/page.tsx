@@ -48,7 +48,8 @@ export default function Course() {
   const course = courses[0]
   const [deletingCourse, setDeletingCourse] = useState(false)
   const [deletingModule, setDeletingModule] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [showDeleteCourseModal, setShowDeleteCourseModal] = useState(false)
+  const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
   function deleteCourse(courseId: string) {
     setDeletingCourse(true)
@@ -110,15 +111,19 @@ export default function Course() {
                 <CButton color="light" className="me-2" href={`/managed-courses/${course.id}/edit`}>
                   <CIcon icon={cilPencil} size="sm" className="" /> Edit
                 </CButton>
-                <CButton color="danger" onClick={() => setVisible(!visible)} className="text-light">
+                <CButton
+                  color="danger"
+                  onClick={() => setShowDeleteCourseModal((prevState) => !prevState)}
+                  className="text-light"
+                >
                   <CIcon icon={cilTrash} className="text-white" /> Delete
                 </CButton>
               </CCol>
             </CRow>
             <ConfirmDeleteModal
-              visible={visible}
-              onClose={() => setVisible(false)}
-              onConfirm={() => [deleteCourse(course.id), setVisible(false)]}
+              visible={showDeleteCourseModal}
+              onClose={() => setShowDeleteCourseModal(false)}
+              onConfirm={() => [deleteCourse(course.id), setShowDeleteCourseModal(false)]}
               disabled={deletingCourse}
             />
             <CCardText className="text-secondary">{course.description}</CCardText>
@@ -222,16 +227,19 @@ export default function Course() {
                           <small>Edit</small>
                         </CDropdownItem>
                         <CDropdownItem
-                          onClick={() => setVisible(!visible)}
+                          onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
                           disabled={deletingModule}
                         >
                           <CIcon icon={cilTrash} className="me-1" />
                           <small>Delete</small>
                         </CDropdownItem>
                         <ConfirmDeleteModal
-                          visible={visible}
-                          onClose={() => setVisible(false)}
-                          onConfirm={() => [deleteModule(module.id), setVisible(false)]}
+                          visible={showDeleteModuleModal}
+                          onClose={() => setShowDeleteModuleModal(false)}
+                          onConfirm={() => [
+                            deleteModule(module.id),
+                            setShowDeleteModuleModal(false),
+                          ]}
                           disabled={deletingModule}
                         />
                       </CDropdownMenu>

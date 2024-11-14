@@ -27,7 +27,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   body = 'Are you sure you want to delete this item? This action cannot be undone.',
 }) => {
   return (
-    <CModal alignment="center" visible={visible} onClose={onClose}>
+    <CModal alignment="center" visible={visible} onClose={onClose} backdrop="static">
       <CModalHeader closeButton>
         <CModalTitle>{title}</CModalTitle>
       </CModalHeader>

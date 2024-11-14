@@ -32,7 +32,7 @@ export default function Modules() {
   const { courses, fetchingCourses } = useGetCourses({ courseId })
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const [deletingModule, setDeletingModule] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
   function deleteModule(moduleId: string) {
     setDeletingModule(true)
@@ -128,16 +128,19 @@ export default function Modules() {
                           <small>Edit</small>
                         </CDropdownItem>
                         <CDropdownItem
-                          onClick={() => setVisible(!visible)}
+                          onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
                           disabled={deletingModule}
                         >
                           <CIcon icon={cilTrash} className="me-1" />
                           <small>Delete</small>
                         </CDropdownItem>
                         <ConfirmDeleteModal
-                          visible={visible}
-                          onClose={() => setVisible(false)}
-                          onConfirm={() => [deleteModule(module.id), setVisible(false)]}
+                          visible={showDeleteModuleModal}
+                          onClose={() => setShowDeleteModuleModal(false)}
+                          onConfirm={() => [
+                            deleteModule(module.id),
+                            setShowDeleteModuleModal(false),
+                          ]}
                           disabled={deletingModule}
                         />
                       </CDropdownMenu>
