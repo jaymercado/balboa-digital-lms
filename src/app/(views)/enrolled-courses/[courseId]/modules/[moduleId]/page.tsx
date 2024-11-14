@@ -32,16 +32,21 @@ export default function Module() {
     return <Loading />
   }
 
+  const currentModuleIndex = courseModules.findIndex(module => module.id === moduleId)
+
+  const previousModule = courseModules[currentModuleIndex - 1]
+  const nextModule = courseModules[currentModuleIndex + 1]
+
   return (
- <CRow>
+    <CRow>
       <CCol>
         <CCard className="mb-4">
           <CCardBody>
-              <CCol>
-                <CCardTitle style={{ fontSize: '1.5rem', fontWeight: 600 }}>
-                  {courseModule.title}
-                </CCardTitle>
-              </CCol>
+            <CCol>
+              <CCardTitle style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+                {courseModule.title}
+              </CCardTitle>
+            </CCol>
             <CTabs activeItemKey={1}>
               <CTabList variant="underline-border">
                 <CTab aria-controls="content-tab-pane" itemKey={1}>
@@ -67,6 +72,34 @@ export default function Module() {
           </CCardBody>
         </CCard>
       </CCol>
+
+      <CRow className="mt-1">
+        <CCol className="d-flex justify-content-start">
+          {previousModule && (
+            <CButton
+              color="primary"
+              shape="rounded-pill"
+              onClick={() => router.push(`/enrolled-courses/${courseId}/modules/${previousModule.id}`)}
+              className="px-4 py-2 mb-3"
+            >
+              Back
+            </CButton>
+          )}
+        </CCol>
+
+        <CCol className="d-flex justify-content-end">
+          {nextModule && (
+            <CButton
+              color="primary"
+              shape="rounded-pill"
+              onClick={() => router.push(`/enrolled-courses/${courseId}/modules/${nextModule.id}`)}
+              className="px-4 py-2 mb-3"
+            >
+              Next Module
+            </CButton>
+          )}
+        </CCol>
+      </CRow>
     </CRow>
   )
 }
