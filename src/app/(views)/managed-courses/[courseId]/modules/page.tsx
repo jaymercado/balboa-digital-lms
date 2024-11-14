@@ -59,10 +59,10 @@ export default function Modules() {
       <CCol>
         <div className="d-flex justify-content-end align-items-center mb-4">
           <CButton
-            color="dark"
-            className="text-white"
+            color="primary"
             as="a"
             href={`/managed-courses/${courses[0]?.id}/modules/create`}
+            className="fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />
             Create Module

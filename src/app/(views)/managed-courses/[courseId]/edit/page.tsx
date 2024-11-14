@@ -25,6 +25,7 @@ type UserOption = {
   label: string
   role: 'user' | 'instructor' | 'admin'
 }
+import CancelButton from '@/components/CancelButton'
 
 export default function EditCourse() {
   const router = useRouter()
@@ -175,13 +176,9 @@ export default function EditCourse() {
         </CRow>
 
         <CRow className="mt-4">
-          <CCol xs={12} sm={3} md={1}>
-            <CButton
-              type="submit"
-              color="primary"
-              className="w-100 text-white"
-              disabled={updatingCourse}
-            >
+          <CCol className="d-flex gap-2">
+            <CancelButton />
+            <CButton type="submit" color="primary" className="text-white" disabled={updatingCourse}>
               {updatingCourse ? <CSpinner size="sm" /> : 'Save'}
             </CButton>
           </CCol>

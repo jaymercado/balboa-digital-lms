@@ -161,7 +161,12 @@ export default function Course() {
           </CCol>
 
           <CCol xs="auto">
-            <CButton as="a" color="dark" href={`/managed-courses/${course.id}/modules/create`}>
+            <CButton
+              as="a"
+              color="primary"
+              href={`/managed-courses/${course.id}/modules/create`}
+              className="fw-semibold"
+            >
               <CIcon icon={cilPlus} size="sm" className="me-2" />
               <small className="d-none d-sm-inline">Create Module</small>
               <small className="d-inline d-sm-none">Create</small>

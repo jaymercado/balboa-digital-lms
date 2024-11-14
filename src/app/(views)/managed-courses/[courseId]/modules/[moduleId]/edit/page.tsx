@@ -22,6 +22,7 @@ import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
 import Loading from '@/components/Loading'
 import useGetModules from '@/hooks/useGetModules'
+import CancelButton from '@/components/CancelButton'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -127,13 +128,9 @@ export default function EditModule() {
         </CRow>
 
         <CRow className="mt-4">
-          <CCol xs={12} sm={3} md={1}>
-            <CButton
-              type="submit"
-              color="primary"
-              className="w-100 text-white"
-              disabled={updatingModule}
-            >
+          <CCol className="d-flex gap-2">
+            <CancelButton />
+            <CButton type="submit" color="primary" className="text-white" disabled={updatingModule}>
               {updatingModule ? <CSpinner size="sm" /> : 'Save'}
             </CButton>
           </CCol>

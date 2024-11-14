@@ -20,6 +20,7 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
+import CancelButton from '@/components/CancelButton'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -108,13 +109,9 @@ export default function CreateModule() {
         </CRow>
 
         <CRow className="mt-4">
-          <CCol xs={12} sm={1}>
-            <CButton
-              type="submit"
-              color="primary"
-              className="w-100 text-white"
-              disabled={creatingModule}
-            >
+          <CCol className="d-flex gap-2">
+            <CancelButton />
+            <CButton type="submit" color="primary" className="text-white" disabled={creatingModule}>
               {creatingModule ? <CSpinner size="sm" /> : 'Save'}
             </CButton>
           </CCol>

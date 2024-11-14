@@ -52,7 +52,7 @@ export default function ManagedCourses() {
             color="primary"
             href="/managed-courses/create"
             disabled={courses.length <= 0}
-            className="bg-primary-emphasis text-primary-emphasis fw-semibold"
+            className="bg-primary-emphasis fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />
             <span className="d-none d-sm-inline">Create Course</span>
