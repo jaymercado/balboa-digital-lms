@@ -39,7 +39,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
 
         <CButton color="danger" onClick={onConfirm} disabled={disabled}>
           {disabled ? (
-            <CSpinner color="light" size="sm" className="" />
+            <CSpinner color="light" size="sm" />
           ) : (
             <span className="text-light">Delete</span>
           )}
