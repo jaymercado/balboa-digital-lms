@@ -109,7 +109,7 @@ export default function Course() {
               </CCol>
               <CCol xs="auto">
                 <CButton color="light" className="me-2" href={`/managed-courses/${course.id}/edit`}>
-                  <CIcon icon={cilPencil} size="sm" className="" /> Edit
+                  <CIcon icon={cilPencil} size="sm" /> Edit
                 </CButton>
                 <CButton
                   color="danger"

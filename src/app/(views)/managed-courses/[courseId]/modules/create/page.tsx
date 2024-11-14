@@ -70,9 +70,7 @@ export default function CreateModule() {
         <CRow>
           <CCol>
             <CCardTitle className="mb-4 fw-semibold"> Module Details</CCardTitle>
-            <CFormLabel htmlFor="title" className="">
-              Title
-            </CFormLabel>
+            <CFormLabel htmlFor="title">Title</CFormLabel>
             <CFormInput id="title" {...register('title', { required: true })} />
             {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
           </CCol>
@@ -80,9 +78,7 @@ export default function CreateModule() {
 
         <CRow className="mt-3">
           <CCol>
-            <CFormLabel htmlFor="description" className="">
-              Description
-            </CFormLabel>
+            <CFormLabel htmlFor="description">Description</CFormLabel>
             <CFormTextarea
               id="description"
               {...register('description', { required: true })}
@@ -95,9 +91,7 @@ export default function CreateModule() {
         </CRow>
         <CRow className="mt-3">
           <CCol>
-            <CFormLabel htmlFor="type" className="">
-              Type
-            </CFormLabel>
+            <CFormLabel htmlFor="type">Type</CFormLabel>
             <CInputGroup className="mb-3">
               <CFormSelect id="type" {...register('type', { required: true })}>
                 {typeOptions.map((option) => (

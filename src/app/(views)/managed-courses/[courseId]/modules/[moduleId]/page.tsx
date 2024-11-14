@@ -68,7 +68,7 @@ export default function Module() {
                   className="me-2"
                   href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}
                 >
-                  <CIcon icon={cilPencil} size="sm" className="" /> Edit
+                  <CIcon icon={cilPencil} size="sm" /> Edit
                 </CButton>
                 <CButton
                   color="danger"

@@ -92,9 +92,7 @@ export default function EditCourse() {
       <CForm onSubmit={handleSubmit(onSubmit)}>
         <CRow>
           <CCol>
-            <CFormLabel htmlFor="title" className="">
-              Title
-            </CFormLabel>
+            <CFormLabel htmlFor="title">Title</CFormLabel>
             <CFormInput id="title" {...register('title', { required: true })} />
             {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
           </CCol>
@@ -102,9 +100,7 @@ export default function EditCourse() {
 
         <CRow className="mt-3">
           <CCol>
-            <CFormLabel htmlFor="description" className="">
-              Description
-            </CFormLabel>
+            <CFormLabel htmlFor="description">Description</CFormLabel>
             <CFormTextarea
               id="description"
               {...register('description', { required: true })}
@@ -117,9 +113,7 @@ export default function EditCourse() {
         </CRow>
         <CRow className="mt-3">
           <CCol>
-            <CFormLabel htmlFor="enrollees" className="">
-              Enrollees
-            </CFormLabel>
+            <CFormLabel htmlFor="enrollees">Enrollees</CFormLabel>
             {fetchingUsers ? (
               <CRow className="d-flex justify-content-center align-items-center">
                 <CSpinner color="primary" />
@@ -150,9 +144,7 @@ export default function EditCourse() {
         </CRow>
         <CRow className="mt-3">
           <CCol>
-            <CFormLabel htmlFor="instructors" className="">
-              Instructors
-            </CFormLabel>
+            <CFormLabel htmlFor="instructors">Instructors</CFormLabel>
             {fetchingUsers ? (
               <CRow className="d-flex justify-content-center align-items-center">
                 <CSpinner color="primary" />
