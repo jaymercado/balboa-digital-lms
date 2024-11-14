@@ -17,3 +17,9 @@
 
 // If you want to add custom CSS you can put it here
 @import "custom";
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+  }
