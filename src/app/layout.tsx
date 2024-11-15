@@ -8,9 +8,11 @@ import store from './../store'
 import { SessionProvider } from 'next-auth/react'
 import 'react-quill/dist/quill.snow.css'
 import './../styles/style.scss'
-import { Poppins } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import { Inter } from 'next/font/google'
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 })
@@ -35,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body>
+      <body className={inter.className}>
         <SessionProvider>
           <ToastContainer />
           <Provider store={store}>{children}</Provider>

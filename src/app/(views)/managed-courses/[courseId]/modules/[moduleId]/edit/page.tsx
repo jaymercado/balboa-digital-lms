@@ -11,7 +11,12 @@ import {
   CButton,
   CSpinner,
   CFormText,
+  CRow,
+  CCol,
+  CFormTextarea,
+  CCard,
   CFormSelect,
+  CCardTitle,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
@@ -30,7 +35,6 @@ export default function EditModule() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 
@@ -43,6 +47,11 @@ export default function EditModule() {
   } = useForm<Inputs>()
 
   function onSubmit(data: Inputs) {
+    const content = watch('content')
+    if (!content || content === '<p><br></p>' || content.trim() === '') {
+      data.content = ''
+    }
+
     setUpdatingModule(true)
     fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
       method: 'PUT',
@@ -76,36 +85,58 @@ export default function EditModule() {
 
   return (
     <CForm onSubmit={handleSubmit(onSubmit)}>
-      <CInputGroup>
-        <CFormLabel htmlFor="title">Title</CFormLabel>
-        <CFormInput id="title" {...register('title', { required: true })} />
-        {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
-      </CInputGroup>
-      <CInputGroup>
-        <CFormLabel htmlFor="description">Description</CFormLabel>
-        <CFormInput id="description" {...register('description', { required: true })} />
-        {errors.description && (
-          <CFormText className="text-danger">This field is required</CFormText>
-        )}
-      </CInputGroup>
+      <CCard className="p-4">
+        <CRow>
+          <CCol>
+            <CCardTitle className="mb-4 fw-semibold"> Module Details</CCardTitle>
+            <CFormLabel htmlFor="title">Title</CFormLabel>
+            <CFormInput id="title" {...register('title', { required: true })} />
+            {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
+          </CCol>
+        </CRow>
 
-      <CInputGroup>
-        <CFormLabel htmlFor="type">Type</CFormLabel>
-        <CFormSelect id="type" {...register('type', { required: true })}>
-          {typeOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </CFormSelect>
-        {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
-      </CInputGroup>
+        <CRow className="mt-3">
+          <CCol>
+            <CFormLabel htmlFor="description">Description</CFormLabel>
+            <CFormTextarea
+              id="description"
+              {...register('description', { required: true })}
+              placeholder="Enter course description"
+            />
+            {errors.description && (
+              <CFormText className="text-danger">This field is required</CFormText>
+            )}
+          </CCol>
+        </CRow>
+        <CRow className="mt-3">
+          <CCol>
+            <CFormLabel htmlFor="type">Type</CFormLabel>
+            <CInputGroup className="mb-3">
+              <CFormSelect id="type" {...register('type', { required: true })}>
+                {typeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </CFormSelect>
+              {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
+            </CInputGroup>
 
-      <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
+            <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
+          </CCol>
+        </CRow>
 
-      <CButton type="submit" color="primary" disabled={updatingModule}>
-        {updatingModule ? <CSpinner size="sm" /> : 'Save'}
-      </CButton>
+        <CRow className="mt-4">
+          <CCol className="d-flex gap-2">
+            <CButton color="light" onClick={() => router.back()}>
+              Cancel
+            </CButton>
+            <CButton type="submit" color="primary" className="text-white" disabled={updatingModule}>
+              {updatingModule ? <CSpinner size="sm" /> : 'Save'}
+            </CButton>
+          </CCol>
+        </CRow>
+      </CCard>
     </CForm>
   )
 }

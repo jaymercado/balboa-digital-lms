@@ -5,18 +5,22 @@ import { useParams, useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import {
   CForm,
-  CInputGroup,
   CFormLabel,
   CFormInput,
   CButton,
   CSpinner,
   CFormText,
+  CCol,
+  CFormTextarea,
+  CRow,
+  CCard,
 } from '@coreui/react-pro'
 import Select, { MultiValue } from 'react-select'
 import useGetUsers from '@/hooks/useGetUsers'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
+
 type UserOption = {
   value: string
   label: string
@@ -85,79 +89,104 @@ export default function EditCourse() {
   }))
 
   return (
-    <CForm onSubmit={handleSubmit(onSubmit)}>
-      <CInputGroup>
-        <CFormLabel htmlFor="title">Title</CFormLabel>
-        <CFormInput id="title" {...register('title', { required: true })} />
-        {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
-      </CInputGroup>
+    <CCard className="p-4">
+      <CForm onSubmit={handleSubmit(onSubmit)}>
+        <CRow>
+          <CCol>
+            <CFormLabel htmlFor="title">Title</CFormLabel>
+            <CFormInput id="title" {...register('title', { required: true })} />
+            {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
+          </CCol>
+        </CRow>
 
-      <CInputGroup>
-        <CFormLabel htmlFor="description">Description</CFormLabel>
-        <CFormInput id="description" {...register('description', { required: true })} />
-        {errors.description && (
-          <CFormText className="text-danger">This field is required</CFormText>
-        )}
-      </CInputGroup>
-
-      <CInputGroup>
-        <CFormLabel htmlFor="enrollees">Enrollees</CFormLabel>
-        {fetchingUsers ? (
-          <CSpinner color="primary" />
-        ) : (
-          <Controller
-            name="enrollees"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <Select
-                id="enrollees"
-                isMulti
-                options={userOptions}
-                onChange={(selectedOptions: MultiValue<UserOption>) => {
-                  field.onChange(selectedOptions.map((option) => option.value))
-                }}
-                onBlur={field.onBlur}
-                value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+        <CRow className="mt-3">
+          <CCol>
+            <CFormLabel htmlFor="description">Description</CFormLabel>
+            <CFormTextarea
+              id="description"
+              {...register('description', { required: true })}
+              placeholder="Enter course description"
+            />
+            {errors.description && (
+              <CFormText className="text-danger">This field is required</CFormText>
+            )}
+          </CCol>
+        </CRow>
+        <CRow className="mt-3">
+          <CCol>
+            <CFormLabel htmlFor="enrollees">Enrollees</CFormLabel>
+            {fetchingUsers ? (
+              <CRow className="d-flex justify-content-center align-items-center">
+                <CSpinner color="primary" />
+              </CRow>
+            ) : (
+              <Controller
+                name="enrollees"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select
+                    id="enrollees"
+                    isMulti
+                    options={userOptions}
+                    onChange={(selectedOptions: MultiValue<UserOption>) => {
+                      field.onChange(selectedOptions.map((option) => option.value))
+                    }}
+                    onBlur={field.onBlur}
+                    value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+                  />
+                )}
               />
             )}
-          />
-        )}
-        {errors.enrollees && <CFormText className="text-danger">This field is required</CFormText>}
-      </CInputGroup>
-
-      <CInputGroup>
-        <CFormLabel htmlFor="instructors">Instructors</CFormLabel>
-        {fetchingUsers ? (
-          <CSpinner color="primary" />
-        ) : (
-          <Controller
-            name="instructors"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <Select
-                id="instructors"
-                isMulti
-                options={userOptions.filter((user) => user.role === 'instructor')}
-                onChange={(selectedOptions: MultiValue<UserOption>) => {
-                  field.onChange(selectedOptions.map((option) => option.value))
-                }}
-                onBlur={field.onBlur}
-                value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+            {errors.enrollees && (
+              <CFormText className="text-danger">This field is required</CFormText>
+            )}
+          </CCol>
+        </CRow>
+        <CRow className="mt-3">
+          <CCol>
+            <CFormLabel htmlFor="instructors">Instructors</CFormLabel>
+            {fetchingUsers ? (
+              <CRow className="d-flex justify-content-center align-items-center">
+                <CSpinner color="primary" />
+              </CRow>
+            ) : (
+              <Controller
+                name="instructors"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select
+                    id="instructors"
+                    isMulti
+                    options={userOptions.filter((user) => user.role === 'instructor')}
+                    onChange={(selectedOptions: MultiValue<UserOption>) => {
+                      field.onChange(selectedOptions.map((option) => option.value))
+                    }}
+                    onBlur={field.onBlur}
+                    value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+                  />
+                )}
               />
             )}
-          />
-        )}
-        {errors.instructors && (
-          <CFormText className="text-danger">This field is required</CFormText>
-        )}
-      </CInputGroup>
+            {errors.instructors && (
+              <CFormText className="text-danger">This field is required</CFormText>
+            )}
+          </CCol>
+        </CRow>
 
-      <CButton type="submit" color="primary" disabled={updatingCourse}>
-        {updatingCourse ? <CSpinner size="sm" /> : 'Save'}
-      </CButton>
-    </CForm>
+        <CRow className="mt-4">
+          <CCol className="d-flex gap-2">
+            <CButton color="light" onClick={() => router.back()}>
+              Cancel
+            </CButton>
+            <CButton type="submit" color="primary" className="text-white" disabled={updatingCourse}>
+              {updatingCourse ? <CSpinner size="sm" /> : 'Save'}
+            </CButton>
+          </CCol>
+        </CRow>
+      </CForm>
+    </CCard>
   )
 }
 
