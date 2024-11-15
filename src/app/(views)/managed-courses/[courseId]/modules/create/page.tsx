@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import {
   CForm,
@@ -28,6 +29,8 @@ export default function CreateModule() {
   const router = useRouter()
   const { courseId } = useParams()
   const [creatingModule, setCreatingModule] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
+  const [fileExtension, setFileExtension] = useState<string>('')
 
   const {
     register,
@@ -39,13 +42,31 @@ export default function CreateModule() {
 
   function onSubmit(data: Inputs) {
     setCreatingModule(true)
-    fetch(`/api/courses/${courseId}/modules`, {
-      method: 'POST',
-      body: JSON.stringify({ ...data, courseId }),
-    })
-      .then(() => {
-        toast('success', 'Module created successfully')
-        router.push(`/managed-courses/${courseId}`)
+
+    const formData = new FormData()
+    formData.append('title', data.title)
+    formData.append('description', data.description)
+    formData.append('type', data.type)
+    formData.append('content', data.content)
+    if (file && ['video', 'image', 'pdf'].includes(data.type)) {
+      formData.append('file', file)
+      formData.append('fileExtension', fileExtension)
+    }
+    formData.append('courseId', courseId as string)
+
+    axios
+      .post(`/api/courses/${courseId}/modules`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          toast('success', 'Module created successfully')
+          router.push(`/managed-courses/${courseId}`)
+        } else {
+          throw new Error('Failed to create module')
+        }
       })
       .catch((err) => {
         toast('error', 'Error creating module')
@@ -81,7 +102,13 @@ export default function CreateModule() {
         {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
       </CInputGroup>
 
-      <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
+      <ModuleContentInput
+        type={watch('type')}
+        value={watch('content')}
+        setValue={setValue}
+        setFile={setFile}
+        setFileExtension={setFileExtension}
+      />
 
       <CButton type="submit" color="primary" disabled={creatingModule}>
         {creatingModule ? <CSpinner size="sm" /> : 'Save'}

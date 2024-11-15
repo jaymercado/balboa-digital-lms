@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { useState } from 'react'
@@ -39,11 +40,7 @@ export default function Module() {
   return (
     <div>
       <Link href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}>Edit</Link> /
-      <button
-        type="button"
-        onClick={() => deleteModule(courseModule.id)}
-        disabled={deletingModule}
-      >
+      <button type="button" onClick={() => deleteModule(courseModule.id)} disabled={deletingModule}>
         Delete
       </button>
       <section>
@@ -51,7 +48,16 @@ export default function Module() {
         <p>Title: {courseModule.title}</p>
         <p>Description: {courseModule.description}</p>
         <p>Type: {courseModule.type}</p>
-        <p>Content: {courseModule.content}</p>
+        <p>
+          Content:
+          {courseModule.type === 'video' && <video src={courseModule.content} controls />}
+          {courseModule.type === 'image' && <img src={courseModule.content} alt="Module image" />}
+          {courseModule.type === 'pdf' && (
+            <a href={courseModule.content} target="_blank">
+              View PDF
+            </a>
+          )}
+        </p>
       </section>
     </div>
   )
