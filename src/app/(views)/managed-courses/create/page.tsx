@@ -19,7 +19,6 @@ import {
 import Select, { MultiValue } from 'react-select'
 import useGetUsers from '@/hooks/useGetUsers'
 import toast from '@/utils/toast'
-import CancelButton from '@/components/CancelButton'
 
 export default function CreateCourse() {
   const router = useRouter()
@@ -146,7 +145,9 @@ export default function CreateCourse() {
 
         <CRow className="mt-4">
           <CCol className="d-flex gap-2">
-            <CancelButton />
+            <CButton color="light" onClick={() => router.back()}>
+              Cancel
+            </CButton>
             <CButton type="submit" color="primary" className="text-white" disabled={creatingCourse}>
               {creatingCourse ? <CSpinner size="sm" /> : 'Save'}
             </CButton>

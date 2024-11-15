@@ -20,12 +20,12 @@ import useGetUsers from '@/hooks/useGetUsers'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
+
 type UserOption = {
   value: string
   label: string
   role: 'user' | 'instructor' | 'admin'
 }
-import CancelButton from '@/components/CancelButton'
 
 export default function EditCourse() {
   const router = useRouter()
@@ -177,7 +177,9 @@ export default function EditCourse() {
 
         <CRow className="mt-4">
           <CCol className="d-flex gap-2">
-            <CancelButton />
+            <CButton color="light" onClick={() => router.back()}>
+              Cancel
+            </CButton>
             <CButton type="submit" color="primary" className="text-white" disabled={updatingCourse}>
               {updatingCourse ? <CSpinner size="sm" /> : 'Save'}
             </CButton>
