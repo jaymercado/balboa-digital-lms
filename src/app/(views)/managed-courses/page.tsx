@@ -19,11 +19,32 @@ import toast from '@/utils/toast'
 import { Loading } from '@/components'
 import { cilPlus } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import ReactPaginate from 'react-paginate'
 
 export default function ManagedCourses() {
   const [deletingCourse, setDeletingCourse] = useState(false)
-  const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
+  const [fetchingCourses, setFetchingCourses] = useState(false)
+  // const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
+
+  const itemsPerPage = 8
+  const [currentPage, setCurrentPage] = useState(0)
+
+  const dummyCourses = Array.from({ length: 50 }, (_, index) => ({
+    id: `course-${index + 1}`,
+    title: `Course Title ${index + 1}`,
+    description: `This is a description for course ${index + 1}.`,
+    image: '/images/react.jpg',
+  }))
+
+  const [courses, setCourses] = useState(dummyCourses)
+
+  const handlePageClick = (selectedPage: { selected: React.SetStateAction<number> }) => {
+    setCurrentPage(selectedPage.selected)
+  }
+
+  const offset = currentPage * itemsPerPage
+  const paginatedData = courses.slice(offset, offset + itemsPerPage)
 
   function deleteCourse(courseId: string) {
     setDeletingCourse(true)
@@ -43,7 +64,7 @@ export default function ManagedCourses() {
   }
 
   return (
-    <CCard className="h-100 mb-4">
+    <CCard className="h-100">
       <CCardBody>
         <CCardTitle className="d-flex justify-content-between align-items-center fw-bold mb-3">
           <span className="d-none d-sm-inline">Your Managed Courses ({courses.length})</span>
@@ -62,9 +83,9 @@ export default function ManagedCourses() {
         {fetchingCourses ? (
           <Loading />
         ) : (
-          <CRow xs={{ cols: 1 }} md={{ cols: 2 }} lg={{ cols: 4 }} className="g-3">
-            {courses.length > 0 ? (
-              courses.map((course) => (
+          <CRow xs={{ cols: 1 }} md={{ cols: 2 }} lg={{ cols: 4 }} className="g-3 mb-3">
+            {paginatedData.length > 0 ? (
+              paginatedData.map((course) => (
                 <div key={course.id}>
                   <CCol>
                     <CCard className="h-100">
@@ -108,6 +129,31 @@ export default function ManagedCourses() {
             )}
           </CRow>
         )}
+        <div className="d-flex align-items-center justify-content-end">
+          <small className="text-secondary me-2 page-number">
+            Page {currentPage + 1} of {Math.ceil(courses.length / itemsPerPage)}
+          </small>
+
+          <ReactPaginate
+            pageCount={Math.ceil(courses.length / itemsPerPage)}
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={2}
+            marginPagesDisplayed={1}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
+            previousLabel={'‹'}
+            nextLabel={'›'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-move'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-move'}
+            nextLinkClassName={'page-link'}
+            breakLabel={'...'}
+            breakClassName={'page-item'}
+            breakLinkClassName={'page-link'}
+          />
+        </div>
       </CCardBody>
     </CCard>
   )

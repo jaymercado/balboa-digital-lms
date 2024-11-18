@@ -8,7 +8,6 @@ import store from './../store'
 import { SessionProvider } from 'next-auth/react'
 import 'react-quill/dist/quill.snow.css'
 import './../styles/style.scss'
-import { GeistSans } from 'geist/font/sans'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import { Inter } from 'next/font/google'
 
