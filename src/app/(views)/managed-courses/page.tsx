@@ -23,21 +23,11 @@ import ReactPaginate from 'react-paginate'
 
 export default function ManagedCourses() {
   const [deletingCourse, setDeletingCourse] = useState(false)
-  const [fetchingCourses, setFetchingCourses] = useState(false)
-  // const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
+  const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
   const itemsPerPage = 8
   const [currentPage, setCurrentPage] = useState(0)
-
-  const dummyCourses = Array.from({ length: 100 }, (_, index) => ({
-    id: `course-${index + 1}`,
-    title: `Course Title ${index + 1}`,
-    description: `This is a description for course ${index + 1}.`,
-    image: '/images/react.jpg',
-  }))
-
-  const [courses, setCourses] = useState(dummyCourses)
 
   const handlePageClick = (selectedPage: { selected: React.SetStateAction<number> }) => {
     setCurrentPage(selectedPage.selected)
