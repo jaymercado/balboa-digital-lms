@@ -41,8 +41,6 @@ const Nav = () => {
     setUpProviders()
   }, [])
 
-  console.log('providers', providers)
-
   return (
     <nav className={`navbar navbar-expand-lg px-2 py-2 ${poppins.className} border-bottom`}>
       <div></div>
