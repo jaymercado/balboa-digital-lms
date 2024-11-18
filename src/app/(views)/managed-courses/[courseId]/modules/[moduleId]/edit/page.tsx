@@ -77,17 +77,33 @@ export default function EditModule() {
       })
       .then((res) => {
         if (res.status === 200) {
-          toast('success', 'Module updated successfully')
-          window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
+          const { awsS3UploadUrl } = res.data
+          if (awsS3UploadUrl) {
+            fetch(awsS3UploadUrl, {
+              method: 'PUT',
+              body: file,
+              headers: {
+                'Content-Type': fileExtension,
+              },
+            }).then(() => {
+              setUpdatingModule(false)
+              toast('success', 'Module updated successfully')
+              window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
+            })
+          } else {
+            setUpdatingModule(false)
+            toast('success', 'Module updated successfully')
+            window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
+          }
         } else {
           throw new Error('Failed to update module')
         }
       })
       .catch((err) => {
+        setUpdatingModule(false)
         toast('error', 'Error updating module')
         console.error(err)
       })
-      .finally(() => setUpdatingModule(false))
   }
 
   useEffect(() => {

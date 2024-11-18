@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 let awsS3Client: S3Client | null = null
 
@@ -22,24 +23,30 @@ async function connectAwsS3() {
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('Error in connectSupabase', error?.message)
+      console.error('Error in connectAwsS3', error?.message)
     }
   }
 }
 
-async function uploadFileToS3(file: File, key: string) {
+async function getAwsS3UploadUrl(fileName: string, fileType: string) {
   try {
     const client = await connectAwsS3()
     if (!client) {
       throw new Error('Failed to connect to AWS S3')
     }
-    const input = {
-      Body: Buffer.from(await file.arrayBuffer()),
+
+    const params = {
       Bucket: 'balboa-digital-lms',
-      Key: key,
+      Key: fileName,
+      ContentType: fileType,
     }
-    const command = new PutObjectCommand(input)
-    await client.send(command)
+
+    const command = new PutObjectCommand(params)
+    const presigned = getSignedUrl(client, command, {
+      expiresIn: 60,
+    })
+
+    return presigned
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('Error in uploadFileToS3', error?.message)
@@ -47,4 +54,4 @@ async function uploadFileToS3(file: File, key: string) {
   }
 }
 
-export { uploadFileToS3 }
+export { getAwsS3UploadUrl }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import connectSupabase from '@/utils/databaseConnection'
-import { uploadFileToS3 } from '@/utils/awsS3Connection'
+import { getAwsS3UploadUrl } from '@/utils/awsS3Connection'
 import { isModuleContentMultimedia } from '@/utils/isModuleContentMultimedia'
 import { awsBucketUrl } from '@/constants'
 
@@ -42,18 +42,17 @@ export async function PUT(req: NextRequest, { params }: { params: { moduleId: st
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    const courseModuleDb = await supabase
+    await supabase
       .from('modules')
       .update({ title, description, type, content })
       .eq('id', params.moduleId)
-      .select()
-    const courseModule = courseModuleDb.data?.[0]
 
+    let awsS3UploadUrl = null
     if (isMultimedia && file) {
-      await uploadFileToS3(file, fileName)
+      awsS3UploadUrl = await getAwsS3UploadUrl(fileName, file.type)
     }
 
-    return NextResponse.json(courseModule, { status: 200 })
+    return NextResponse.json({ awsS3UploadUrl }, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (PUT): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

@@ -72,17 +72,33 @@ export default function CreateModule() {
       })
       .then((res) => {
         if (res.status === 200) {
-          toast('success', 'Module created successfully')
-          router.push(`/managed-courses/${courseId}`)
+          const { awsS3UploadUrl } = res.data
+          if (awsS3UploadUrl) {
+            fetch(awsS3UploadUrl, {
+              method: 'PUT',
+              body: file,
+              headers: {
+                'Content-Type': fileExtension,
+              },
+            }).then(() => {
+              setCreatingModule(false)
+              toast('success', 'Module created successfully')
+              router.push(`/managed-courses/${courseId}`)
+            })
+          } else {
+            setCreatingModule(false)
+            toast('success', 'Module created successfully')
+            router.push(`/managed-courses/${courseId}`)
+          }
         } else {
           throw new Error('Failed to create module')
         }
       })
       .catch((err) => {
+        setCreatingModule(false)
         toast('error', 'Error creating module')
         console.error(err)
       })
-      .finally(() => setCreatingModule(false))
   }
 
   return (

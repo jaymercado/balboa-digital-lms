@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 import connectSupabase from '@/utils/databaseConnection'
-import { uploadFileToS3 } from '@/utils/awsS3Connection'
+import { getAwsS3UploadUrl } from '@/utils/awsS3Connection'
 import { isModuleContentMultimedia } from '@/utils/isModuleContentMultimedia'
 import { awsBucketUrl } from '@/constants'
 
@@ -58,15 +58,18 @@ export async function POST(req: NextRequest) {
       .select()
     const courseModule = courseModuleDB.data?.[0]
 
+    let awsS3UploadUrl = null
     if (isMultimedia && file) {
       const fileName = `${courseId}-${courseModule?.id}.${fileExtension}`
-      await uploadFileToS3(file, fileName)
+      if (isMultimedia && file) {
+        awsS3UploadUrl = await getAwsS3UploadUrl(fileName, file.type)
+      }
 
       const courseContent = `${awsBucketUrl}${fileName}`
       await supabase.from('modules').update({ content: courseContent }).eq('id', courseModule?.id)
     }
 
-    return NextResponse.json(courseModule, { status: 200 })
+    return NextResponse.json({ awsS3UploadUrl }, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses (POST): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
