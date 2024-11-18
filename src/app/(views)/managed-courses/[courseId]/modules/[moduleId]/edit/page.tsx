@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import {
   CForm,
@@ -35,6 +36,9 @@ export default function EditModule() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
+  const [file, setFile] = useState<File | null>(null)
+  const [fileExtension, setFileExtension] = useState<string>('')
+
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 
@@ -53,20 +57,37 @@ export default function EditModule() {
     }
 
     setUpdatingModule(true)
-    fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
-      method: 'PUT',
-      body: JSON.stringify({ ...data, courseId }),
-    })
+
+    const formData = new FormData()
+    formData.append('title', data.title)
+    formData.append('description', data.description)
+    formData.append('type', data.type)
+    formData.append('content', data.content)
+    if (file && ['video', 'image', 'pdf'].includes(data.type)) {
+      formData.append('file', file)
+      formData.append('fileExtension', fileExtension)
+    }
+    formData.append('courseId', courseId as string)
+
+    axios
+      .put(`/api/courses/${courseId}/modules/${moduleId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then((res) => {
-        setUpdatingModule(false)
-        toast('success', 'Module updated successfully')
-        router.push(`/managed-courses/${courseId}/modules/${moduleId}`)
+        if (res.status === 200) {
+          toast('success', 'Module updated successfully')
+          window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
+        } else {
+          throw new Error('Failed to update module')
+        }
       })
       .catch((err) => {
-        setUpdatingModule(false)
         toast('error', 'Error updating module')
         console.error(err)
       })
+      .finally(() => setUpdatingModule(false))
   }
 
   useEffect(() => {
@@ -122,7 +143,13 @@ export default function EditModule() {
               {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
             </CInputGroup>
 
-            <ModuleContentInput type={watch('type')} value={watch('content')} setValue={setValue} />
+            <ModuleContentInput
+              type={watch('type')}
+              value={watch('content')}
+              setValue={setValue}
+              setFile={setFile}
+              setFileExtension={setFileExtension}
+            />
           </CCol>
         </CRow>
 

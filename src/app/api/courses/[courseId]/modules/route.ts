@@ -1,9 +1,10 @@
+import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { Module } from '@/types/module'
-import { Course } from '@/types/course'
 import connectSupabase from '@/utils/databaseConnection'
-import { getServerSession } from 'next-auth'
+import { uploadFileToS3 } from '@/utils/awsS3Connection'
+import { isModuleContentMultimedia } from '@/utils/isModuleContentMultimedia'
+import { awsBucketUrl } from '@/constants'
 
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
@@ -30,15 +31,40 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
+    const formData = await req.formData()
+    const title = formData.get('title')
+    const description = formData.get('description')
+    const type = formData.get('type') as string
+    const content = formData.get('content')
+    const courseId = formData.get('courseId')
+    const file = formData.get('file') as File
+    const fileExtension = formData.get('fileExtension')
+    const isMultimedia = isModuleContentMultimedia(type)
 
     const supabase = await connectSupabase()
     if (!supabase) {
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    const courseModuleDB = await supabase.from('modules').insert(body).select()
+    const courseModuleDB = await supabase
+      .from('modules')
+      .insert({
+        title,
+        description,
+        type,
+        content,
+        courseId,
+      })
+      .select()
     const courseModule = courseModuleDB.data?.[0]
+
+    if (isMultimedia && file) {
+      const fileName = `${courseId}-${courseModule?.id}.${fileExtension}`
+      await uploadFileToS3(file, fileName)
+
+      const courseContent = `${awsBucketUrl}${fileName}`
+      await supabase.from('modules').update({ content: courseContent }).eq('id', courseModule?.id)
+    }
 
     return NextResponse.json(courseModule, { status: 200 })
   } catch (error) {

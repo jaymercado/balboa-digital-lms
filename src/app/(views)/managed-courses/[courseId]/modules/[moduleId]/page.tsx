@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { useState } from 'react'
@@ -22,6 +23,7 @@ import {
   CTabPanel,
   CTabs,
 } from '@coreui/react-pro'
+import CourseModuleContent from '@/components/CourseModuleContent'
 
 export default function Module() {
   const router = useRouter()
@@ -96,11 +98,7 @@ export default function Module() {
               </CTabList>
               <CTabContent>
                 <CTabPanel className="py-3" aria-labelledby="content-tab-pane" itemKey={1}>
-                  {courseModule.content === '' ? (
-                    <CCardText>This module has no content</CCardText>
-                  ) : (
-                    <div dangerouslySetInnerHTML={{ __html: courseModule.content }}></div>
-                  )}
+                  <CourseModuleContent type={courseModule.type} content={courseModule.content} />
                 </CTabPanel>
                 <CTabPanel className="py-3" aria-labelledby="description-tab-pane" itemKey={2}>
                   <CCardText>{courseModule.description}</CCardText>

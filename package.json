@@ -23,6 +23,7 @@
     "zip": "git archive -o $npm_package_config_zipPrefix-$npm_package_config_theme-v$npm_package_version.zip -9 HEAD"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.691.0",
     "@coreui/coreui-pro": "^5.2.0",
     "@coreui/icons": "^3.0.1",
     "@coreui/icons-react": "^2.2.1",
@@ -41,6 +42,7 @@
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "aos": "^3.0.0-beta.6",
+    "axios": "^1.7.7",
     "bootstrap-icons": "^1.11.3",
     "classnames": "^2.5.1",
     "eslint": "8.57.0",
@@ -59,6 +61,7 @@
     "typescript": "5.4.5"
   },
   "devDependencies": {
+    "@aws-sdk/types": "^3.692.0",
     "@babel/preset-react": "^7.24.7",
     "@types/aos": "^3.0.7",
     "next-transpile-modules": "^10.0.1",
