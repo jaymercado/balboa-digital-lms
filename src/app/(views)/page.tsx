@@ -158,7 +158,6 @@ const Dashboard = () => {
       avatar: { src: avatar5.src, status: 'success' },
       user: {
         name: 'Agapetus Tadeáš',
-        new: true,
         registered: 'Jan 1, 2023',
       },
       country: { name: 'Spain', flag: cifEs },

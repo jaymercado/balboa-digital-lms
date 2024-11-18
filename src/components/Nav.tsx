@@ -43,7 +43,7 @@ const Nav = () => {
 
   return (
     <nav className={`navbar navbar-expand-lg px-2 py-2 ${poppins.className} border-bottom`}>
-      <div className=""></div>
+      <div></div>
       <div className="container-fluid">
         <Link href="/" className="navbar-brand d-flex align-items-center">
           <Image
