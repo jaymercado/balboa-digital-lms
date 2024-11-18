@@ -30,7 +30,7 @@ export default function ManagedCourses() {
   const itemsPerPage = 8
   const [currentPage, setCurrentPage] = useState(0)
 
-  const dummyCourses = Array.from({ length: 50 }, (_, index) => ({
+  const dummyCourses = Array.from({ length: 100 }, (_, index) => ({
     id: `course-${index + 1}`,
     title: `Course Title ${index + 1}`,
     description: `This is a description for course ${index + 1}.`,
@@ -129,7 +129,7 @@ export default function ManagedCourses() {
             )}
           </CRow>
         )}
-        <div className="d-flex align-items-center justify-content-end">
+        <div className="d-flex align-items-center justify-content-center">
           <small className="text-secondary me-2 page-number">
             Page {currentPage + 1} of {Math.ceil(courses.length / itemsPerPage)}
           </small>
