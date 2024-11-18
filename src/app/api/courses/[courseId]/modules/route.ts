@@ -37,8 +37,7 @@ export async function POST(req: NextRequest) {
     const type = formData.get('type') as string
     const content = formData.get('content')
     const courseId = formData.get('courseId')
-    const file = formData.get('file') as File
-    const fileExtension = formData.get('fileExtension')
+    const fileExtension = formData.get('fileExtension') as string
     const isMultimedia = isModuleContentMultimedia(type)
 
     const supabase = await connectSupabase()
@@ -59,10 +58,10 @@ export async function POST(req: NextRequest) {
     const courseModule = courseModuleDB.data?.[0]
 
     let awsS3UploadUrl = null
-    if (isMultimedia && file) {
+    if (isMultimedia && fileExtension) {
       const fileName = `${courseId}-${courseModule?.id}.${fileExtension}`
-      if (isMultimedia && file) {
-        awsS3UploadUrl = await getAwsS3UploadUrl(fileName, file.type)
+      if (isMultimedia && fileExtension) {
+        awsS3UploadUrl = await getAwsS3UploadUrl(fileName, fileExtension)
       }
 
       const courseContent = `${awsBucketUrl}${fileName}`

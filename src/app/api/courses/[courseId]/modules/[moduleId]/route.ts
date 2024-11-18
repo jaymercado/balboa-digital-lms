@@ -31,8 +31,7 @@ export async function PUT(req: NextRequest, { params }: { params: { moduleId: st
     const description = formData.get('description')
     const type = formData.get('type') as string
     const courseId = formData.get('courseId')
-    const file = formData.get('file') as File
-    const fileExtension = formData.get('fileExtension')
+    const fileExtension = formData.get('fileExtension') as string
     const fileName = `${courseId}-${moduleId}.${fileExtension}`
     const isMultimedia = isModuleContentMultimedia(type)
     const content = isMultimedia ? `${awsBucketUrl}${fileName}` : formData.get('content')
@@ -44,12 +43,17 @@ export async function PUT(req: NextRequest, { params }: { params: { moduleId: st
 
     await supabase
       .from('modules')
-      .update({ title, description, type, content })
+      .update({
+        title,
+        description,
+        type,
+        ...(content ? { content } : {}),
+      })
       .eq('id', params.moduleId)
 
     let awsS3UploadUrl = null
-    if (isMultimedia && file) {
-      awsS3UploadUrl = await getAwsS3UploadUrl(fileName, file.type)
+    if (isMultimedia && fileExtension) {
+      awsS3UploadUrl = await getAwsS3UploadUrl(fileName, fileExtension)
     }
 
     return NextResponse.json({ awsS3UploadUrl }, { status: 200 })

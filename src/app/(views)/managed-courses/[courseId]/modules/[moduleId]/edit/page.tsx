@@ -64,7 +64,6 @@ export default function EditModule() {
     formData.append('type', data.type)
     formData.append('content', data.content)
     if (file && ['video', 'image', 'pdf'].includes(data.type)) {
-      formData.append('file', file)
       formData.append('fileExtension', fileExtension)
     }
     formData.append('courseId', courseId as string)
