@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import {
   CCard,
@@ -25,16 +25,14 @@ export default function ManagedCourses() {
   const [deletingCourse, setDeletingCourse] = useState(false)
   const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
-
   const itemsPerPage = 8
   const [currentPage, setCurrentPage] = useState(0)
-
-  const handlePageClick = (selectedPage: { selected: React.SetStateAction<number> }) => {
-    setCurrentPage(selectedPage.selected)
-  }
-
   const offset = currentPage * itemsPerPage
   const paginatedData = courses.slice(offset, offset + itemsPerPage)
+
+  const handlePageClick = useCallback((selectedPage: { selected: number }) => {
+    setCurrentPage(selectedPage.selected)
+  }, [])
 
   function deleteCourse(courseId: string) {
     setDeletingCourse(true)
