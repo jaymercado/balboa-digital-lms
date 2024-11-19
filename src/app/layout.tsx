@@ -8,7 +8,6 @@ import store from './../store'
 import { SessionProvider } from 'next-auth/react'
 import 'react-quill/dist/quill.snow.css'
 import './../styles/style.scss'
-import { GeistSans } from 'geist/font/sans'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import { Inter } from 'next/font/google'
 
@@ -23,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" href="/images/bd_logo_sm.png" />
         <link rel="stylesheet" href="https://unpkg.com/react-quill@1.3.3/dist/quill.snow.css" />
-        <title>Balboa Digtal - LMS</title>
+        <title>Balboa Digital - LMS</title>
         <Script
           id="get-color-scheme"
           strategy="beforeInteractive"
