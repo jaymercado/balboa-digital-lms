@@ -17,7 +17,13 @@ export default function ModuleContentInput({
   }
 
   if (['video', 'image', 'pdf'].includes(type)) {
-    return <FileInput setFile={setFile} setFileExtension={setFileExtension} />
+    return (
+      <FileInput
+        type={type as 'video' | 'image' | 'pdf'}
+        setFile={setFile}
+        setFileExtension={setFileExtension}
+      />
+    )
   }
 
   return null

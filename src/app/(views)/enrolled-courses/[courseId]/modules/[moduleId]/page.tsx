@@ -4,9 +4,9 @@ import React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import useGetModules from '@/hooks/useGetModules'
 import { Loading } from '@/components'
+import CourseModuleContent from '@/components/CourseModuleContent'
 
 export default function Module() {
-  const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
@@ -26,7 +26,7 @@ export default function Module() {
         <p>
           <strong>Content:</strong>
         </p>
-        <p dangerouslySetInnerHTML={{ __html: courseModule.content }} />
+        <CourseModuleContent type={courseModule.type} content={courseModule.content} />
       </section>
     </div>
   )
