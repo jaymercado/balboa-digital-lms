@@ -36,7 +36,7 @@ export const generateNav = (role: string) => {
     {
       component: CNavItem,
       name: 'Enrolled Courses',
-      href: '/theme/colors',
+      href: '/enrolled-courses',
       icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
     },
   ]
