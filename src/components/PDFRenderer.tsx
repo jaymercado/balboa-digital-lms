@@ -1,39 +1,20 @@
 'use client'
-
-import { useState } from 'react'
-import { Document, Page } from 'react-pdf'
-import { pdfjs } from 'react-pdf'
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+import { Worker } from '@react-pdf-viewer/core'
+import { Viewer } from '@react-pdf-viewer/core'
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'
+import '@react-pdf-viewer/core/lib/styles/index.css'
+import '@react-pdf-viewer/default-layout/lib/styles/index.css'
 
 export default function PDFRenderer({ file }: PDFRendererProps) {
-  const [numPages, setNumPages] = useState<number>()
-  const [pageNumber, setPageNumber] = useState<number>(1)
-
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-    setNumPages(numPages)
-  }
+  const defaultLayoutPluginInstance = defaultLayoutPlugin()
 
   return (
     <div>
-      <p>
-        Page {pageNumber} of {numPages}
-      </p>
-      <button
-        onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-        disabled={pageNumber <= 1}
-      >
-        Previous
-      </button>
-      <button
-        onClick={() => setPageNumber((prev) => Math.min(prev + 1, numPages || 1))}
-        disabled={pageNumber >= (numPages || 1)}
-      >
-        Next
-      </button>
-      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-        <Page pageNumber={pageNumber} renderAnnotationLayer={false} renderTextLayer={false} />
-      </Document>
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+        <div className="viewer">
+          <Viewer fileUrl={file} plugins={[defaultLayoutPluginInstance]} />
+        </div>
+      </Worker>
     </div>
   )
 }
