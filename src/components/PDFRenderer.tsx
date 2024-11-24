@@ -9,13 +9,11 @@ export default function PDFRenderer({ file }: PDFRendererProps) {
   const defaultLayoutPluginInstance = defaultLayoutPlugin()
 
   return (
-    <div>
-      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-        <div className="viewer">
-          <Viewer fileUrl={file} plugins={[defaultLayoutPluginInstance]} />
-        </div>
-      </Worker>
-    </div>
+    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+      <div className="viewer">
+        <Viewer fileUrl={file} plugins={[defaultLayoutPluginInstance]} />
+      </div>
+    </Worker>
   )
 }
 
