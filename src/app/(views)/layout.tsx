@@ -37,7 +37,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {children}
             </CContainer>
           </div>
-          <AppFooter />
         </div>
       </>
     )
