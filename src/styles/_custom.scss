@@ -88,6 +88,10 @@
   display: none;
 }
 
+.viewer {
+  height: 750px;
+}
+
 @media (max-width: 426px) {
   .page-number {
     display: flex;
