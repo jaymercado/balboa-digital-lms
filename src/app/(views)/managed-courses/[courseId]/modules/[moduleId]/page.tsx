@@ -29,8 +29,8 @@ export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
-  const courseModule = courseModules[0]
+  const { courseModules, nextCourseId, fetchingModules } = useGetModules({ courseId, moduleId })
+  const courseModule = courseModules?.[0]
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
@@ -60,6 +60,19 @@ export default function Module() {
       <CCol>
         <CCard className="mb-4">
           <CCardBody>
+            <CRow>
+              {nextCourseId && (
+                <CCol xs="auto">
+                  <CButton
+                    onClick={() =>
+                      router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)
+                    }
+                  >
+                    Next Module
+                  </CButton>
+                </CCol>
+              )}
+            </CRow>
             <CRow>
               <CCol>
                 <CCardTitle className="fw-semibold fs-4">{courseModule.title}</CCardTitle>

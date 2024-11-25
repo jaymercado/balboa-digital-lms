@@ -1,4 +1,5 @@
 'use client'
+
 import { Worker } from '@react-pdf-viewer/core'
 import { Viewer } from '@react-pdf-viewer/core'
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'
@@ -10,7 +11,7 @@ export default function PDFRenderer({ file }: PDFRendererProps) {
 
   return (
     <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-      <div className="viewer">
+      <div className="pdf-viewer">
         <Viewer fileUrl={file} plugins={[defaultLayoutPluginInstance]} />
       </div>
     </Worker>

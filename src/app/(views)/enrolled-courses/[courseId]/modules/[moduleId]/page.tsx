@@ -8,9 +8,10 @@ import CourseModuleContent from '@/components/CourseModuleContent'
 
 export default function Module() {
   const params = useParams()
+  const router = useRouter()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
-  const courseModule = courseModules[0]
+  const { courseModules, nextCourseId, fetchingModules } = useGetModules({ courseId, moduleId })
+  const courseModule = courseModules?.[0]
 
   if (fetchingModules || !courseModule) {
     return <Loading />
@@ -19,6 +20,13 @@ export default function Module() {
   return (
     <div>
       <section>
+        {nextCourseId && (
+          <button
+            onClick={() => router.push(`/enrolled-courses/${courseId}/modules/${nextCourseId}`)}
+          >
+            Next Module
+          </button>
+        )}
         <p>ID: {courseModule.id}</p>
         <p>Title: {courseModule.title}</p>
         <p>Description: {courseModule.description}</p>

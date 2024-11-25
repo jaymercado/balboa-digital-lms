@@ -34,12 +34,12 @@ export default function EnrolledCourses() {
                 <div key={course.id}>
                   <CCol>
                     <CCard className="h-100">
-                      <Link href={`/managed-courses/${course.id}`} className="text-decoration-none">
+                      <Link href={`/enrolled-courses/${course.id}`} className="text-decoration-none">
                         <CCardImage orientation="top" src="/images/react.jpg" alt={course.title} />
                       </Link>
                       <CCardBody className="d-flex flex-column">
                         <Link
-                          href={`/managed-courses/${course.id}`}
+                          href={`/enrolled-courses/${course.id}`}
                           className="text-decoration-none text-body"
                         >
                           <CCardTitle className="text-dark-emphasis text-truncate fs-6 fw-semibold">
@@ -51,7 +51,7 @@ export default function EnrolledCourses() {
                         </Link>
                         <div className="d-flex justify-content-end mt-auto">
                           <Link
-                            href={`/managed-courses/${course.id}`}
+                            href={`/enrolled-courses/${course.id}`}
                             className="me-2 d-flex align-items-center gap-1 text-decoration-none"
                           >
                             <small className="text-secondary d-none d-sm-inline">View Course</small>
