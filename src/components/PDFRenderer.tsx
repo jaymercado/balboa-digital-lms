@@ -1,4 +1,5 @@
 'use client'
+
 import { Worker } from '@react-pdf-viewer/core'
 import { Viewer } from '@react-pdf-viewer/core'
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'

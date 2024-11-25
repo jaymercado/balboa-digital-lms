@@ -9,6 +9,7 @@ export default function useGetModules({
   moduleId: string
 }) {
   const [courseModules, setModules] = useState<Module[]>([])
+  const [nextCourseId, setNextCourseId] = useState<string | undefined>(undefined)
   const [fetchingModules, setFetchingModules] = useState<boolean>(false)
 
   useEffect(() => {
@@ -18,13 +19,17 @@ export default function useGetModules({
       const url = `/api/courses/${courseId}/modules/${moduleId}`
 
       const res = await fetch(url)
-      const fetchedModules = ((await res.json()) as Module[]) || []
+      const fetchedData =
+        ((await res.json()) as { courseModules: Module[]; nextCourseId?: string }) || []
 
-      setModules(fetchedModules)
+      setModules(fetchedData.courseModules)
+      if (fetchedData.nextCourseId) {
+        setNextCourseId(fetchedData.nextCourseId)
+      }
     }
 
     fetchModules().finally(() => setFetchingModules(false))
   }, [courseId, moduleId])
 
-  return { courseModules, setModules, fetchingModules }
+  return { courseModules, setModules, nextCourseId, fetchingModules }
 }

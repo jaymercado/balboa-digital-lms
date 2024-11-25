@@ -11,11 +11,20 @@ export async function GET(req: NextRequest, { params }: { params: { moduleId: st
     if (!supabase) {
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
+    const { moduleId } = params
 
-    const courseModuleDb = await supabase.from('modules').select().eq('id', params.moduleId)
+    const courseModuleDb = await supabase.from('modules').select().eq('id', moduleId)
     const courseModules = courseModuleDb.data
+    const nextCourseIdDb = await supabase
+      .from('modules')
+      .select('id')
+      .gt('id', moduleId)
+      .eq('courseId', courseModules?.[0].courseId)
+      .order('id', { ascending: true })
+      .limit(1)
+    const nextCourseId = nextCourseIdDb.data?.[0]?.id
 
-    return NextResponse.json(courseModules, { status: 200 })
+    return NextResponse.json({ courseModules, nextCourseId }, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
