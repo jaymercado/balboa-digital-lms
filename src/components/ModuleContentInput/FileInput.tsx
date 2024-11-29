@@ -5,7 +5,7 @@ export default function FileInput({
   type,
   setFile,
   setFileExtension,
-  currentFile, // New prop to handle the current file
+  currentFile,
 }: FileInputProps) {
   let accept = ''
   if (type === 'image') accept = '.jpg,.jpeg,.png'
@@ -22,7 +22,6 @@ export default function FileInput({
 
   return (
     <div>
-      {/* If a current file exists, show the file name */}
       <CFormLabel htmlFor="fileInput">
         {currentFile ? `Current File: ${currentFile.name}` : 'Upload File'}
       </CFormLabel>
@@ -41,5 +40,5 @@ interface FileInputProps {
   type: 'image' | 'video' | 'pdf'
   setFile: Dispatch<SetStateAction<File | null>>
   setFileExtension: Dispatch<SetStateAction<string>>
-  currentFile: File | null // Prop to pass the current file
+  currentFile: File | null
 }

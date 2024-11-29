@@ -42,7 +42,6 @@ export default function EditModule() {
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 
-  // Keep currentFile as a File object
   const [currentFile, setCurrentFile] = useState<File | null>(null)
   const [currentFileExtension, setCurrentFileExtension] = useState<string | null>(null)
 
@@ -54,22 +53,27 @@ export default function EditModule() {
     setValue,
   } = useForm<Inputs>()
 
-  // Function to fetch and convert file URL to File object
-  const fetchFile = async (url: string) => {
+  const convertToFile = async (url: string): Promise<File> => {
     try {
       const response = await fetch(url)
       const blob = await response.blob()
+      const fileName = url.split('/').pop() || 'file'
+      return new File([blob], fileName, { type: blob.type })
+    } catch (err) {
+      console.error('Error fetching and converting the file:', err)
+      throw err
+    }
+  }
 
-      // Create a File from the Blob
-      const file = new File([blob], url.split('/').pop() || 'file', {
-        type: blob.type,
-      })
+  const fetchCurrentFile = async (url: string) => {
+    try {
+      const file = await convertToFile(url)
       setCurrentFile(file)
       const fileExtension = file.name.split('.').pop() || ''
       setCurrentFileExtension(fileExtension)
       setFileExtension(fileExtension)
     } catch (err) {
-      console.error('Error fetching the file:', err)
+      console.error('Error fetching and converting the file:', err)
     }
   }
 
@@ -136,9 +140,8 @@ export default function EditModule() {
       setValue('type', coursModule.type)
       setValue('content', coursModule.content)
 
-      // Fetch the file from AWS if there's a content URL
-      if (coursModule.content) {
-        fetchFile(coursModule.content)
+      if (coursModule.content && coursModule.type != 'text') {
+        fetchCurrentFile(coursModule.content)
       }
     }
   }, [fetchingModules, courseModules, setValue])
@@ -192,7 +195,7 @@ export default function EditModule() {
               setValue={setValue}
               setFile={setFile}
               setFileExtension={setFileExtension}
-              currentFile={currentFile} // Pass the File object
+              currentFile={currentFile}
             />
           </CCol>
         </CRow>
