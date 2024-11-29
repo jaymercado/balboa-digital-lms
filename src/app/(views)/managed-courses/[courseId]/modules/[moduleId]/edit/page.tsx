@@ -42,6 +42,10 @@ export default function EditModule() {
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 
+  // Keep currentFile as a File object
+  const [currentFile, setCurrentFile] = useState<File | null>(null)
+  const [currentFileExtension, setCurrentFileExtension] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
@@ -49,6 +53,25 @@ export default function EditModule() {
     watch,
     setValue,
   } = useForm<Inputs>()
+
+  // Function to fetch and convert file URL to File object
+  const fetchFile = async (url: string) => {
+    try {
+      const response = await fetch(url)
+      const blob = await response.blob()
+
+      // Create a File from the Blob
+      const file = new File([blob], url.split('/').pop() || 'file', {
+        type: blob.type,
+      })
+      setCurrentFile(file)
+      const fileExtension = file.name.split('.').pop() || ''
+      setCurrentFileExtension(fileExtension)
+      setFileExtension(fileExtension)
+    } catch (err) {
+      console.error('Error fetching the file:', err)
+    }
+  }
 
   function onSubmit(data: Inputs) {
     const content = watch('content')
@@ -112,6 +135,11 @@ export default function EditModule() {
       setValue('description', coursModule.description)
       setValue('type', coursModule.type)
       setValue('content', coursModule.content)
+
+      // Fetch the file from AWS if there's a content URL
+      if (coursModule.content) {
+        fetchFile(coursModule.content)
+      }
     }
   }, [fetchingModules, courseModules, setValue])
 
@@ -164,6 +192,7 @@ export default function EditModule() {
               setValue={setValue}
               setFile={setFile}
               setFileExtension={setFileExtension}
+              currentFile={currentFile} // Pass the File object
             />
           </CCol>
         </CRow>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 import { UseFormSetValue } from 'react-hook-form'
 import RichTextInput from './RichTextInput'
 import FileInput from './FileInput'
@@ -11,7 +11,15 @@ export default function ModuleContentInput({
   setValue,
   setFile,
   setFileExtension,
+  currentFile, // New prop for current file
 }: ModuleContentInputProps) {
+  // Set the current file into the state when editing
+  useEffect(() => {
+    if (currentFile) {
+      setFile(currentFile)
+    }
+  }, [currentFile, setFile, setFileExtension])
+
   if (type === 'text') {
     return <RichTextInput value={value} setValue={setValue} />
   }
@@ -22,6 +30,7 @@ export default function ModuleContentInput({
         type={type as 'video' | 'image' | 'pdf'}
         setFile={setFile}
         setFileExtension={setFileExtension}
+        currentFile={currentFile} // Pass the current file
       />
     )
   }
@@ -35,6 +44,7 @@ interface ModuleContentInputProps {
   setValue: UseFormSetValue<Inputs>
   setFile: Dispatch<SetStateAction<File | null>>
   setFileExtension: Dispatch<SetStateAction<string>>
+  currentFile: File | null // Prop to pass the current file
 }
 
 type Inputs = {

@@ -145,6 +145,7 @@ export default function CreateModule() {
               setValue={setValue}
               setFile={setFile}
               setFileExtension={setFileExtension}
+              currentFile={null}
             />
           </CCol>
         </CRow>
