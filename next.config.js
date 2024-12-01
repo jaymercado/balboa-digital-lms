@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'preview.webpixels.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'balboa-digital-lms.s3.ap-southeast-1.amazonaws.com',
+      },
     ],
   },
   webpack: (config) => {
