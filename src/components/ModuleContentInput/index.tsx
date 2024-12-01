@@ -11,9 +11,8 @@ export default function ModuleContentInput({
   setValue,
   setFile,
   setFileExtension,
-  currentFile, // New prop for current file
+  currentFile,
 }: ModuleContentInputProps) {
-  // Set the current file into the state when editing
   useEffect(() => {
     if (currentFile) {
       setFile(currentFile)
@@ -30,7 +29,7 @@ export default function ModuleContentInput({
         type={type as 'video' | 'image' | 'pdf'}
         setFile={setFile}
         setFileExtension={setFileExtension}
-        currentFile={currentFile} // Pass the current file
+        currentFile={currentFile}
       />
     )
   }
@@ -44,7 +43,7 @@ interface ModuleContentInputProps {
   setValue: UseFormSetValue<Inputs>
   setFile: Dispatch<SetStateAction<File | null>>
   setFileExtension: Dispatch<SetStateAction<string>>
-  currentFile: File | null // Prop to pass the current file
+  currentFile: File | null
 }
 
 type Inputs = {

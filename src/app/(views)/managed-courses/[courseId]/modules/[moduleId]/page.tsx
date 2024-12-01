@@ -63,19 +63,17 @@ export default function Module() {
             <CRow>
               {nextCourseId && (
                 <CCol xs="auto">
-                  <div>
-                    {nextCourseId && (
-                      <CButton
-                        color="light"
-                        onClick={() =>
-                          router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)
-                        }
-                        className="mb-2"
-                      >
-                        Next Module
-                      </CButton>
-                    )}
-                  </div>
+                  {nextCourseId && (
+                    <CButton
+                      color="light"
+                      onClick={() =>
+                        router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)
+                      }
+                      className="mb-2"
+                    >
+                      Next Module
+                    </CButton>
+                  )}
                 </CCol>
               )}
             </CRow>
