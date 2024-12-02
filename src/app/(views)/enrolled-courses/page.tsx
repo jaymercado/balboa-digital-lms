@@ -34,7 +34,10 @@ export default function EnrolledCourses() {
                 <div key={course.id}>
                   <CCol>
                     <CCard className="h-100">
-                      <Link href={`/enrolled-courses/${course.id}`} className="text-decoration-none">
+                      <Link
+                        href={`/enrolled-courses/${course.id}`}
+                        className="text-decoration-none"
+                      >
                         <CCardImage orientation="top" src="/images/react.jpg" alt={course.title} />
                       </Link>
                       <CCardBody className="d-flex flex-column">

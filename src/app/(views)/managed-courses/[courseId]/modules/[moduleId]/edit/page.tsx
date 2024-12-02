@@ -42,6 +42,9 @@ export default function EditModule() {
   const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 
+  const [currentFile, setCurrentFile] = useState<File | null>(null)
+  const [currentFileExtension, setCurrentFileExtension] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
@@ -49,6 +52,30 @@ export default function EditModule() {
     watch,
     setValue,
   } = useForm<Inputs>()
+
+  const convertToFile = async (url: string): Promise<File> => {
+    try {
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const fileName = url.split('/').pop() || 'file'
+      return new File([blob], fileName, { type: blob.type })
+    } catch (err) {
+      console.error('Error fetching and converting the file:', err)
+      throw err
+    }
+  }
+
+  const fetchCurrentFile = async (url: string) => {
+    try {
+      const file = await convertToFile(url)
+      setCurrentFile(file)
+      const fileExtension = file.name.split('.').pop() || ''
+      setCurrentFileExtension(fileExtension)
+      setFileExtension(fileExtension)
+    } catch (err) {
+      console.error('Error fetching and converting the file:', err)
+    }
+  }
 
   function onSubmit(data: Inputs) {
     const content = watch('content')
@@ -112,6 +139,10 @@ export default function EditModule() {
       setValue('description', coursModule.description)
       setValue('type', coursModule.type)
       setValue('content', coursModule.content)
+
+      if (coursModule.content && coursModule.type != 'text') {
+        fetchCurrentFile(coursModule.content)
+      }
     }
   }, [fetchingModules, courseModules, setValue])
 
@@ -164,6 +195,7 @@ export default function EditModule() {
               setValue={setValue}
               setFile={setFile}
               setFileExtension={setFileExtension}
+              currentFile={currentFile}
             />
           </CCol>
         </CRow>
