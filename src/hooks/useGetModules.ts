@@ -10,6 +10,7 @@ export default function useGetModules({
 }) {
   const [courseModules, setModules] = useState<Module[]>([])
   const [nextCourseId, setNextCourseId] = useState<string | undefined>(undefined)
+  const [prevCourseId, setPrevCourseId] = useState<string | undefined>(undefined)
   const [fetchingModules, setFetchingModules] = useState<boolean>(false)
 
   useEffect(() => {
@@ -20,16 +21,23 @@ export default function useGetModules({
 
       const res = await fetch(url)
       const fetchedData =
-        ((await res.json()) as { courseModules: Module[]; nextCourseId?: string }) || []
+        ((await res.json()) as {
+          courseModules: Module[]
+          nextCourseId?: string
+          prevCourseId?: string
+        }) || []
 
       setModules(fetchedData.courseModules)
       if (fetchedData.nextCourseId) {
         setNextCourseId(fetchedData.nextCourseId)
+      }
+      if (fetchedData.prevCourseId) {
+        setPrevCourseId(fetchedData.prevCourseId)
       }
     }
 
     fetchModules().finally(() => setFetchingModules(false))
   }, [courseId, moduleId])
 
-  return { courseModules, setModules, nextCourseId, fetchingModules }
+  return { courseModules, setModules, nextCourseId, prevCourseId, fetchingModules }
 }

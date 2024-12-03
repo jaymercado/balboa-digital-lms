@@ -29,7 +29,10 @@ export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { courseModules, nextCourseId, fetchingModules } = useGetModules({ courseId, moduleId })
+  const { courseModules, prevCourseId, nextCourseId, fetchingModules } = useGetModules({
+    courseId,
+    moduleId,
+  })
   const courseModule = courseModules?.[0]
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
@@ -58,48 +61,49 @@ export default function Module() {
   return (
     <CRow>
       <CCol>
+        <div className="text-end mb-2">
+          <CButton
+            color="secondary"
+            className="me-2"
+            href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}
+          >
+            <CIcon icon={cilPencil} size="sm" /> Edit
+          </CButton>
+          <CButton
+            color="danger"
+            onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
+            className="text-light"
+          >
+            <CIcon icon={cilTrash} className="text-white" /> Delete
+          </CButton>
+          <ConfirmDeleteModal
+            visible={showDeleteModuleModal}
+            onClose={() => setShowDeleteModuleModal(false)}
+            onConfirm={() => [deleteModule(courseModule.id), setShowDeleteModuleModal(false)]}
+            disabled={deletingModule}
+          />
+        </div>
         <CCard className="mb-4">
           <CCardBody>
-            <CRow>
-              {nextCourseId && (
-                <CCol xs="auto">
-                  <CButton
-                    onClick={() =>
-                      router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)
-                    }
-                  >
-                    Next Module
-                  </CButton>
-                </CCol>
-              )}
-            </CRow>
-            <CRow>
-              <CCol>
-                <CCardTitle className="fw-semibold fs-4">{courseModule.title}</CCardTitle>
-              </CCol>
-              <CCol xs="auto">
-                <CButton
-                  color="light"
-                  className="me-2"
-                  href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}
-                >
-                  <CIcon icon={cilPencil} size="sm" /> Edit
-                </CButton>
-                <CButton
-                  color="danger"
-                  onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
-                  className="text-light"
-                >
-                  <CIcon icon={cilTrash} className="text-white" /> Delete
-                </CButton>
-              </CCol>
-            </CRow>
-            <ConfirmDeleteModal
-              visible={showDeleteModuleModal}
-              onClose={() => setShowDeleteModuleModal(false)}
-              onConfirm={() => [deleteModule(courseModule.id), setShowDeleteModuleModal(false)]}
-              disabled={deletingModule}
-            />
+            <div className="d-flex justify-content-between align-items-center py-2">
+              <CButton
+                color="light"
+                onClick={() => router.push(`/managed-courses/${courseId}/modules/${prevCourseId}`)}
+                disabled={!prevCourseId}
+              >
+                <span className="d-block d-sm-none">Prev</span>
+                <span className="d-none d-sm-block">Prev Module</span>
+              </CButton>
+              <div className="fw-semibold fs-4 align-items-center">{courseModule.title}</div>
+              <CButton
+                color="light"
+                onClick={() => router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)}
+                disabled={!nextCourseId}
+              >
+                <span className="d-block d-sm-none">Next</span>
+                <span className="d-none d-sm-block">Next Module</span>
+              </CButton>
+            </div>
             <CTabs activeItemKey={1}>
               <CTabList variant="underline-border">
                 <CTab aria-controls="content-tab-pane" itemKey={1}>
