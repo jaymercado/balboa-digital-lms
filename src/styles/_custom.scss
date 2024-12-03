@@ -92,6 +92,119 @@
   height: 750px;
 }
 
+.react-select-container {
+  .react-select__clear-indicator {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__container {
+    background-color: var(--cui-body-bg);
+  }
+
+  .react-select__control {
+    background-color: var(--cui-body-bg);
+    border-color: var(--cui-border-color);
+    transition: none;
+
+    &:hover {
+      border-color: var(--cui-border-color);
+    }
+  }
+
+  .react-select__dropdown-indicator {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__group {
+    background-color: var(--cui-body-bg);
+  }
+
+  .react-select__group-heading {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__indicators-container {
+    background-color: var(--cui-body-bg);
+  }
+
+  .react-select__indicator-separator {
+    background-color: var(--cui-border-color);
+  }
+
+  .react-select__input {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__loading-indicator {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__loading-message {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__menu {
+    background-color: var(--cui-body-bg);
+    border: 1px solid var(--cui-border-color);
+  }
+
+  .react-select__menu-list {
+    background-color: var(--cui-body-bg);
+  }
+
+  .react-select__menu-portal {
+    background-color: var(--cui-body-bg);
+  }
+
+  .react-select__multi-value {
+    background-color: var(--cui-secondary-bg);
+  }
+
+  .react-select__multi-value__label {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__multi-value__remove {
+    color: var(--cui-text-primary);
+
+    &:hover {
+      background-color: var(--cui-bg-primary);
+      color: var(--cui-text-primary);
+    }
+  }
+
+  .react-select__no-options-message {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__option {
+    background-color: var(--cui-body-bg);
+
+    &:hover {
+      background-color: var(--cui-secondary-bg);
+    }
+  }
+
+  .react-select__placeholder {
+    color: var(--cui-secondary-color);
+  }
+
+  .react-select__single-value {
+    color: var(--cui-text-primary);
+  }
+
+  .react-select__value-container {
+    background-color: var(--cui-body-bg);
+  }
+}
+
+@media (max-width: 426px) {
+  .page-number {
+    display: flex;
+    align-items: center;
+  }
+}
+
 @media (max-width: 426px) {
   .page-number {
     display: flex;

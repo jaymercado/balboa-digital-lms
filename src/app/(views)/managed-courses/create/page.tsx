@@ -101,6 +101,8 @@ export default function CreateCourse() {
                     }}
                     onBlur={field.onBlur}
                     value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+                    className="react-select-container"
+                    classNamePrefix="react-select"
                   />
                 )}
               />
@@ -132,6 +134,8 @@ export default function CreateCourse() {
                     }}
                     onBlur={field.onBlur}
                     value={userOptions.filter((option) => field?.value?.includes(option?.value))}
+                    className="react-select-container"
+                    classNamePrefix="react-select"
                   />
                 )}
               />
