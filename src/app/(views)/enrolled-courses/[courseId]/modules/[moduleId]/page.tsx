@@ -48,8 +48,8 @@ export default function Module() {
                 onClick={() => router.push(`/enrolled-courses/${courseId}/modules/${prevCourseId}`)}
                 disabled={!prevCourseId}
               >
-                <span className="d-block d-sm-none">Prev</span>
-                <span className="d-none d-sm-block">Prev Module</span>
+                <i className="bi bi-chevron-left me-1"></i>
+                Previous
               </CButton>
               <div className="fw-semibold fs-4 align-items-center">{courseModule.title}</div>
               <CButton
@@ -57,8 +57,8 @@ export default function Module() {
                 onClick={() => router.push(`/enrolled-courses/${courseId}/modules/${nextCourseId}`)}
                 disabled={!nextCourseId}
               >
-                <span className="d-block d-sm-none">Next</span>
-                <span className="d-none d-sm-block">Next Module</span>
+                Next
+                <i className="bi bi-chevron-right ms-1"></i>
               </CButton>
             </div>
             <CTabs activeItemKey={1}>
