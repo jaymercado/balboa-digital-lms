@@ -1,35 +1,59 @@
 import React, { useState, useEffect } from 'react'
 import { Module } from '@/types/module'
 
-export default function useGetModules({
-  courseId,
-  moduleId,
-}: {
-  courseId: string
-  moduleId: string
-}) {
-  const [courseModules, setModules] = useState<Module[]>([])
-  const [nextCourseId, setNextCourseId] = useState<string | undefined>(undefined)
+export function useGetModules({ courseId }: { courseId: string }) {
   const [fetchingModules, setFetchingModules] = useState<boolean>(false)
+  const [courseModules, setModules] = useState<Module[]>([])
 
   useEffect(() => {
     const fetchModules = async () => {
       setFetchingModules(true)
 
-      const url = `/api/courses/${courseId}/modules/${moduleId}`
+      let url = `/api/courses/${courseId}/modules`
 
       const res = await fetch(url)
-      const fetchedData =
-        ((await res.json()) as { courseModules: Module[]; nextCourseId?: string }) || []
+      const fetchedCourseModules = ((await res.json()) as Module[]) || []
 
-      setModules(fetchedData.courseModules)
-      if (fetchedData.nextCourseId) {
-        setNextCourseId(fetchedData.nextCourseId)
-      }
+      setModules(fetchedCourseModules)
     }
 
     fetchModules().finally(() => setFetchingModules(false))
+  }, [courseId])
+
+  return { fetchingModules, courseModules, setModules }
+}
+
+export function useGetModule({ courseId, moduleId }: { courseId: string; moduleId: string }) {
+  const [fetchingModule, setFetchingModule] = useState<boolean>(false)
+  const [courseModule, setCourseModule] = useState<Module | null>(null)
+  const [previousCourseId, setPreviousCourseId] = useState<string | null>(null)
+  const [nextCourseId, setNextCourseId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchModule = async () => {
+      setFetchingModule(true)
+
+      let url = `/api/courses/${courseId}/modules/${moduleId}`
+
+      const res = await fetch(url)
+      const fetchedCourseModule =
+        ((await res.json()) as {
+          courseModule: Module
+          nextCourseId?: string
+          previousCourseId?: string
+        }) || {}
+
+      setCourseModule(fetchedCourseModule.courseModule)
+      if (fetchedCourseModule.nextCourseId) {
+        setNextCourseId(fetchedCourseModule.nextCourseId)
+      }
+      if (fetchedCourseModule.previousCourseId) {
+        setPreviousCourseId(fetchedCourseModule.previousCourseId)
+      }
+    }
+
+    fetchModule().finally(() => setFetchingModule(false))
   }, [courseId, moduleId])
 
-  return { courseModules, setModules, nextCourseId, fetchingModules }
+  return { fetchingModule, courseModule, setCourseModule, nextCourseId, previousCourseId }
 }

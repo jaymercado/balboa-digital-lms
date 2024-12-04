@@ -3,7 +3,7 @@
 
 import React from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import useGetModules from '@/hooks/useGetModules'
+import { useGetModule } from '@/hooks/useGetModules'
 import { Loading } from '@/components'
 
 import {
@@ -26,11 +26,18 @@ export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { courseModules, nextCourseId, fetchingModules } = useGetModules({ courseId, moduleId })
-  const courseModule = courseModules?.[0]
+  const { fetchingModule, courseModule, nextCourseId, previousCourseId } = useGetModule({
+    courseId,
+    moduleId,
+  })
 
-  if (fetchingModules || !courseModule) {
+  if (fetchingModule || !courseModule) {
     return <Loading />
+  }
+
+  if (!courseModule) {
+    // TODO: Handle this error
+    return <p>Module not found</p>
   }
 
   return (
@@ -45,6 +52,17 @@ export default function Module() {
                 </CCardTitle>
               </div>
               <div>
+                {previousCourseId && (
+                  <CButton
+                    className="me-2"
+                    color="light"
+                    onClick={() =>
+                      router.push(`/enrolled-courses/${courseId}/modules/${previousCourseId}`)
+                    }
+                  >
+                    Previous
+                  </CButton>
+                )}
                 {nextCourseId && (
                   <CButton
                     color="light"
@@ -52,7 +70,7 @@ export default function Module() {
                       router.push(`/enrolled-courses/${courseId}/modules/${nextCourseId}`)
                     }
                   >
-                    Next Module
+                    Next
                   </CButton>
                 )}
               </div>

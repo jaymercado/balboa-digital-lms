@@ -3,9 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import useGetCourses from '@/hooks/useGetCourses'
-import toast from '@/utils/toast'
-import { Loading } from '@/components'
 import {
   CCard,
   CCardBody,
@@ -38,6 +35,9 @@ import {
   cilVideo,
   cilImage,
 } from '@coreui/icons'
+import useGetCourses from '@/hooks/useGetCourses'
+import toast from '@/utils/toast'
+import { Loading } from '@/components'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 
 export default function Course() {

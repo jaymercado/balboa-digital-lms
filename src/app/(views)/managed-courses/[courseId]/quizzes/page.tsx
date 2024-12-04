@@ -2,8 +2,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import useGetModules from '@/hooks/useGetModules'
-import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
 import {
@@ -22,21 +20,21 @@ import {
   CDropdownToggle,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { cilPencil, cilTrash, cilPlus, cilVideo, cilImage, cilFile, cilNotes } from '@coreui/icons'
+import { cilPencil, cilTrash, cilPlus } from '@coreui/icons'
+import useGetQuizzes from '@/hooks/useGetQuizzes'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 
-export default function Modules() {
+export default function Quizzes() {
   const params = useParams()
   const router = useRouter()
-  const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { courses, fetchingCourses } = useGetCourses({ courseId })
-  const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
-  const [deletingModule, setDeletingModule] = useState(false)
-  const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
+  const { courseId } = params as { courseId: string }
+  const { quizzes, fetchingQuizzes } = useGetQuizzes({ courseId })
+  const [deletingQuiz, setDeletingQuiz] = useState(false)
+  const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false)
 
-  function deleteModule(moduleId: string) {
-    setDeletingModule(true)
-    fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
+  function deleteQuiz(quizId: string) {
+    setDeletingQuiz(true)
+    fetch(`/api/courses/${courseId}/quizzes/${quizId}`, {
       method: 'DELETE',
     })
       .then(() => {
@@ -47,10 +45,10 @@ export default function Modules() {
         console.error(err)
         toast('error', 'Error deleting course')
       })
-      .finally(() => setDeletingModule(false))
+      .finally(() => setDeletingQuiz(false))
   }
 
-  if (fetchingCourses) {
+  if (fetchingQuizzes) {
     return <Loading />
   }
 
@@ -61,11 +59,11 @@ export default function Modules() {
           <CButton
             color="primary"
             as="a"
-            href={`/managed-courses/${courses[0]?.id}/modules/create`}
+            href={`/managed-courses/${courseId}/quizzes/create`}
             className="fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />
-            Create Module
+            Create Quiz
           </CButton>
         </div>
 
@@ -79,41 +77,24 @@ export default function Modules() {
                 <small>Title</small>
               </CTableHeaderCell>
               <CTableHeaderCell>
-                <small>Type</small>
-              </CTableHeaderCell>
-              <CTableHeaderCell>
                 <small>Actions</small>
               </CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>
-            {courses[0]?.modules.length > 0 ? (
-              courses[0]?.modules.map((module) => (
-                <CTableRow key={module.id} align="middle">
+            {quizzes.length > 0 ? (
+              quizzes.map((quiz) => (
+                <CTableRow key={quiz.id} align="middle">
                   <CTableDataCell>
-                    <Link href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}>
-                      {module.id}
-                    </Link>
+                    <Link href={`/managed-courses/${courseId}/quizzes/${quiz.id}`}>{quiz.id}</Link>
                   </CTableDataCell>
                   <CTableDataCell>
                     <Link
-                      href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}
+                      href={`/managed-courses/${courseId}/quizzes/${quiz.id}`}
                       className="text-decoration-none"
                     >
-                      <span className="fw-semibold">{module.title}</span>
-                      <small className="d-block text-truncate text-secondary description">
-                        {module.description}
-                      </small>
+                      <span className="fw-semibold">{quiz.title}</span>
                     </Link>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    {module.type === 'video' && <CIcon icon={cilVideo} size="sm" color="dark" />}
-                    {module.type === 'text' && <CIcon icon={cilNotes} size="sm" color="dark" />}
-                    {module.type === 'pdf' && <CIcon icon={cilFile} size="sm" color="dark" />}
-                    {module.type === 'image' && <CIcon icon={cilImage} size="sm" color="dark" />}
-                    <small className="text-secondary ms-1">
-                      <span className="text-capitalize">{module.type}</span>
-                    </small>
                   </CTableDataCell>
                   <CTableDataCell>
                     <CDropdown>
@@ -122,26 +103,23 @@ export default function Modules() {
                       </CDropdownToggle>
                       <CDropdownMenu className="secondary">
                         <CDropdownItem
-                          href={`/managed-courses/${courses[0]?.id}/modules/${module.id}/edit`}
+                          href={`/managed-courses/${courseId}/quizzes/${module.id}/edit`}
                         >
                           <CIcon icon={cilPencil} className="me-1" />
                           <small>Edit</small>
                         </CDropdownItem>
                         <CDropdownItem
-                          onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
-                          disabled={deletingModule}
+                          onClick={() => setShowDeleteQuizModal((prevState) => !prevState)}
+                          disabled={deletingQuiz}
                         >
                           <CIcon icon={cilTrash} className="me-1" />
                           <small>Delete</small>
                         </CDropdownItem>
                         <ConfirmDeleteModal
-                          visible={showDeleteModuleModal}
-                          onClose={() => setShowDeleteModuleModal(false)}
-                          onConfirm={() => [
-                            deleteModule(module.id),
-                            setShowDeleteModuleModal(false),
-                          ]}
-                          disabled={deletingModule}
+                          visible={showDeleteQuizModal}
+                          onClose={() => setShowDeleteQuizModal(false)}
+                          onConfirm={() => [deleteQuiz(module.id), setShowDeleteQuizModal(false)]}
+                          disabled={deletingQuiz}
                         />
                       </CDropdownMenu>
                     </CDropdown>
@@ -150,8 +128,8 @@ export default function Modules() {
               ))
             ) : (
               <CTableRow>
-                <CTableDataCell colSpan={4} className="text-center">
-                  No modules available
+                <CTableDataCell colSpan={3} className="text-center">
+                  No quizzes available
                 </CTableDataCell>
               </CTableRow>
             )}

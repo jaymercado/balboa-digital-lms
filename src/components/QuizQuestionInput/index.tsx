@@ -1,45 +1,91 @@
 'use client'
 
-import React from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { CCard, CCol, CFormTextarea, CFormSelect } from '@coreui/react-pro'
+import { QuizQuestion, QuizAnswer } from '@/types/quiz'
 import Answer from './Answer'
 
 interface CreateQuizProps {
   index: number
+  question: QuizQuestion
+  setQuestions: Dispatch<SetStateAction<QuizQuestion[]>>
 }
 
-export default function CreateQuiz({ index }: CreateQuizProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-  } = useForm<Inputs>()
+export default function CreateQuiz({ index, question, setQuestions }: CreateQuizProps) {
+  const { type, answers } = question
+
+  useEffect(() => {
+    if (type === 'multipleChoice') {
+      setQuestions((state) => {
+        return state.map((q, i) => {
+          if (i === index) {
+            return {
+              ...q,
+              answers: [
+                { answer: '', isCorrect: false },
+                { answer: '', isCorrect: false },
+                { answer: '', isCorrect: false },
+                { answer: '', isCorrect: false },
+              ],
+            }
+          }
+          return q
+        })
+      })
+    } else {
+      setQuestions((state) => {
+        return state.map((q, i) => {
+          if (i === index) {
+            return {
+              ...q,
+              answers: [
+                { answer: 'true', isCorrect: false },
+                { answer: 'false', isCorrect: false },
+              ],
+            }
+          }
+          return q
+        })
+      })
+    }
+  }, [type, setQuestions, index])
 
   return (
     <CCard className="p-3 mt-3 bg-light">
       <CCol>
-        <h2>Question {index}</h2>
+        <h2>Question {index + 1}</h2>
         <CFormTextarea
-          id="description"
-          {...register('text', { required: true })}
+          value={question.question}
+          onChange={(e) =>
+            setQuestions((state) => {
+              return state.map((q, i) => {
+                if (i === index) {
+                  return { ...q, question: e.target.value }
+                }
+                return q
+              })
+            })
+          }
           placeholder="Enter question"
         />
-        <CFormSelect id="type" {...register('type', { required: true })}>
+        <CFormSelect
+          value={type}
+          onChange={(e) =>
+            setQuestions((state) => {
+              return state.map((q, i) => {
+                if (i === index) {
+                  return { ...q, type: e.target.value }
+                }
+                return q
+              })
+            })
+          }
+        >
           <option value="multipleChoice">Multiple Choice</option>
           <option value="trueOrFalse">True or False</option>
-          <option value="identification">Identification</option>
         </CFormSelect>
-        <Answer type={watch('type')} />
+        <Answer type={type} answers={answers} setQuestions={setQuestions} index={index} />
       </CCol>
     </CCard>
   )
-}
-
-type Inputs = {
-  text: string
-  type: string
-  points: number
 }

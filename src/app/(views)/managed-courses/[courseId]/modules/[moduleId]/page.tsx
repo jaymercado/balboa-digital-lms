@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import useGetModules from '@/hooks/useGetModules'
+import { useGetModule } from '@/hooks/useGetModules'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
@@ -29,8 +29,10 @@ export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { courseModules, nextCourseId, fetchingModules } = useGetModules({ courseId, moduleId })
-  const courseModule = courseModules?.[0]
+  const { fetchingModule, courseModule, nextCourseId, previousCourseId } = useGetModule({
+    courseId,
+    moduleId,
+  })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
@@ -51,8 +53,13 @@ export default function Module() {
       .finally(() => setDeletingModule(false))
   }
 
-  if (fetchingModules || !courseModule) {
+  if (fetchingModule) {
     return <Loading />
+  }
+
+  if (!courseModule) {
+    // TODO: Handle error
+    return <p>Error loading module</p>
   }
 
   return (
@@ -61,19 +68,30 @@ export default function Module() {
         <CCard className="mb-4">
           <CCardBody>
             <CRow>
+              {previousCourseId && (
+                <CCol xs="auto">
+                  <CButton
+                    color="light"
+                    onClick={() =>
+                      router.push(`/managed-courses/${courseId}/modules/${previousCourseId}`)
+                    }
+                    className="mb-2"
+                  >
+                    Previous
+                  </CButton>
+                </CCol>
+              )}
               {nextCourseId && (
                 <CCol xs="auto">
-                  {nextCourseId && (
-                    <CButton
-                      color="light"
-                      onClick={() =>
-                        router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)
-                      }
-                      className="mb-2"
-                    >
-                      Next Module
-                    </CButton>
-                  )}
+                  <CButton
+                    color="light"
+                    onClick={() =>
+                      router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)
+                    }
+                    className="mb-2"
+                  >
+                    Next
+                  </CButton>
                 </CCol>
               )}
             </CRow>

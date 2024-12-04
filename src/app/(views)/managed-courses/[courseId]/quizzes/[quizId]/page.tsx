@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import useGetModules from '@/hooks/useGetModules'
+import { useGetModules } from '@/hooks/useGetModules'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'

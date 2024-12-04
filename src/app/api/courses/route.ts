@@ -32,12 +32,14 @@ export async function GET(req: NextRequest) {
         .from('courses')
         .select('*, courseInstructors!inner(instructorId)')
         .eq('courseInstructors.instructorId', user.data?.[0].id)
+        .order('id', { ascending: true })
       courses = foundCourses.data ?? []
     } else {
       const foundCourses = await supabase
         .from('courses')
         .select('*, enrollments!inner(studentId)')
         .eq('enrollments.studentId', user.data?.[0].id)
+        .order('id', { ascending: true })
       courses = foundCourses.data ?? []
     }
 

@@ -22,7 +22,7 @@ import {
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
 import Loading from '@/components/Loading'
-import useGetModules from '@/hooks/useGetModules'
+import { useGetModules } from '@/hooks/useGetModules'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
@@ -18,20 +18,32 @@ import {
   CCardTitle,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
+import { QuizQuestion } from '@/types/quiz'
 import QuizQuestionInput from '@/components/QuizQuestionInput'
+
+const defaultQuizQuestion: QuizQuestion = {
+  question: '',
+  type: 'multipleChoice',
+  answers: [
+    { answer: '', isCorrect: true },
+    { answer: '', isCorrect: false },
+    { answer: '', isCorrect: false },
+    { answer: '', isCorrect: false },
+  ],
+}
 
 export default function CreateQuiz() {
   const router = useRouter()
   const { courseId } = useParams()
   const [creatingModule, setCreatingModule] = useState(false)
-  const [questions, setQuestions] = useState<Record<string, any>[]>([{}])
+  const [questions, setQuestions] = useState<QuizQuestion[]>([{ ...defaultQuizQuestion }])
+  const [isValid, setIsValid] = useState(false)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-    setValue,
   } = useForm<Inputs>()
 
   function onSubmit(data: Inputs) {
@@ -42,30 +54,30 @@ export default function CreateQuiz() {
 
     setCreatingModule(true)
 
-    const formData = new FormData()
-    formData.append('title', data.title)
-    formData.append('description', data.description)
-    formData.append('type', data.type)
-    formData.append('content', data.content)
-    formData.append('courseId', courseId as string)
-
     axios
-      .post(`/api/courses/${courseId}/modules`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      .post(`/api/courses/${courseId}/quizzes`, data)
       .then((res) => {
-        if (res.status !== 200) {
-          throw new Error('Failed to create quiz')
-        }
+        if (res.status !== 200) throw new Error('Failed to create quiz')
       })
       .catch((err) => {
-        setCreatingModule(false)
         toast('error', 'Error creating quiz')
         console.error(err)
       })
+      .finally(() => {
+        setCreatingModule(false)
+      })
   }
+
+  useEffect(() => {
+    const allQuestionsAreValid = questions.every(({ question }) => question.trim() !== '')
+    const allAnswersAreValid = questions.every(({ answers }) =>
+      answers.every(({ answer }) => answer.trim() !== ''),
+    )
+    const eachQuestionHasAtLeastOneCorrectAnswer = questions.every(({ answers }) =>
+      answers.some(({ isCorrect }) => isCorrect),
+    )
+    setIsValid(allQuestionsAreValid && allAnswersAreValid && eachQuestionHasAtLeastOneCorrectAnswer)
+  }, [questions])
 
   return (
     <CForm onSubmit={handleSubmit(onSubmit)}>
@@ -94,12 +106,19 @@ export default function CreateQuiz() {
         </CRow>
 
         {questions.map((_, index) => (
-          <QuizQuestionInput key={`question-${index + 1}`} index={index + 1} />
+          <QuizQuestionInput
+            key={`question-${index + 1}`}
+            index={index}
+            question={questions[index]}
+            setQuestions={setQuestions}
+          />
         ))}
 
         <CRow>
           <CCol>
-            <CButton onClick={() => setQuestions([...questions, {}])}>Add Question</CButton>
+            <CButton onClick={() => setQuestions([...questions, { ...defaultQuizQuestion }])}>
+              Add Question
+            </CButton>
           </CCol>
         </CRow>
 
@@ -108,7 +127,12 @@ export default function CreateQuiz() {
             <CButton color="light" onClick={() => router.back()}>
               Cancel
             </CButton>
-            <CButton type="submit" color="primary" className="text-white" disabled={creatingModule}>
+            <CButton
+              type="submit"
+              color="primary"
+              className="text-white"
+              disabled={creatingModule || !isValid}
+            >
               {creatingModule ? <CSpinner size="sm" /> : 'Save'}
             </CButton>
           </CCol>

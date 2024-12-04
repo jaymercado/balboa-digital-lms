@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import useGetModules from '@/hooks/useGetModules'
+import { useGetModules } from '@/hooks/useGetModules'
 import useGetCourses from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
@@ -28,9 +28,8 @@ import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 export default function Modules() {
   const params = useParams()
   const router = useRouter()
-  const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { courses, fetchingCourses } = useGetCourses({ courseId })
-  const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
+  const { courseId } = params as { courseId: string }
+  const { courseModules, fetchingModules } = useGetModules({ courseId })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
@@ -50,7 +49,7 @@ export default function Modules() {
       .finally(() => setDeletingModule(false))
   }
 
-  if (fetchingCourses) {
+  if (fetchingModules) {
     return <Loading />
   }
 
@@ -61,7 +60,7 @@ export default function Modules() {
           <CButton
             color="primary"
             as="a"
-            href={`/managed-courses/${courses[0]?.id}/modules/create`}
+            href={`/managed-courses/${courseId}/modules/create`}
             className="fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />
@@ -87,17 +86,17 @@ export default function Modules() {
             </CTableRow>
           </CTableHead>
           <CTableBody>
-            {courses[0]?.modules.length > 0 ? (
-              courses[0]?.modules.map((module) => (
+            {courseModules.length > 0 ? (
+              courseModules.map((module) => (
                 <CTableRow key={module.id} align="middle">
                   <CTableDataCell>
-                    <Link href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}>
+                    <Link href={`/managed-courses/${courseId}/modules/${module.id}`}>
                       {module.id}
                     </Link>
                   </CTableDataCell>
                   <CTableDataCell>
                     <Link
-                      href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}
+                      href={`/managed-courses/${courseId}/modules/${module.id}`}
                       className="text-decoration-none"
                     >
                       <span className="fw-semibold">{module.title}</span>
@@ -122,7 +121,7 @@ export default function Modules() {
                       </CDropdownToggle>
                       <CDropdownMenu className="secondary">
                         <CDropdownItem
-                          href={`/managed-courses/${courses[0]?.id}/modules/${module.id}/edit`}
+                          href={`/managed-courses/${courseId}/modules/${module.id}/edit`}
                         >
                           <CIcon icon={cilPencil} className="me-1" />
                           <small>Edit</small>
