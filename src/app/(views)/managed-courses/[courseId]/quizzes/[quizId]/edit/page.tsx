@@ -22,7 +22,7 @@ import {
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
 import Loading from '@/components/Loading'
-import { useGetModules } from '@/hooks/useGetModules'
+import { useGetModule } from '@/hooks/useGetModules'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -39,8 +39,11 @@ export default function EditModule() {
   const [file, setFile] = useState<File | null>(null)
   const [fileExtension, setFileExtension] = useState<string>('')
 
-  const { courseModules, fetchingModules } = useGetModules({ courseId, moduleId })
+  const { fetchingModule, courseModule } = useGetModule({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
+
+  const [currentFile, setCurrentFile] = useState<File | null>(null)
+  const [currentFileExtension, setCurrentFileExtension] = useState<string | null>(null)
 
   const {
     register,
@@ -49,6 +52,30 @@ export default function EditModule() {
     watch,
     setValue,
   } = useForm<Inputs>()
+
+  const convertToFile = async (url: string): Promise<File> => {
+    try {
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const fileName = url.split('/').pop() || 'file'
+      return new File([blob], fileName, { type: blob.type })
+    } catch (err) {
+      console.error('Error fetching and converting the file:', err)
+      throw err
+    }
+  }
+
+  const fetchCurrentFile = async (url: string) => {
+    try {
+      const file = await convertToFile(url)
+      setCurrentFile(file)
+      const fileExtension = file.name.split('.').pop() || ''
+      setCurrentFileExtension(fileExtension)
+      setFileExtension(fileExtension)
+    } catch (err) {
+      console.error('Error fetching and converting the file:', err)
+    }
+  }
 
   function onSubmit(data: Inputs) {
     const content = watch('content')
@@ -106,16 +133,19 @@ export default function EditModule() {
   }
 
   useEffect(() => {
-    if (!fetchingModules && courseModules.length > 0) {
-      const coursModule = courseModules[0]
-      setValue('title', coursModule.title)
-      setValue('description', coursModule.description)
-      setValue('type', coursModule.type)
-      setValue('content', coursModule.content)
-    }
-  }, [fetchingModules, courseModules, setValue])
+    if (!fetchingModule && courseModule) {
+      setValue('title', courseModule.title)
+      setValue('description', courseModule.description)
+      setValue('type', courseModule.type)
+      setValue('content', courseModule.content)
 
-  if (fetchingModules) {
+      if (courseModule.content && courseModule.type != 'text') {
+        fetchCurrentFile(courseModule.content)
+      }
+    }
+  }, [fetchingModule, courseModule, setValue, fetchCurrentFile])
+
+  if (fetchingModule) {
     return <Loading />
   }
 
@@ -164,6 +194,7 @@ export default function EditModule() {
               setValue={setValue}
               setFile={setFile}
               setFileExtension={setFileExtension}
+              currentFile={currentFile}
             />
           </CCol>
         </CRow>
