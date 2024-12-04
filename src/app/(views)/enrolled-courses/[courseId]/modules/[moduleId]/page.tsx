@@ -46,34 +46,25 @@ export default function Module() {
         <CCard className="mb-4">
           <CCardBody>
             <div className="d-flex justify-content-between align-items-center py-2">
-              <div>
-                <CCardTitle className="fw-semibold fs-4 align-items-center">
-                  {courseModule.title}
-                </CCardTitle>
-              </div>
-              <div>
-                {previousCourseId && (
-                  <CButton
-                    className="me-2"
-                    color="light"
-                    onClick={() =>
-                      router.push(`/enrolled-courses/${courseId}/modules/${previousCourseId}`)
-                    }
-                  >
-                    Previous
-                  </CButton>
-                )}
-                {nextCourseId && (
-                  <CButton
-                    color="light"
-                    onClick={() =>
-                      router.push(`/enrolled-courses/${courseId}/modules/${nextCourseId}`)
-                    }
-                  >
-                    Next
-                  </CButton>
-                )}
-              </div>
+              <CButton
+                color="light"
+                onClick={() =>
+                  router.push(`/enrolled-courses/${courseId}/modules/${previousCourseId}}`)
+                }
+                disabled={!previousCourseId}
+              >
+                <i className="bi bi-chevron-left me-1"></i>
+                Previous
+              </CButton>
+              <div className="fw-semibold fs-4 align-items-center">{courseModule.title}</div>
+              <CButton
+                color="light"
+                onClick={() => router.push(`/enrolled-courses/${courseId}/modules/${nextCourseId}`)}
+                disabled={!nextCourseId}
+              >
+                Next
+                <i className="bi bi-chevron-right ms-1"></i>
+              </CButton>
             </div>
             <CTabs activeItemKey={1}>
               <CTabList variant="underline-border">
