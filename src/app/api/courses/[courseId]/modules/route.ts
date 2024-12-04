@@ -19,7 +19,11 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    const courseModulesDB = await supabase.from('modules').select().eq('courseId', params.courseId)
+    const courseModulesDB = await supabase
+      .from('modules')
+      .select()
+      .eq('courseId', params.courseId)
+      .order('id', { ascending: true })
     const courseModules = courseModulesDB.data
 
     return NextResponse.json(courseModules, { status: 200 })

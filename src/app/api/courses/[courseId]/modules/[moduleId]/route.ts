@@ -14,17 +14,25 @@ export async function GET(req: NextRequest, { params }: { params: { moduleId: st
     const { moduleId } = params
 
     const courseModuleDb = await supabase.from('modules').select().eq('id', moduleId)
-    const courseModules = courseModuleDb.data
+    const courseModule = courseModuleDb.data?.[0]
     const nextCourseIdDb = await supabase
       .from('modules')
       .select('id')
       .gt('id', moduleId)
-      .eq('courseId', courseModules?.[0].courseId)
+      .eq('courseId', courseModule?.courseId)
       .order('id', { ascending: true })
       .limit(1)
     const nextCourseId = nextCourseIdDb.data?.[0]?.id
+    const previousCourseIdDb = await supabase
+      .from('modules')
+      .select('id')
+      .lt('id', moduleId)
+      .eq('courseId', courseModule?.courseId)
+      .order('id', { ascending: false })
+      .limit(1)
+    const previousCourseId = previousCourseIdDb.data?.[0]?.id
 
-    return NextResponse.json({ courseModules, nextCourseId }, { status: 200 })
+    return NextResponse.json({ courseModule, nextCourseId, previousCourseId }, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[id] (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

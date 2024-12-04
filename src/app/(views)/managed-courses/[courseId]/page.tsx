@@ -3,9 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import useGetCourses from '@/hooks/useGetCourses'
-import toast from '@/utils/toast'
-import { Loading } from '@/components'
 import {
   CCard,
   CCardBody,
@@ -38,6 +35,9 @@ import {
   cilVideo,
   cilImage,
 } from '@coreui/icons'
+import useGetCourses from '@/hooks/useGetCourses'
+import toast from '@/utils/toast'
+import { Loading } from '@/components'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 
 export default function Course() {
@@ -149,118 +149,230 @@ export default function Course() {
         </CCard>
         <CRow className="mb-3">
           <CCol>
-            <div className="fs-4 fw-bold">Modules</div>
-            <Link
-              href={`/managed-courses/${course.id}/modules`}
-              className="me-2 text-decoration-none"
-            >
-              <small className="text-secondary d-none d-sm-inline">View All Modules</small>
-              <small className="text-secondary d-inline d-sm-none">View All</small>
-              <i className="bi bi-chevron-right text-secondary"></i>
-            </Link>
-          </CCol>
+            <CRow className="mb-3">
+              <CCol>
+                <div className="fs-4 fw-bold">Modules</div>
+                <Link
+                  href={`/managed-courses/${course.id}/modules`}
+                  className="me-2 text-decoration-none"
+                >
+                  <small className="text-secondary d-none d-sm-inline">View All Modules</small>
+                  <small className="text-secondary d-inline d-sm-none">View All</small>
+                  <i className="bi bi-chevron-right text-secondary"></i>
+                </Link>
+              </CCol>
 
-          <CCol xs="auto">
-            <CButton
-              as="a"
-              color="primary"
-              href={`/managed-courses/${course.id}/modules/create`}
-              className="fw-semibold"
-            >
-              <CIcon icon={cilPlus} size="sm" className="me-2" />
-              <small className="d-none d-sm-inline">Create Module</small>
-              <small className="d-inline d-sm-none">Create</small>
-            </CButton>
+              <CCol xs="auto">
+                <CButton
+                  as="a"
+                  color="primary"
+                  href={`/managed-courses/${course.id}/modules/create`}
+                  className="fw-semibold"
+                >
+                  <CIcon icon={cilPlus} size="sm" className="me-2" />
+                  <small className="d-none d-sm-inline">Create Module</small>
+                  <small className="d-inline d-sm-none">Create</small>
+                </CButton>
+              </CCol>
+            </CRow>
+            <CTable striped>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell>
+                    <small>Title</small>
+                  </CTableHeaderCell>
+                  <CTableHeaderCell>
+                    <small>Type</small>
+                  </CTableHeaderCell>
+                  <CTableHeaderCell>
+                    <small>Actions</small>
+                  </CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {courses[0]?.modules.length > 0 ? (
+                  courses[0]?.modules.map((module) => (
+                    <CTableRow key={module.id} align="middle">
+                      <CTableDataCell>
+                        <Link
+                          href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}
+                          className="text-decoration-none"
+                        >
+                          <span className="fw-semibold">{module.title}</span>
+                          <small className="d-block text-truncate text-secondary description">
+                            {module.description}
+                          </small>
+                        </Link>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        {module.type === 'video' && (
+                          <CIcon icon={cilVideo} size="sm" color="dark" />
+                        )}
+                        {module.type === 'text' && <CIcon icon={cilNotes} size="sm" color="dark" />}
+                        {module.type === 'pdf' && <CIcon icon={cilFile} size="sm" color="dark" />}
+                        {module.type === 'image' && (
+                          <CIcon icon={cilImage} size="sm" color="dark" />
+                        )}
+                        <small className="text-secondary ms-1">
+                          <span className="text-capitalize">{module.type}</span>
+                        </small>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <CDropdown>
+                          <CDropdownToggle className="rounded" caret={false}>
+                            <i className="bi bi-three-dots-vertical"></i>
+                          </CDropdownToggle>
+                          <CDropdownMenu className="secondary">
+                            <CDropdownItem
+                              href={`/managed-courses/${courses[0]?.id}/modules/${module.id}/edit`}
+                            >
+                              <CIcon icon={cilPencil} className="me-1" />
+                              <small>Edit</small>
+                            </CDropdownItem>
+                            <CDropdownItem
+                              onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
+                              disabled={deletingModule}
+                            >
+                              <CIcon icon={cilTrash} className="me-1" />
+                              <small>Delete</small>
+                            </CDropdownItem>
+                            <ConfirmDeleteModal
+                              visible={showDeleteModuleModal}
+                              onClose={() => setShowDeleteModuleModal(false)}
+                              onConfirm={() => [
+                                deleteModule(module.id),
+                                setShowDeleteModuleModal(false),
+                              ]}
+                              disabled={deletingModule}
+                            />
+                          </CDropdownMenu>
+                        </CDropdown>
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))
+                ) : (
+                  <CTableRow>
+                    <CTableDataCell colSpan={4} className="text-center">
+                      No modules available
+                    </CTableDataCell>
+                  </CTableRow>
+                )}
+              </CTableBody>
+            </CTable>
+          </CCol>
+          <CCol>
+            <CRow className="mb-3">
+              <CCol>
+                <div className="fs-4 fw-bold">Quizzes</div>
+                <Link
+                  href={`/managed-courses/${course.id}/quizzes`}
+                  className="me-2 text-decoration-none"
+                >
+                  <small className="text-secondary d-none d-sm-inline">View All Quizzes</small>
+                  <small className="text-secondary d-inline d-sm-none">View All</small>
+                  <i className="bi bi-chevron-right text-secondary"></i>
+                </Link>
+              </CCol>
+
+              <CCol xs="auto">
+                <CButton
+                  as="a"
+                  color="primary"
+                  href={`/managed-courses/${course.id}/quizzes/create`}
+                  className="fw-semibold"
+                >
+                  <CIcon icon={cilPlus} size="sm" className="me-2" />
+                  <small className="d-none d-sm-inline">Create Quiz</small>
+                  <small className="d-inline d-sm-none">Create</small>
+                </CButton>
+              </CCol>
+            </CRow>
+            <CTable striped>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell>
+                    <small>Title</small>
+                  </CTableHeaderCell>
+                  <CTableHeaderCell>
+                    <small>Type</small>
+                  </CTableHeaderCell>
+                  <CTableHeaderCell>
+                    <small>Actions</small>
+                  </CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {courses[0]?.modules.length > 0 ? (
+                  courses[0]?.modules.map((module) => (
+                    <CTableRow key={module.id} align="middle">
+                      <CTableDataCell>
+                        <Link
+                          href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}
+                          className="text-decoration-none"
+                        >
+                          <span className="fw-semibold">{module.title}</span>
+                          <small className="d-block text-truncate text-secondary description">
+                            {module.description}
+                          </small>
+                        </Link>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        {module.type === 'video' && (
+                          <CIcon icon={cilVideo} size="sm" color="dark" />
+                        )}
+                        {module.type === 'text' && <CIcon icon={cilNotes} size="sm" color="dark" />}
+                        {module.type === 'pdf' && <CIcon icon={cilFile} size="sm" color="dark" />}
+                        {module.type === 'image' && (
+                          <CIcon icon={cilImage} size="sm" color="dark" />
+                        )}
+                        <small className="text-secondary ms-1">
+                          <span className="text-capitalize">{module.type}</span>
+                        </small>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <CDropdown>
+                          <CDropdownToggle className="rounded" caret={false}>
+                            <i className="bi bi-three-dots-vertical"></i>
+                          </CDropdownToggle>
+                          <CDropdownMenu className="secondary">
+                            <CDropdownItem
+                              href={`/managed-courses/${courses[0]?.id}/modules/${module.id}/edit`}
+                            >
+                              <CIcon icon={cilPencil} className="me-1" />
+                              <small>Edit</small>
+                            </CDropdownItem>
+                            <CDropdownItem
+                              onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
+                              disabled={deletingModule}
+                            >
+                              <CIcon icon={cilTrash} className="me-1" />
+                              <small>Delete</small>
+                            </CDropdownItem>
+                            <ConfirmDeleteModal
+                              visible={showDeleteModuleModal}
+                              onClose={() => setShowDeleteModuleModal(false)}
+                              onConfirm={() => [
+                                deleteModule(module.id),
+                                setShowDeleteModuleModal(false),
+                              ]}
+                              disabled={deletingModule}
+                            />
+                          </CDropdownMenu>
+                        </CDropdown>
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))
+                ) : (
+                  <CTableRow>
+                    <CTableDataCell colSpan={3} className="text-center">
+                      No modules available
+                    </CTableDataCell>
+                  </CTableRow>
+                )}
+              </CTableBody>
+            </CTable>
           </CCol>
         </CRow>
-        <CTable striped>
-          <CTableHead>
-            <CTableRow>
-              <CTableHeaderCell>
-                <small>ID</small>
-              </CTableHeaderCell>
-              <CTableHeaderCell>
-                <small>Title</small>
-              </CTableHeaderCell>
-              <CTableHeaderCell>
-                <small>Type</small>
-              </CTableHeaderCell>
-              <CTableHeaderCell>
-                <small>Actions</small>
-              </CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            {courses[0]?.modules.length > 0 ? (
-              courses[0]?.modules.map((module) => (
-                <CTableRow key={module.id} align="middle">
-                  <CTableDataCell>
-                    <Link href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}>
-                      {module.id}
-                    </Link>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <Link
-                      href={`/managed-courses/${courses[0]?.id}/modules/${module.id}`}
-                      className="text-decoration-none"
-                    >
-                      <span className="fw-semibold">{module.title}</span>
-                      <small className="d-block text-truncate text-secondary description">
-                        {module.description}
-                      </small>
-                    </Link>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    {module.type === 'video' && <CIcon icon={cilVideo} size="sm" color="dark" />}
-                    {module.type === 'text' && <CIcon icon={cilNotes} size="sm" color="dark" />}
-                    {module.type === 'pdf' && <CIcon icon={cilFile} size="sm" color="dark" />}
-                    {module.type === 'image' && <CIcon icon={cilImage} size="sm" color="dark" />}
-                    <small className="text-secondary ms-1">
-                      <span className="text-capitalize">{module.type}</span>
-                    </small>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <CDropdown>
-                      <CDropdownToggle className="rounded" caret={false}>
-                        <i className="bi bi-three-dots-vertical"></i>
-                      </CDropdownToggle>
-                      <CDropdownMenu className="secondary">
-                        <CDropdownItem
-                          href={`/managed-courses/${courses[0]?.id}/modules/${module.id}/edit`}
-                        >
-                          <CIcon icon={cilPencil} className="me-1" />
-                          <small>Edit</small>
-                        </CDropdownItem>
-                        <CDropdownItem
-                          onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
-                          disabled={deletingModule}
-                        >
-                          <CIcon icon={cilTrash} className="me-1" />
-                          <small>Delete</small>
-                        </CDropdownItem>
-                        <ConfirmDeleteModal
-                          visible={showDeleteModuleModal}
-                          onClose={() => setShowDeleteModuleModal(false)}
-                          onConfirm={() => [
-                            deleteModule(module.id),
-                            setShowDeleteModuleModal(false),
-                          ]}
-                          disabled={deletingModule}
-                        />
-                      </CDropdownMenu>
-                    </CDropdown>
-                  </CTableDataCell>
-                </CTableRow>
-              ))
-            ) : (
-              <CTableRow>
-                <CTableDataCell colSpan={4} className="text-center">
-                  No modules available
-                </CTableDataCell>
-              </CTableRow>
-            )}
-          </CTableBody>
-        </CTable>
       </CCol>
     </CRow>
   )
