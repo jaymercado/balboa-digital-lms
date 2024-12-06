@@ -23,22 +23,26 @@ interface AnswerProps {
 export default function Answer({ type, answers, setQuestions, index }: AnswerProps) {
   if (type === 'trueOrFalse') {
     return (
-      <CTable>
+      <CTable align="middle">
         <CTableHead>
-          <CTableRow>
-            <CTableHeaderCell />
-            <CTableHeaderCell>Correct</CTableHeaderCell>
+          <CTableRow className="text-secondary fs-6">
+            <CTableHeaderCell className="fw-semibold">Choices</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Correct Answer</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
           <CTableRow>
-            <CTableDataCell>True</CTableDataCell>
+            <CTableDataCell>
+              <CFormInput className="bg-body-tertiary" type="text" value="True" readOnly />
+            </CTableDataCell>
             <CTableDataCell>
               <CFormCheck checked={answers[0].isCorrect} />
             </CTableDataCell>
           </CTableRow>
           <CTableRow>
-            <CTableDataCell>False</CTableDataCell>
+            <CTableDataCell>
+              <CFormInput className="bg-body-tertiary" type="text" value="False" readOnly />
+            </CTableDataCell>
             <CTableDataCell>
               <CFormCheck checked={answers[1].isCorrect} />
             </CTableDataCell>
@@ -50,11 +54,11 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
 
   if (type === 'multipleChoice') {
     return (
-      <CTable>
+      <CTable align="middle">
         <CTableHead>
           <CTableRow>
-            <CTableHeaderCell />
-            <CTableHeaderCell>Correct</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Choices</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Correct Answer</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
@@ -62,6 +66,8 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
             <CTableRow key={answerIndex}>
               <CTableDataCell>
                 <CFormInput
+                  placeholder="Type answer here"
+                  className="bg-body-tertiary"
                   onChange={(e) =>
                     setQuestions((state) => {
                       return state.map((q, i) => {
