@@ -54,9 +54,7 @@ export default function CreateQuiz({ index, question, setQuestions }: CreateQuiz
     <CCard className="p-3 mb-3">
       <CCol>
         <div className="d-flex justify-content-between align-items-end mb-2">
-          <CCardTitle>
-            <i className="bi bi-question-square-fill"></i> Question {index + 1}
-          </CCardTitle>
+          <CCardTitle>Question {index + 1}</CCardTitle>
           <CFormSelect
             className="w-25 bg-body-tertiary"
             value={type}
