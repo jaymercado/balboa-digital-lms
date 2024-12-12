@@ -16,6 +16,7 @@ import {
   CFormTextarea,
   CCard,
   CCardTitle,
+  CCardBody,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { QuizQuestion } from '@/types/quiz'
@@ -81,63 +82,63 @@ export default function CreateQuiz() {
 
   return (
     <CForm onSubmit={handleSubmit(onSubmit)}>
-      <CCard className="p-4">
-        <CRow>
-          <CCol>
-            <CCardTitle className="mb-4 fw-semibold"> Quiz Details</CCardTitle>
-            <CFormLabel htmlFor="title">Title</CFormLabel>
-            <CFormInput id="title" {...register('title', { required: true })} />
-            {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
-          </CCol>
-        </CRow>
-
-        <CRow className="mt-3">
-          <CCol>
-            <CFormLabel htmlFor="description">Description</CFormLabel>
-            <CFormTextarea
-              id="description"
-              {...register('description', { required: true })}
-              placeholder="Enter course description"
-            />
-            {errors.description && (
-              <CFormText className="text-danger">This field is required</CFormText>
-            )}
-          </CCol>
-        </CRow>
-
-        {questions.map((_, index) => (
-          <QuizQuestionInput
-            key={`question-${index + 1}`}
-            index={index}
-            question={questions[index]}
-            setQuestions={setQuestions}
+      <CCard className="mb-2">
+        <CCardBody className="p-4">
+          <CCardTitle className="mb-4 fw-semibold">Quiz Details</CCardTitle>
+          <CFormLabel htmlFor="title">Title</CFormLabel>
+          <CFormInput id="title" {...register('title', { required: true })} className="mb-3" />
+          {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
+          <CFormLabel htmlFor="description">Description</CFormLabel>
+          <CFormTextarea
+            rows={3}
+            id="description"
+            {...register('description', { required: true })}
+            placeholder="Enter course description"
           />
-        ))}
-
-        <CRow>
-          <CCol>
-            <CButton onClick={() => setQuestions([...questions, { ...defaultQuizQuestion }])}>
-              Add Question
-            </CButton>
-          </CCol>
-        </CRow>
-
-        <CRow className="mt-4">
-          <CCol className="d-flex gap-2">
-            <CButton color="light" onClick={() => router.back()}>
-              Cancel
-            </CButton>
-            <CButton
-              type="submit"
-              color="primary"
-              className="text-white"
-              disabled={creatingModule || !isValid}
-            >
-              {creatingModule ? <CSpinner size="sm" /> : 'Save'}
-            </CButton>
-          </CCol>
-        </CRow>
+          {errors.description && (
+            <CFormText className="text-danger">This field is required</CFormText>
+          )}
+        </CCardBody>
       </CCard>
+      <CCard>
+        <CCardBody className="p-4">
+          {questions.map((_, index) => (
+            <QuizQuestionInput
+              key={`question-${index + 1}`}
+              index={index}
+              question={questions[index]}
+              setQuestions={setQuestions}
+            />
+          ))}
+
+          <CRow className="mt-2">
+            <CCol>
+              <CButton
+                color="secondary"
+                variant="outline"
+                onClick={() => setQuestions([...questions, { ...defaultQuizQuestion }])}
+              >
+                Add Question <i className="bi bi-plus" />
+              </CButton>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+      <CRow className="my-3 justify-content-end">
+        <CCol className="d-flex gap-2" xs="auto">
+          <CButton color="secondary" onClick={() => router.back()}>
+            Cancel
+          </CButton>
+          <CButton
+            type="submit"
+            color="primary"
+            className="text-white"
+            disabled={creatingModule || !isValid}
+          >
+            {creatingModule ? <CSpinner size="sm" /> : 'Save'}
+          </CButton>
+        </CCol>
+      </CRow>
     </CForm>
   )
 }
