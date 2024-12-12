@@ -44,6 +44,7 @@ export default function EditModule() {
 
   const [currentFile, setCurrentFile] = useState<File | null>(null)
   const [currentFileExtension, setCurrentFileExtension] = useState<string | null>(null)
+  const [dataInitialized, setDataInitialized] = useState(false)
 
   const {
     register,
@@ -133,17 +134,18 @@ export default function EditModule() {
   }
 
   useEffect(() => {
-    if (!fetchingModule && courseModule) {
+    if (!fetchingModule && courseModule && !dataInitialized) {
       setValue('title', courseModule.title)
       setValue('description', courseModule.description)
       setValue('type', courseModule.type)
       setValue('content', courseModule.content)
 
-      if (courseModule.content && courseModule.type != 'text') {
+      if (courseModule.content && courseModule.type !== 'text') {
         fetchCurrentFile(courseModule.content)
       }
+      setDataInitialized(true)
     }
-  }, [fetchingModule, courseModule, setValue, fetchCurrentFile])
+  }, [fetchingModule, courseModule, setValue, fetchCurrentFile, dataInitialized])
 
   if (fetchingModule) {
     return <Loading />
