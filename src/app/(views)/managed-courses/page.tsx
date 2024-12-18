@@ -14,7 +14,7 @@ import {
 } from '@coreui/react-pro'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 import { Course } from '@/types/course'
-import useGetCourses from '@/hooks/useGetCourses'
+import { useGetCourses } from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
 import { cilPlus } from '@coreui/icons'

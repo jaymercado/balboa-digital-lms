@@ -1,28 +1,59 @@
 import React, { useState, useEffect } from 'react'
 import { Quiz } from '@/types/quiz'
 
-export default function useGetQuizzes({ courseId }: { courseId: string }) {
-  const [quizzes, setQuizzes] = useState<Quiz[]>([])
-  const [nextCourseId, setNextCourseId] = useState<string | undefined>(undefined)
+export function useGetQuizzes({ courseId }: { courseId: string }) {
   const [fetchingQuizzes, setFetchingQuizzes] = useState<boolean>(false)
+  const [courseQuizzes, setQuizzes] = useState<Quiz[]>([])
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       setFetchingQuizzes(true)
 
-      const url = `/api/courses/${courseId}/quizzes`
+      let url = `/api/courses/${courseId}/quizzes`
 
       const res = await fetch(url)
-      const fetchedData = ((await res.json()) as { quizzes: Quiz[]; nextCourseId?: string }) || []
+      const fetchedCourseQuizzes = ((await res.json()) as Quiz[]) || []
 
-      setQuizzes(fetchedData.quizzes)
-      if (fetchedData.nextCourseId) {
-        setNextCourseId(fetchedData.nextCourseId)
-      }
+      setQuizzes(fetchedCourseQuizzes)
     }
 
     fetchQuizzes().finally(() => setFetchingQuizzes(false))
   }, [courseId])
 
-  return { quizzes, setQuizzes, nextCourseId, fetchingQuizzes }
+  return { fetchingQuizzes, courseQuizzes, setQuizzes }
+}
+
+export function useGetQuiz({ courseId, quizId }: { courseId: string; quizId: string }) {
+  const [fetchingQuiz, setFetchingQuiz] = useState<boolean>(false)
+  const [courseQuiz, setCourseQuiz] = useState<Quiz | null>(null)
+  const [previousQuizId, setPreviousQuizId] = useState<string | null>(null)
+  const [nextQuizId, setNextQuizId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      setFetchingQuiz(true)
+
+      let url = `/api/courses/${courseId}/quizzes/${quizId}`
+
+      const res = await fetch(url)
+      const fetchedCourseQuiz =
+        ((await res.json()) as {
+          courseQuiz: Quiz
+          nextQuizId?: string
+          previousQuizId?: string
+        }) || {}
+
+      setCourseQuiz(fetchedCourseQuiz.courseQuiz)
+      if (fetchedCourseQuiz.nextQuizId) {
+        setNextQuizId(fetchedCourseQuiz.nextQuizId)
+      }
+      if (fetchedCourseQuiz.previousQuizId) {
+        setPreviousQuizId(fetchedCourseQuiz.previousQuizId)
+      }
+    }
+
+    fetchQuiz().finally(() => setFetchingQuiz(false))
+  }, [courseId, quizId])
+
+  return { fetchingQuiz, courseQuiz, setCourseQuiz, nextQuizId, previousQuizId }
 }

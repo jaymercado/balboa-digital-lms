@@ -3,16 +3,16 @@
 import React from 'react'
 import { useParams } from 'next/navigation'
 import { CCard, CCardBody } from '@coreui/react-pro'
-import CourseModulesTable from '@/components/CourseModulesTable'
+import CourseQuizzesTable from '@/components/CourseQuizzesTable'
 
-export default function Modules() {
+export default function Quizzes() {
   const params = useParams()
   const { courseId } = params as { courseId: string }
 
   return (
     <CCard>
       <CCardBody>
-        <CourseModulesTable courseId={courseId} userIsStudent={true} />
+        <CourseQuizzesTable courseId={courseId} userIsStudent={true} />
       </CCardBody>
     </CCard>
   )

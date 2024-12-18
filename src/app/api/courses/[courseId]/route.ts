@@ -6,9 +6,7 @@ import connectSupabase from '@/utils/databaseConnection'
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
     const supabase = await connectSupabase()
-    if (!supabase) {
-      return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
-    }
+    if (!supabase) throw new Error('Failed to connect to Supabase')
 
     const foundCourses = await supabase
       .from('courses')
@@ -22,19 +20,22 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
       )
       .eq('id', params.courseId)
 
-    const formattedCourses = foundCourses.data?.map((course) => ({
-      ...course,
-      instructors: course.courseInstructors.map((instructor: any) => ({
+    const foundCourse = foundCourses.data?.[0]
+    if (!foundCourse) throw new Error('Course not found')
+
+    const formattedCourse = {
+      ...foundCourse,
+      instructors: foundCourse.courseInstructors.map((instructor: any) => ({
         id: instructor.users.id,
         name: instructor.users.name,
       })),
-      enrollees: course.enrollments.map((enrollment: any) => ({
+      enrollees: foundCourse.enrollments.map((enrollment: any) => ({
         id: enrollment.users.id,
         name: enrollment.users.name,
       })),
-    }))
+    }
 
-    return NextResponse.json(formattedCourses, { status: 200 })
+    return NextResponse.json(formattedCourse, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses/[courseId] (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

@@ -34,13 +34,37 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
           <CTableRow>
             <CTableDataCell>True</CTableDataCell>
             <CTableDataCell>
-              <CFormCheck checked={answers[0].isCorrect} />
+              <CFormCheck
+                checked={answers[0].isCorrect}
+                onChange={(e) =>
+                  setQuestions((state) => {
+                    return state.map((q, i) => ({
+                      ...q,
+                      answers: q.answers.map((a, j) =>
+                        j === 0 ? { answer: a.answer, isCorrect: e.target.checked } : a,
+                      ),
+                    }))
+                  })
+                }
+              />
             </CTableDataCell>
           </CTableRow>
           <CTableRow>
             <CTableDataCell>False</CTableDataCell>
             <CTableDataCell>
-              <CFormCheck checked={answers[1].isCorrect} />
+              <CFormCheck
+                checked={answers[1].isCorrect}
+                onChange={(e) =>
+                  setQuestions((state) => {
+                    return state.map((q, i) => ({
+                      ...q,
+                      answers: q.answers.map((a, j) =>
+                        j === 1 ? { answer: a.answer, isCorrect: e.target.checked } : a,
+                      ),
+                    }))
+                  })
+                }
+              />
             </CTableDataCell>
           </CTableRow>
         </CTableBody>
