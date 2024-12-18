@@ -17,7 +17,7 @@ import {
 } from '@coreui/react-pro'
 import Select, { MultiValue } from 'react-select'
 import useGetUsers from '@/hooks/useGetUsers'
-import useGetCourses from '@/hooks/useGetCourses'
+import { useGetCourses } from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
 
