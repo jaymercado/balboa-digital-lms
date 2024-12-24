@@ -21,10 +21,8 @@ interface AnswerProps {
 }
 
 export default function Answer({ type, answers, setQuestions, index }: AnswerProps) {
-  // Function to handle updating answer values and checking correct answers
   const handleAnswerChange = (answerIndex: number, field: 'answer' | 'isCorrect', value: any) => {
     setQuestions((state) => {
-      // Only modify the specific question at the current index
       const updatedQuestions = state.map((q, i) => {
         if (i === index) {
           return {
@@ -34,7 +32,7 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
             ),
           }
         }
-        return q // Don't modify other questions
+        return q
       })
       return updatedQuestions
     })
