@@ -21,6 +21,25 @@ interface AnswerProps {
 }
 
 export default function Answer({ type, answers, setQuestions, index }: AnswerProps) {
+  // Function to handle updating answer values and checking correct answers
+  const handleAnswerChange = (answerIndex: number, field: 'answer' | 'isCorrect', value: any) => {
+    setQuestions((state) => {
+      // Only modify the specific question at the current index
+      const updatedQuestions = state.map((q, i) => {
+        if (i === index) {
+          return {
+            ...q,
+            answers: q.answers.map((a, j) =>
+              j === answerIndex ? { ...a, [field]: value } : a
+            ),
+          }
+        }
+        return q // Don't modify other questions
+      })
+      return updatedQuestions
+    })
+  }
+
   if (type === 'trueOrFalse') {
     return (
       <CTable>
@@ -31,42 +50,19 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow>
-            <CTableDataCell>True</CTableDataCell>
-            <CTableDataCell>
-              <CFormCheck
-                checked={answers[0].isCorrect}
-                onChange={(e) =>
-                  setQuestions((state) => {
-                    return state.map((q, i) => ({
-                      ...q,
-                      answers: q.answers.map((a, j) =>
-                        j === 0 ? { answer: a.answer, isCorrect: e.target.checked } : a,
-                      ),
-                    }))
-                  })
-                }
-              />
-            </CTableDataCell>
-          </CTableRow>
-          <CTableRow>
-            <CTableDataCell>False</CTableDataCell>
-            <CTableDataCell>
-              <CFormCheck
-                checked={answers[1].isCorrect}
-                onChange={(e) =>
-                  setQuestions((state) => {
-                    return state.map((q, i) => ({
-                      ...q,
-                      answers: q.answers.map((a, j) =>
-                        j === 1 ? { answer: a.answer, isCorrect: e.target.checked } : a,
-                      ),
-                    }))
-                  })
-                }
-              />
-            </CTableDataCell>
-          </CTableRow>
+          {answers.map((answer, answerIndex) => (
+            <CTableRow key={answerIndex}>
+              <CTableDataCell>{answerIndex === 0 ? 'True' : 'False'}</CTableDataCell>
+              <CTableDataCell>
+                <CFormCheck
+                  checked={answer.isCorrect}
+                  onChange={(e) =>
+                    handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)
+                  }
+                />
+              </CTableDataCell>
+            </CTableRow>
+          ))}
         </CTableBody>
       </CTable>
     )
@@ -82,48 +78,21 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {answers.map((_, answerIndex) => (
+          {answers.map((answer, answerIndex) => (
             <CTableRow key={answerIndex}>
               <CTableDataCell>
                 <CFormInput
+                  value={answer.answer}
                   onChange={(e) =>
-                    setQuestions((state) => {
-                      return state.map((q, i) => {
-                        if (i === index) {
-                          return {
-                            ...q,
-                            answers: q.answers.map((a, j) =>
-                              j === answerIndex
-                                ? { answer: e.target.value, isCorrect: a.isCorrect }
-                                : a,
-                            ),
-                          }
-                        }
-                        return q
-                      })
-                    })
+                    handleAnswerChange(answerIndex, 'answer', e.target.value)
                   }
                 />
               </CTableDataCell>
               <CTableDataCell>
                 <CFormCheck
-                  checked={answers[answerIndex].isCorrect}
+                  checked={answer.isCorrect}
                   onChange={(e) =>
-                    setQuestions((state) => {
-                      return state.map((q, i) => {
-                        if (i === index) {
-                          return {
-                            ...q,
-                            answers: q.answers.map((a, j) =>
-                              j === answerIndex
-                                ? { answer: a.answer, isCorrect: e.target.checked }
-                                : a,
-                            ),
-                          }
-                        }
-                        return q
-                      })
-                    })
+                    handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)
                   }
                 />
               </CTableDataCell>
