@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { CourseWithEnrolleesAndInstructors as CourseType } from '@/types/course'
 
-export default function useGetCourses({
+export function useGetCourses({
   type,
   courseId,
 }: {
@@ -28,4 +28,23 @@ export default function useGetCourses({
   }, [type, courseId])
 
   return { courses, setCourses, fetchingCourses }
+}
+
+export function useGetCourse({ courseId }: { courseId: string }) {
+  const [course, setCourse] = useState<CourseType | null>(null)
+  const [fetchingCourse, setFetchingCourse] = useState<boolean>(false)
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      setFetchingCourse(true)
+      let url = `/api/courses/${courseId}`
+      const res = await fetch(url)
+      const fetchedCourse = ((await res.json()) as CourseType) || null
+      setCourse(fetchedCourse)
+    }
+
+    fetchCourse().finally(() => setFetchingCourse(false))
+  }, [courseId])
+
+  return { course, setCourse, fetchingCourse }
 }

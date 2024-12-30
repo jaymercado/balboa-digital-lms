@@ -3,10 +3,6 @@
 
 import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { useGetModule } from '@/hooks/useGetModules'
-import toast from '@/utils/toast'
-import { Loading } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 import { cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import {
@@ -23,44 +19,50 @@ import {
   CTabPanel,
   CTabs,
 } from '@coreui/react-pro'
+import toast from '@/utils/toast'
+import { useGetQuiz } from '@/hooks/useGetQuizzes'
+import { Loading } from '@/components'
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 import CourseModuleContent from '@/components/CourseModuleContent'
 
 export default function Module() {
   const router = useRouter()
   const params = useParams()
-  const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { fetchingModule, courseModule, nextCourseId, previousCourseId } = useGetModule({
+  const { courseId, quizId } = params as { courseId: string; quizId: string }
+  const { fetchingQuiz, courseQuiz, nextQuizId, previousQuizId } = useGetQuiz({
     courseId,
-    moduleId,
+    quizId,
   })
-  const [deletingModule, setDeletingModule] = useState(false)
-  const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
+  const [deletingQuiz, setDeletingQuiz] = useState(false)
+  const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false)
 
-  function deleteModule(moduleId: string) {
-    setDeletingModule(true)
-    fetch(`/api/courses/${courseId}/modules/${moduleId}`, {
+  function deleteQuiz(quizId: string) {
+    setDeletingQuiz(true)
+    fetch(`/api/courses/${courseId}/quizzes/${quizId}`, {
       method: 'DELETE',
     })
       .then((res) => res.json())
       .then(() => {
-        toast('success', 'Module deleted successfully')
+        toast('success', 'Quiz deleted successfully')
         router.push(`/managed-courses/${courseId}`)
       })
       .catch((err) => {
         console.error(err)
-        toast('error', 'Error deleting course')
+        toast('error', 'Error deleting quiz')
       })
-      .finally(() => setDeletingModule(false))
+      .finally(() => setDeletingQuiz(false))
   }
 
-  if (fetchingModule) {
+  if (fetchingQuiz) {
     return <Loading />
   }
 
-  if (!courseModule) {
+  if (!courseQuiz) {
     // TODO: Handle error
-    return <p>Error loading module</p>
+    return <p>Error loading quiz</p>
   }
+
+  console.log(courseQuiz)
 
   return (
     <CRow>
@@ -68,12 +70,12 @@ export default function Module() {
         <CCard className="mb-4">
           <CCardBody>
             <CRow>
-              {previousCourseId && (
+              {previousQuizId && (
                 <CCol xs="auto">
                   <CButton
                     color="light"
                     onClick={() =>
-                      router.push(`/managed-courses/${courseId}/modules/${previousCourseId}`)
+                      router.push(`/managed-courses/${courseId}/quizzes/${previousQuizId}`)
                     }
                     className="mb-2"
                   >
@@ -81,12 +83,12 @@ export default function Module() {
                   </CButton>
                 </CCol>
               )}
-              {nextCourseId && (
+              {nextQuizId && (
                 <CCol xs="auto">
                   <CButton
                     color="light"
                     onClick={() =>
-                      router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)
+                      router.push(`/managed-courses/${courseId}/quizzes/${nextQuizId}`)
                     }
                     className="mb-2"
                   >
@@ -97,19 +99,19 @@ export default function Module() {
             </CRow>
             <CRow>
               <CCol>
-                <CCardTitle className="fw-semibold fs-4">{courseModule.title}</CCardTitle>
+                <CCardTitle className="fw-semibold fs-4">{courseQuiz.title}</CCardTitle>
               </CCol>
               <CCol xs="auto">
                 <CButton
                   color="light"
                   className="me-2"
-                  href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}
+                  href={`/managed-courses/${courseId}/quizzes/${quizId}/edit`}
                 >
                   <CIcon icon={cilPencil} size="sm" /> Edit
                 </CButton>
                 <CButton
                   color="danger"
-                  onClick={() => setShowDeleteModuleModal((prevState) => !prevState)}
+                  onClick={() => setShowDeleteQuizModal((prevState) => !prevState)}
                   className="text-light"
                 >
                   <CIcon icon={cilTrash} className="text-white" /> Delete
@@ -117,29 +119,11 @@ export default function Module() {
               </CCol>
             </CRow>
             <ConfirmDeleteModal
-              visible={showDeleteModuleModal}
-              onClose={() => setShowDeleteModuleModal(false)}
-              onConfirm={() => [deleteModule(courseModule.id), setShowDeleteModuleModal(false)]}
-              disabled={deletingModule}
+              visible={showDeleteQuizModal}
+              onClose={() => setShowDeleteQuizModal(false)}
+              onConfirm={() => [deleteQuiz(quizId), setShowDeleteQuizModal(false)]}
+              disabled={deletingQuiz}
             />
-            <CTabs activeItemKey={1}>
-              <CTabList variant="underline-border">
-                <CTab aria-controls="content-tab-pane" itemKey={1}>
-                  <small>Module Content</small>
-                </CTab>
-                <CTab aria-controls="description-tab-pane" itemKey={2}>
-                  <small>Description</small>
-                </CTab>
-              </CTabList>
-              <CTabContent>
-                <CTabPanel className="py-3" aria-labelledby="content-tab-pane" itemKey={1}>
-                  <CourseModuleContent type={courseModule.type} content={courseModule.content} />
-                </CTabPanel>
-                <CTabPanel className="py-3" aria-labelledby="description-tab-pane" itemKey={2}>
-                  <CCardText>{courseModule.description}</CCardText>
-                </CTabPanel>
-              </CTabContent>
-            </CTabs>
           </CCardBody>
         </CCard>
       </CCol>
