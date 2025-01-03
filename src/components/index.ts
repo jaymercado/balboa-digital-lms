@@ -7,6 +7,7 @@ import Nav from './Nav'
 import LandingPage from './LandingPage'
 import Loading from './Loading'
 import CourseModulesTable from './CourseModulesTable'
+import CourseQuizzesTable from './CourseQuizzesTable'
 
 export {
   AppBreadcrumb,
@@ -18,4 +19,5 @@ export {
   LandingPage,
   Loading,
   CourseModulesTable,
+  CourseQuizzesTable,
 }
