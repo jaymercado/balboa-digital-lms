@@ -6,5 +6,16 @@ import CreateLink from './CreateLink'
 import Nav from './Nav'
 import LandingPage from './LandingPage'
 import Loading from './Loading'
+import CourseModulesTable from './CourseModulesTable'
 
-export { AppBreadcrumb, AppFooter, AppHeader, AppSidebar, CreateLink, Nav, LandingPage, Loading }
+export {
+  AppBreadcrumb,
+  AppFooter,
+  AppHeader,
+  AppSidebar,
+  CreateLink,
+  Nav,
+  LandingPage,
+  Loading,
+  CourseModulesTable,
+}
