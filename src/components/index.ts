@@ -9,6 +9,7 @@ import Loading from './Loading'
 import CourseModuleContent from './CourseModuleContent'
 import CourseModulesTable from './CourseModulesTable'
 import CourseQuizzesTable from './CourseQuizzesTable'
+import QuizQuestionInput from './QuizQuestionInput'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 export {
@@ -23,5 +24,6 @@ export {
   CourseModuleContent,
   CourseModulesTable,
   CourseQuizzesTable,
+  QuizQuestionInput,
   ConfirmDeleteModal,
 }
