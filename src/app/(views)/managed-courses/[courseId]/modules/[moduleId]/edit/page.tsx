@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
@@ -36,14 +36,11 @@ export default function EditModule() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const [file, setFile] = useState<File | null>(null)
-  const [fileExtension, setFileExtension] = useState<string>('')
-
   const { fetchingModule, courseModule } = useGetModule({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
-
+  const [file, setFile] = useState<File | null>(null)
+  const [fileExtension, setFileExtension] = useState<string>('')
   const [currentFile, setCurrentFile] = useState<File | null>(null)
-  const [currentFileExtension, setCurrentFileExtension] = useState<string | null>(null)
   const [dataInitialized, setDataInitialized] = useState(false)
 
   const {
@@ -66,17 +63,16 @@ export default function EditModule() {
     }
   }
 
-  const fetchCurrentFile = async (url: string) => {
+  const fetchCurrentFile =  useCallback(async (url: string) => {
     try {
       const file = await convertToFile(url)
       setCurrentFile(file)
       const fileExtension = file.name.split('.').pop() || ''
-      setCurrentFileExtension(fileExtension)
       setFileExtension(fileExtension)
     } catch (err) {
       console.error('Error fetching and converting the file:', err)
     }
-  }
+  }, [])
 
   function onSubmit(data: Inputs) {
     const content = watch('content')
