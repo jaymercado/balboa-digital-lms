@@ -6,5 +6,26 @@ import CreateLink from './CreateLink'
 import Nav from './Nav'
 import LandingPage from './LandingPage'
 import Loading from './Loading'
+import CourseModuleContent from './CourseModuleContent'
+import CourseModulesTable from './CourseModulesTable'
+import CourseQuizzesTable from './CourseQuizzesTable'
+import QuizQuestionInput from './QuizQuestionInput'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
+import PDFRenderer from './PDFRenderer'
 
-export { AppBreadcrumb, AppFooter, AppHeader, AppSidebar, CreateLink, Nav, LandingPage, Loading }
+export {
+  AppBreadcrumb,
+  AppFooter,
+  AppHeader,
+  AppSidebar,
+  CreateLink,
+  Nav,
+  LandingPage,
+  Loading,
+  CourseModuleContent,
+  CourseModulesTable,
+  CourseQuizzesTable,
+  QuizQuestionInput,
+  ConfirmDeleteModal,
+  PDFRenderer,
+}

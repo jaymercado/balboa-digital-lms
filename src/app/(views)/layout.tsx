@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Nav, LandingPage, AppSidebar, AppHeader, AppBreadcrumb, AppFooter } from '@/components'
+import { Nav, LandingPage, AppSidebar, AppHeader, AppBreadcrumb } from '@/components'
 import { CContainer } from '@coreui/react-pro'
 import AOS from 'aos'
 import 'aos/dist/aos.css'

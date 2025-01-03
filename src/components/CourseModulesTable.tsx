@@ -18,8 +18,7 @@ import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilFile, cilNotes, cilVideo, cilImage } from '@coreui/icons'
 import toast from '@/utils/toast'
 import { useGetCourseModules } from '@/hooks/useGetCourseModules'
-import { Loading } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
+import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function CourseModulesTable({
   courseId,

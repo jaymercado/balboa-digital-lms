@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import React, { useEffect, Dispatch, SetStateAction } from 'react'
 import { CCard, CCol, CFormTextarea, CFormSelect, CCardTitle } from '@coreui/react-pro'
-import { QuizQuestion, QuizAnswer } from '@/types/quiz'
+import { QuizQuestion } from '@/types/quiz'
 import Answer from './Answer'
 
 interface CreateQuizProps {
