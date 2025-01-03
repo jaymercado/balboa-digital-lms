@@ -3,10 +3,6 @@
 
 import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { useGetModule } from '@/hooks/useGetModules'
-import toast from '@/utils/toast'
-import { Loading } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 import { cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import {
@@ -14,7 +10,6 @@ import {
   CCol,
   CCard,
   CCardBody,
-  CCardTitle,
   CButton,
   CCardText,
   CTab,
@@ -23,13 +18,17 @@ import {
   CTabPanel,
   CTabs,
 } from '@coreui/react-pro'
+import toast from '@/utils/toast'
+import { useGetCourseModule } from '@/hooks/useGetCourseModules'
+import { Loading } from '@/components'
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 import CourseModuleContent from '@/components/CourseModuleContent'
 
 export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { fetchingModule, courseModule, nextCourseId, previousCourseId } = useGetModule({
+  const { fetchingModule, courseModule, nextCourseId, previousCourseId } = useGetCourseModule({
     courseId,
     moduleId,
   })

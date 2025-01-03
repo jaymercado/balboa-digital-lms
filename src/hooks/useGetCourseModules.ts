@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Module } from '@/types/module'
 
-export function useGetModules({ courseId }: { courseId: string }) {
+export function useGetCourseModules({ courseId }: { courseId: string }) {
   const [fetchingModules, setFetchingModules] = useState<boolean>(false)
   const [courseModules, setCourseModules] = useState<Module[]>([])
 
@@ -23,7 +23,7 @@ export function useGetModules({ courseId }: { courseId: string }) {
   return { fetchingModules, courseModules, setCourseModules }
 }
 
-export function useGetModule({ courseId, moduleId }: { courseId: string; moduleId: string }) {
+export function useGetCourseModule({ courseId, moduleId }: { courseId: string; moduleId: string }) {
   const [fetchingModule, setFetchingModule] = useState<boolean>(false)
   const [courseModule, setCourseModule] = useState<Module | null>(null)
   const [previousCourseId, setPreviousCourseId] = useState<string | null>(null)

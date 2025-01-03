@@ -20,9 +20,9 @@ import {
   CCardTitle,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
+import { useGetCourseModule } from '@/hooks/useGetCourseModules'
 import ModuleContentInput from '@/components/ModuleContentInput'
 import Loading from '@/components/Loading'
-import { useGetModule } from '@/hooks/useGetModules'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -36,7 +36,7 @@ export default function EditModule() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { fetchingModule, courseModule } = useGetModule({ courseId, moduleId })
+  const { fetchingModule, courseModule } = useGetCourseModule({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [fileExtension, setFileExtension] = useState<string>('')
