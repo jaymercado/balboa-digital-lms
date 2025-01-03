@@ -6,9 +6,7 @@ import { useGetCourse } from '@/hooks/useGetCourses'
 import { CCard, CCardBody, CCardTitle, CCardText, CRow, CCol, CBadge } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilPeople } from '@coreui/icons'
-import CourseModulesTable from '@/components/CourseModulesTable'
-import CourseQuizzesTable from '@/components/CourseQuizzesTable'
-import { Loading } from '@/components'
+import { Loading, CourseModulesTable, CourseQuizzesTable } from '@/components'
 
 export default function Course() {
   const params = useParams()

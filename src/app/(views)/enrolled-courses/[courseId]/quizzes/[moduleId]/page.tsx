@@ -18,8 +18,7 @@ import {
   CTabs,
 } from '@coreui/react-pro'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
-import { Loading } from '@/components'
-import CourseModuleContent from '@/components/CourseModuleContent'
+import { Loading, CourseModuleContent } from '@/components'
 
 export default function Module() {
   const router = useRouter()

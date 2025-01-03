@@ -2,9 +2,9 @@
 'use client'
 
 import React from 'react'
-import { CCardText, CCard, CCardBody } from '@coreui/react-pro'
-import PDFRenderer from '@/components/PDFRenderer'
 import Image from 'next/image'
+import { CCardText, CCard, CCardBody } from '@coreui/react-pro'
+import { PDFRenderer } from '@/components'
 
 export default function CourseModuleContent({ type, content }: CourseModuleContentProps) {
   if (!content) {

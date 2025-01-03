@@ -3,7 +3,7 @@
 import React from 'react'
 import { useParams } from 'next/navigation'
 import { CCard, CCardBody } from '@coreui/react-pro'
-import CourseQuizzesTable from '@/components/CourseQuizzesTable'
+import { CourseQuizzesTable } from '@/components'
 
 export default function Quizzes() {
   const params = useParams()

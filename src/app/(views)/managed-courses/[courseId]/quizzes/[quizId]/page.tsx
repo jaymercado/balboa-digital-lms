@@ -8,8 +8,7 @@ import CIcon from '@coreui/icons-react'
 import { CRow, CCol, CCard, CCardBody, CCardTitle, CButton, CCardText } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { useGetQuiz } from '@/hooks/useGetQuizzes'
-import { Loading } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
+import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function Module() {
   const router = useRouter()

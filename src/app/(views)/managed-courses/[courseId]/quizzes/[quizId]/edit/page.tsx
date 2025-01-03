@@ -20,8 +20,7 @@ import {
   CCardTitle,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
-import ModuleContentInput from '@/components/ModuleContentInput'
-import Loading from '@/components/Loading'
+import { Loading, ModuleContentInput } from '@/components'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
 
 const typeOptions = [

@@ -20,7 +20,7 @@ import {
   CCardTitle,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
-import ModuleContentInput from '@/components/ModuleContentInput'
+import { ModuleContentInput } from '@/components'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },

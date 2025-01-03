@@ -18,8 +18,7 @@ import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash } from '@coreui/icons'
 import toast from '@/utils/toast'
 import { useGetQuizzes } from '@/hooks/useGetQuizzes'
-import { Loading } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
+import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function CourseQuizzesTable({
   courseId,

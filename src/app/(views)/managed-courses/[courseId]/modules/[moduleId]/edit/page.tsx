@@ -21,8 +21,7 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
-import ModuleContentInput from '@/components/ModuleContentInput'
-import Loading from '@/components/Loading'
+import { Loading, ModuleContentInput } from '@/components'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -63,7 +62,7 @@ export default function EditModule() {
     }
   }
 
-  const fetchCurrentFile =  useCallback(async (url: string) => {
+  const fetchCurrentFile = useCallback(async (url: string) => {
     try {
       const file = await convertToFile(url)
       setCurrentFile(file)
