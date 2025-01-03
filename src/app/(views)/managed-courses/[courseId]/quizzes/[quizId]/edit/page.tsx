@@ -21,7 +21,7 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
-import Loading from '@/components/Loading'
+import { Loading } from '@/components'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
 
 const typeOptions = [
