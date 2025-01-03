@@ -11,6 +11,7 @@ import CourseModulesTable from './CourseModulesTable'
 import CourseQuizzesTable from './CourseQuizzesTable'
 import QuizQuestionInput from './QuizQuestionInput'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
+import PDFRenderer from './PDFRenderer'
 
 export {
   AppBreadcrumb,
@@ -26,4 +27,5 @@ export {
   CourseQuizzesTable,
   QuizQuestionInput,
   ConfirmDeleteModal,
+  PDFRenderer,
 }
