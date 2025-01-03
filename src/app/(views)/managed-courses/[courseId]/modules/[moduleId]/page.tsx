@@ -20,9 +20,8 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
-import { Loading } from '@/components'
+import { Loading, CourseModuleContent } from '@/components'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
-import CourseModuleContent from '@/components/CourseModuleContent'
 
 export default function Module() {
   const router = useRouter()

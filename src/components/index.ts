@@ -6,6 +6,7 @@ import CreateLink from './CreateLink'
 import Nav from './Nav'
 import LandingPage from './LandingPage'
 import Loading from './Loading'
+import CourseModuleContent from './CourseModuleContent'
 import CourseModulesTable from './CourseModulesTable'
 import CourseQuizzesTable from './CourseQuizzesTable'
 
@@ -18,6 +19,7 @@ export {
   Nav,
   LandingPage,
   Loading,
+  CourseModuleContent,
   CourseModulesTable,
   CourseQuizzesTable,
 }
