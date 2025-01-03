@@ -25,7 +25,7 @@ export default function CourseModulesTable({
   courseId,
   userIsStudent = false,
 }: CourseModulesTableProps) {
-  const { courseModules, fetchingModules, setModules } = useGetModules({ courseId })
+  const { courseModules, fetchingModules, setCourseModules } = useGetModules({ courseId })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
@@ -36,7 +36,7 @@ export default function CourseModulesTable({
     })
       .then((res) => res.json())
       .then(() => {
-        setModules((modules) => modules.filter((module) => module.id !== moduleId))
+        setCourseModules((modules) => modules.filter((module) => module.id !== moduleId))
         toast('success', 'Module deleted successfully')
       })
       .catch((err) => {
