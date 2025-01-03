@@ -20,9 +20,9 @@ import {
   CCardTitle,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
-import ModuleContentInput from '@/components/ModuleContentInput'
-import { Loading } from '@/components'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
+import { Loading } from '@/components'
+import ModuleContentInput from '@/components/ModuleContentInput'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
