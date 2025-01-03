@@ -21,8 +21,8 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
-import ModuleContentInput from '@/components/ModuleContentInput'
 import { Loading } from '@/components'
+import ModuleContentInput from '@/components/ModuleContentInput'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
