@@ -18,7 +18,7 @@ export default function ModuleContentInput({
       setFile(currentFile)
       setValue('content', '')
     }
-  }, [currentFile, setFile, setFileExtension])
+  }, [currentFile, setFile, setFileExtension, setValue, type])
 
   if (type === 'text') {
     return <RichTextInput value={value} setValue={setValue} />
