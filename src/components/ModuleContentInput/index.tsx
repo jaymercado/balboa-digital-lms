@@ -14,8 +14,9 @@ export default function ModuleContentInput({
   currentFile,
 }: ModuleContentInputProps) {
   useEffect(() => {
-    if (currentFile) {
+    if (currentFile && type != 'text') {
       setFile(currentFile)
+      setValue('content', '')
     }
   }, [currentFile, setFile, setFileExtension])
 
