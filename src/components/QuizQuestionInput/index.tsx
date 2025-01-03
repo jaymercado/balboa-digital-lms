@@ -14,8 +14,10 @@ interface CreateQuizProps {
 export default function CreateQuiz({ index, question, setQuestions }: CreateQuizProps) {
   const { type, answers } = question
 
+  // Handle updates when the type of the question changes
   useEffect(() => {
-    if (type === 'multipleChoice') {
+    if (type === 'multipleChoice' && answers.length !== 4) {
+      // Ensure there are 4 answers for multiple choice questions
       setQuestions((state) => {
         return state.map((q, i) => {
           if (i === index) {
@@ -32,7 +34,8 @@ export default function CreateQuiz({ index, question, setQuestions }: CreateQuiz
           return q
         })
       })
-    } else {
+    } else if (type === 'trueOrFalse' && answers.length !== 2) {
+      // Ensure there are 2 answers for true/false questions
       setQuestions((state) => {
         return state.map((q, i) => {
           if (i === index) {
@@ -48,7 +51,7 @@ export default function CreateQuiz({ index, question, setQuestions }: CreateQuiz
         })
       })
     }
-  }, [type, setQuestions, index])
+  }, [type, setQuestions, index, answers.length])
 
   return (
     <CCard className="p-3 mb-3">

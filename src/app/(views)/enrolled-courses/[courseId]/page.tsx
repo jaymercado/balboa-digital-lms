@@ -2,34 +2,26 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import useGetCourses from '@/hooks/useGetCourses'
-import { Loading } from '@/components'
-import {
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CCardText,
-  CRow,
-  CCol,
-  CBadge,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from '@coreui/react-pro'
+import { useGetCourse } from '@/hooks/useGetCourses'
+import { CCard, CCardBody, CCardTitle, CCardText, CRow, CCol, CBadge } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { cilPenAlt, cilPeople, cilFile, cilNotes, cilVideo, cilImage } from '@coreui/icons'
+import { cilPenAlt, cilPeople } from '@coreui/icons'
+import CourseModulesTable from '@/components/CourseModulesTable'
+import CourseQuizzesTable from '@/components/CourseQuizzesTable'
+import { Loading } from '@/components'
 
 export default function Course() {
   const params = useParams()
   const { courseId } = params as { courseId: string }
-  const { courses, fetchingCourses } = useGetCourses({ courseId })
-  const course = courses[0]
+  const { course, fetchingCourse } = useGetCourse({ courseId })
 
-  if (fetchingCourses || !course) {
+  if (fetchingCourse) {
     return <Loading />
+  }
+
+  // TODO: Add a 404 page
+  if (!course) {
+    return <div>Course not found</div>
   }
 
   return (
@@ -66,8 +58,9 @@ export default function Course() {
             </CCardText>
           </CCardBody>
         </CCard>
-        <CCard className="p-1">
-          <CCardBody>
+
+        <CRow className="mb-3">
+          <CCol>
             <CRow className="mb-3">
               <CCol>
                 <div className="fs-4 fw-bold">Modules</div>
@@ -81,66 +74,25 @@ export default function Course() {
                 </Link>
               </CCol>
             </CRow>
-            <CTable striped>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell>
-                    <small>ID</small>
-                  </CTableHeaderCell>
-                  <CTableHeaderCell>
-                    <small>Title</small>
-                  </CTableHeaderCell>
-                  <CTableHeaderCell>
-                    <small>Type</small>
-                  </CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {courses[0]?.modules.length > 0 ? (
-                  courses[0]?.modules.map((module) => (
-                    <CTableRow key={module.id} align="middle">
-                      <CTableDataCell>
-                        <Link href={`/enrolled-courses/${courses[0]?.id}/modules/${module.id}`}>
-                          {module.id}
-                        </Link>
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <Link
-                          href={`/enrolled-courses/${courses[0]?.id}/modules/${module.id}`}
-                          className="text-decoration-none"
-                        >
-                          <span className="fw-semibold">{module.title}</span>
-                          <small className="d-block text-truncate text-secondary description">
-                            {module.description}
-                          </small>
-                        </Link>
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        {module.type === 'video' && (
-                          <CIcon icon={cilVideo} size="sm" color="dark" />
-                        )}
-                        {module.type === 'text' && <CIcon icon={cilNotes} size="sm" color="dark" />}
-                        {module.type === 'pdf' && <CIcon icon={cilFile} size="sm" color="dark" />}
-                        {module.type === 'image' && (
-                          <CIcon icon={cilImage} size="sm" color="dark" />
-                        )}
-                        <small className="text-secondary ms-1">
-                          <span className="text-capitalize">{module.type}</span>
-                        </small>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))
-                ) : (
-                  <CTableRow>
-                    <CTableDataCell colSpan={4} className="text-center">
-                      No modules available
-                    </CTableDataCell>
-                  </CTableRow>
-                )}
-              </CTableBody>
-            </CTable>
-          </CCardBody>
-        </CCard>
+            <CourseModulesTable courseId={course.id} />
+          </CCol>
+          <CCol>
+            <CRow className="mb-3">
+              <CCol>
+                <div className="fs-4 fw-bold">Quizzes</div>
+                <Link
+                  href={`/enrolled-courses/${course.id}/quizzes`}
+                  className="me-2 text-decoration-none"
+                >
+                  <small className="text-secondary d-none d-sm-inline">View All Quizzes</small>
+                  <small className="text-secondary d-inline d-sm-none">View All</small>
+                  <i className="bi bi-chevron-right text-secondary"></i>
+                </Link>
+              </CCol>
+            </CRow>
+            <CourseQuizzesTable courseId={course.id} />
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
   )

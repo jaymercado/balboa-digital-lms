@@ -3,12 +3,12 @@
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CRow } from '@coreui/react-pro'
-import useGetCourses from '@/hooks/useGetCourses'
+import { useGetCourses } from '@/hooks/useGetCourses'
 import { Loading } from '@/components'
 import ReactPaginate from 'react-paginate'
 
 export default function EnrolledCourses() {
-  const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'enrolled' })
+  const { courses, fetchingCourses } = useGetCourses({ type: 'enrolled' })
   const itemsPerPage = 8
   const [currentPage, setCurrentPage] = useState(0)
   const offset = currentPage * itemsPerPage
