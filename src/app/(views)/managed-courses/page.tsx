@@ -12,14 +12,13 @@ import {
   CCol,
   CRow,
 } from '@coreui/react-pro'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
-import { Course } from '@/types/course'
-import { useGetCourses } from '@/hooks/useGetCourses'
-import toast from '@/utils/toast'
-import { Loading } from '@/components'
 import { cilPlus } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import ReactPaginate from 'react-paginate'
+import { Course } from '@/types/course'
+import { useGetCourses } from '@/hooks/useGetCourses'
+import toast from '@/utils/toast'
+import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function ManagedCourses() {
   const [deletingCourse, setDeletingCourse] = useState(false)

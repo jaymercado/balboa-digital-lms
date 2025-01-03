@@ -17,8 +17,7 @@ import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilPlus, cilPenAlt, cilPeople } from '@coreui/icons'
 import toast from '@/utils/toast'
 import { useGetCourse } from '@/hooks/useGetCourses'
-import { Loading, CourseModulesTable, CourseQuizzesTable } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
+import { Loading, CourseModulesTable, CourseQuizzesTable, ConfirmDeleteModal } from '@/components'
 
 export default function Course() {
   const router = useRouter()

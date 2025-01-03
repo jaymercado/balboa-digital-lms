@@ -9,6 +9,7 @@ import Loading from './Loading'
 import CourseModuleContent from './CourseModuleContent'
 import CourseModulesTable from './CourseModulesTable'
 import CourseQuizzesTable from './CourseQuizzesTable'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 export {
   AppBreadcrumb,
@@ -22,4 +23,5 @@ export {
   CourseModuleContent,
   CourseModulesTable,
   CourseQuizzesTable,
+  ConfirmDeleteModal,
 }
