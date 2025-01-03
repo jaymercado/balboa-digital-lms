@@ -44,14 +44,23 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
     const previousCourseId = previousCourseIdDb.data?.[0]?.id
 
     const formattedCourseQuiz = {
-      ...courseQuiz,
+      id: courseQuiz.id,
+      title: courseQuiz.title,
+      description: courseQuiz.description,
       questions: courseQuiz.quizQuestions.map((question: any) => ({
-        ...question,
-        answers: question.quizAnswers,
+        question: question.question,
+        type: question.type,
+        answers: question.quizAnswers.map((answer: any) => ({
+          answer: answer.answer,
+          isCorrect: answer.isCorrect,
+        })),
       })),
     }
 
-    return NextResponse.json({ courseQuiz, nextCourseId, previousCourseId }, { status: 200 })
+    return NextResponse.json(
+      { formattedCourseQuiz, nextCourseId, previousCourseId },
+      { status: 200 },
+    )
   } catch (error) {
     console.error('Error in /api/courses/[id] (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
