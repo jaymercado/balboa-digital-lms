@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { CButton, CContainer, CCol } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
-import CourseModulesTable from '@/components/CourseModulesTable'
+import { CourseModulesTable } from '@/components'
 
 export default function Modules() {
   const params = useParams()

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
@@ -20,9 +20,9 @@ import {
   CCardTitle,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
+import { useGetCourseModule } from '@/hooks/useGetCourseModules'
+import { Loading } from '@/components'
 import ModuleContentInput from '@/components/ModuleContentInput'
-import Loading from '@/components/Loading'
-import { useGetModule } from '@/hooks/useGetModules'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -39,11 +39,10 @@ export default function EditModule() {
   const [file, setFile] = useState<File | null>(null)
   const [fileExtension, setFileExtension] = useState<string>('')
 
-  const { fetchingModule, courseModule } = useGetModule({ courseId, moduleId })
+  const { fetchingModule, courseModule } = useGetCourseModule({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 
   const [currentFile, setCurrentFile] = useState<File | null>(null)
-  const [currentFileExtension, setCurrentFileExtension] = useState<string | null>(null)
 
   const {
     register,
@@ -65,17 +64,16 @@ export default function EditModule() {
     }
   }
 
-  const fetchCurrentFile = async (url: string) => {
+  const fetchCurrentFile = useCallback(async (url: string) => {
     try {
       const file = await convertToFile(url)
       setCurrentFile(file)
       const fileExtension = file.name.split('.').pop() || ''
-      setCurrentFileExtension(fileExtension)
       setFileExtension(fileExtension)
     } catch (err) {
       console.error('Error fetching and converting the file:', err)
     }
-  }
+  }, [])
 
   function onSubmit(data: Inputs) {
     const content = watch('content')

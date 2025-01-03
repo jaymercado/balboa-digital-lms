@@ -20,7 +20,7 @@ import {
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { QuizQuestion } from '@/types/quiz'
-import QuizQuestionInput from '@/components/QuizQuestionInput'
+import { QuizQuestionInput } from '@/components'
 
 const defaultQuizQuestion: QuizQuestion = {
   question: '',

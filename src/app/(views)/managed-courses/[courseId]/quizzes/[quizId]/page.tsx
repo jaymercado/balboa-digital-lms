@@ -5,25 +5,10 @@ import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import {
-  CRow,
-  CCol,
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CButton,
-  CCardText,
-  CTab,
-  CTabContent,
-  CTabList,
-  CTabPanel,
-  CTabs,
-} from '@coreui/react-pro'
+import { CRow, CCol, CCard, CCardBody, CCardTitle, CButton, CCardText } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { useGetQuiz } from '@/hooks/useGetQuizzes'
-import { Loading } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
-import CourseModuleContent from '@/components/CourseModuleContent'
+import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function Module() {
   const router = useRouter()
@@ -100,6 +85,7 @@ export default function Module() {
             <CRow>
               <CCol>
                 <CCardTitle className="fw-semibold fs-4">{courseQuiz.title}</CCardTitle>
+                <CCardText className="text-secondary">{courseQuiz.description}</CCardText>
               </CCol>
               <CCol xs="auto">
                 <CButton
@@ -116,6 +102,42 @@ export default function Module() {
                 >
                   <CIcon icon={cilTrash} className="text-white" /> Delete
                 </CButton>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol>
+                <div className="mt-4">
+                  {courseQuiz.questions.length === 0 ? (
+                    <p>No questions added</p>
+                  ) : (
+                    courseQuiz.questions.map((question, index) => (
+                      <div key={index} className="mb-4">
+                        <div className="fw-semibold fs-5 text-primary">{`Question ${
+                          index + 1
+                        }`}</div>
+                        <div className="fs-6 mb-2">{question.question}</div>
+
+                        <strong className="mt-2">Choices:</strong>
+                        {question.answers.map((answer, idx) => (
+                          <div className="text-capitalize mb-2" key={idx}>
+                            {answer.answer}
+                          </div>
+                        ))}
+
+                        <div className="mt-2">
+                          <span className="fw-semibold">Correct Answer: </span>
+                          {question.answers
+                            .filter((answer) => answer.isCorrect)
+                            .map((answer, idx) => (
+                              <span key={idx} className="text-capitalize mb-2">
+                                {answer.answer}
+                              </span>
+                            ))}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </CCol>
             </CRow>
             <ConfirmDeleteModal

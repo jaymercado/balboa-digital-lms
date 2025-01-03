@@ -17,15 +17,14 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilFile, cilNotes, cilVideo, cilImage } from '@coreui/icons'
 import toast from '@/utils/toast'
-import { useGetModules } from '@/hooks/useGetModules'
-import { Loading } from '@/components'
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
+import { useGetCourseModules } from '@/hooks/useGetCourseModules'
+import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function CourseModulesTable({
   courseId,
   userIsStudent = false,
 }: CourseModulesTableProps) {
-  const { courseModules, fetchingModules, setModules } = useGetModules({ courseId })
+  const { courseModules, fetchingModules, setCourseModules } = useGetCourseModules({ courseId })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
@@ -36,7 +35,7 @@ export default function CourseModulesTable({
     })
       .then((res) => res.json())
       .then(() => {
-        setModules((modules) => modules.filter((module) => module.id !== moduleId))
+        setCourseModules((modules) => modules.filter((module) => module.id !== moduleId))
         toast('success', 'Module deleted successfully')
       })
       .catch((err) => {

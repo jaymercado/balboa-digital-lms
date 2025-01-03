@@ -18,14 +18,14 @@ interface ConfirmDeleteModalProps {
   body?: string
 }
 
-const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
+export default function ConfirmDeleteModal({
   visible,
   disabled,
   onClose,
   onConfirm,
   title = 'Confirm Deletion',
   body = 'Are you sure you want to delete this item? This action cannot be undone.',
-}) => {
+}: ConfirmDeleteModalProps) {
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} backdrop="static">
       <CModalHeader closeButton>
@@ -48,5 +48,3 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
     </CModal>
   )
 }
-
-export default ConfirmDeleteModal

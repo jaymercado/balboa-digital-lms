@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Module } from '@/types/module'
 
-export function useGetModules({ courseId }: { courseId: string }) {
+export function useGetCourseModules({ courseId }: { courseId: string }) {
   const [fetchingModules, setFetchingModules] = useState<boolean>(false)
-  const [courseModules, setModules] = useState<Module[]>([])
+  const [courseModules, setCourseModules] = useState<Module[]>([])
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -14,16 +14,16 @@ export function useGetModules({ courseId }: { courseId: string }) {
       const res = await fetch(url)
       const fetchedCourseModules = ((await res.json()) as Module[]) || []
 
-      setModules(fetchedCourseModules)
+      setCourseModules(fetchedCourseModules)
     }
 
     fetchModules().finally(() => setFetchingModules(false))
   }, [courseId])
 
-  return { fetchingModules, courseModules, setModules }
+  return { fetchingModules, courseModules, setCourseModules }
 }
 
-export function useGetModule({ courseId, moduleId }: { courseId: string; moduleId: string }) {
+export function useGetCourseModule({ courseId, moduleId }: { courseId: string; moduleId: string }) {
   const [fetchingModule, setFetchingModule] = useState<boolean>(false)
   const [courseModule, setCourseModule] = useState<Module | null>(null)
   const [previousCourseId, setPreviousCourseId] = useState<string | null>(null)

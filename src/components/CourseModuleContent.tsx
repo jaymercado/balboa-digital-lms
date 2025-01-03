@@ -3,7 +3,7 @@
 
 import React from 'react'
 import { CCardText, CCard, CCardBody } from '@coreui/react-pro'
-import PDFRenderer from '@/components/PDFRenderer'
+import { PDFRenderer } from '@/components'
 import Image from 'next/image'
 
 export default function CourseModuleContent({ type, content }: CourseModuleContentProps) {
