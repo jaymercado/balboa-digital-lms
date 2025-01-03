@@ -27,9 +27,7 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
         if (i === index) {
           return {
             ...q,
-            answers: q.answers.map((a, j) =>
-              j === answerIndex ? { ...a, [field]: value } : a
-            ),
+            answers: q.answers.map((a, j) => (j === answerIndex ? { ...a, [field]: value } : a)),
           }
         }
         return q
@@ -40,23 +38,28 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
 
   if (type === 'trueOrFalse') {
     return (
-      <CTable>
+      <CTable align="middle">
         <CTableHead>
-          <CTableRow>
-            <CTableHeaderCell />
-            <CTableHeaderCell>Correct</CTableHeaderCell>
+          <CTableRow className="text-secondary fs-6">
+            <CTableHeaderCell className="fw-semibold">Choices</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Correct Answer</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
           {answers.map((answer, answerIndex) => (
             <CTableRow key={answerIndex}>
-              <CTableDataCell>{answerIndex === 0 ? 'True' : 'False'}</CTableDataCell>
+              <CTableDataCell>
+                <CFormInput
+                  className="bg-body-tertiary"
+                  type="text"
+                  value={answerIndex === 0 ? 'True' : 'False'}
+                  readOnly
+                />
+              </CTableDataCell>
               <CTableDataCell>
                 <CFormCheck
                   checked={answer.isCorrect}
-                  onChange={(e) =>
-                    handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)
-                  }
+                  onChange={(e) => handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)}
                 />
               </CTableDataCell>
             </CTableRow>
@@ -68,11 +71,11 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
 
   if (type === 'multipleChoice') {
     return (
-      <CTable>
+      <CTable align="middle">
         <CTableHead>
           <CTableRow>
-            <CTableHeaderCell />
-            <CTableHeaderCell>Correct</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Choices</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Correct Answer</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
@@ -81,17 +84,15 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
               <CTableDataCell>
                 <CFormInput
                   value={answer.answer}
-                  onChange={(e) =>
-                    handleAnswerChange(answerIndex, 'answer', e.target.value)
-                  }
+                  placeholder="Type answer here"
+                  className="bg-body-tertiary"
+                  onChange={(e) => handleAnswerChange(answerIndex, 'answer', e.target.value)}
                 />
               </CTableDataCell>
               <CTableDataCell>
                 <CFormCheck
                   checked={answer.isCorrect}
-                  onChange={(e) =>
-                    handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)
-                  }
+                  onChange={(e) => handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)}
                 />
               </CTableDataCell>
             </CTableRow>
