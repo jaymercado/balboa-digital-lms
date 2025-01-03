@@ -4,7 +4,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { CCardText, CCard, CCardBody } from '@coreui/react-pro'
-import { PDFRenderer } from '@/components'
+import PDFRenderer from '@/components/PDFRenderer'
 
 export default function CourseModuleContent({ type, content }: CourseModuleContentProps) {
   if (!content) {

@@ -11,7 +11,6 @@ import CourseModulesTable from './CourseModulesTable'
 import CourseQuizzesTable from './CourseQuizzesTable'
 import ModuleContentInput from './ModuleContentInput'
 import QuizQuestionInput from './QuizQuestionInput'
-import PDFRenderer from './PDFRenderer'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 export {
@@ -28,6 +27,5 @@ export {
   CourseQuizzesTable,
   ModuleContentInput,
   QuizQuestionInput,
-  PDFRenderer,
   ConfirmDeleteModal,
 }
