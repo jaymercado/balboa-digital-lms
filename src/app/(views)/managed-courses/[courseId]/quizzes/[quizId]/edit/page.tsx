@@ -22,7 +22,7 @@ import {
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
 import Loading from '@/components/Loading'
-import { useGetModule } from '@/hooks/useGetModules'
+import { useGetCourseModule } from '@/hooks/useGetCourseModules'
 
 const typeOptions = [
   { value: '', label: '-- Select --' },
@@ -39,7 +39,7 @@ export default function EditModule() {
   const [file, setFile] = useState<File | null>(null)
   const [fileExtension, setFileExtension] = useState<string>('')
 
-  const { fetchingModule, courseModule } = useGetModule({ courseId, moduleId })
+  const { fetchingModule, courseModule } = useGetCourseModule({ courseId, moduleId })
   const [updatingModule, setUpdatingModule] = useState(false)
 
   const [currentFile, setCurrentFile] = useState<File | null>(null)

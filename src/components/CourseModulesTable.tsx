@@ -17,7 +17,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilFile, cilNotes, cilVideo, cilImage } from '@coreui/icons'
 import toast from '@/utils/toast'
-import { useGetModules } from '@/hooks/useGetModules'
+import { useGetCourseModules } from '@/hooks/useGetCourseModules'
 import { Loading } from '@/components'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal'
 
@@ -25,7 +25,7 @@ export default function CourseModulesTable({
   courseId,
   userIsStudent = false,
 }: CourseModulesTableProps) {
-  const { courseModules, fetchingModules, setCourseModules } = useGetModules({ courseId })
+  const { courseModules, fetchingModules, setCourseModules } = useGetCourseModules({ courseId })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
