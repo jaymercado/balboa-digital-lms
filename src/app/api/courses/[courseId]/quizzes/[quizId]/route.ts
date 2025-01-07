@@ -48,9 +48,11 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
       title: courseQuiz.title,
       description: courseQuiz.description,
       questions: courseQuiz.quizQuestions.map((question: any) => ({
+        id: question.id,
         question: question.question,
         type: question.type,
         answers: question.quizAnswers.map((answer: any) => ({
+          id: answer.id,
           answer: answer.answer,
           isCorrect: answer.isCorrect,
         })),
