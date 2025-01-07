@@ -5,13 +5,17 @@ import { CCard, CCol, CFormTextarea, CFormSelect, CCardTitle } from '@coreui/rea
 import { QuizQuestion } from '@/types/quiz'
 import Answer from './Answer'
 
-interface CreateQuizProps {
+interface QuizQuestionInputProps {
   index: number
   question: QuizQuestion
   setQuestions: Dispatch<SetStateAction<QuizQuestion[]>>
 }
 
-export default function CreateQuiz({ index, question, setQuestions }: CreateQuizProps) {
+export default function QuizQuestionInput({
+  index,
+  question,
+  setQuestions,
+}: QuizQuestionInputProps) {
   const { type, answers } = question
 
   // Handle updates when the type of the question changes

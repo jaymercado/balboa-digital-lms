@@ -88,7 +88,7 @@ export default function Course() {
                 </Link>
               </CCol>
             </CRow>
-            <CourseQuizzesTable courseId={course.id} />
+            <CourseQuizzesTable courseId={course.id} userIsStudent={true} />
           </CCol>
         </CRow>
       </CCol>

@@ -51,7 +51,6 @@ export default function Module() {
   }
 
   if (fetchingModule) {
-    console.log('fetchingModule', fetchingModule)
     return <Loading />
   }
 

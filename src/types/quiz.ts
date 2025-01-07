@@ -6,6 +6,7 @@ export interface Quiz {
 }
 
 export interface QuizQuestion {
+  id?: string
   question: string
   type: string
   answers: QuizAnswer[]
