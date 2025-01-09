@@ -93,47 +93,37 @@ export async function PUT(
       return NextResponse.json({ error: quizError.message }, { status: 500 })
     }
 
-    for (const question of questions) {
-      const { id: questionId, type, question: questionText, answers } = question
+    const questionsToUpsert = questions.map((question: { id: any; type: any; question: any }) => ({
+      id: question.id,
+      quizId,
+      type: question.type,
+      question: question.question,
+    }))
 
-      const { data: updatedQuestion, error: questionError } = await supabase
-        .from('quizQuestions')
-        .upsert(
-          {
-            id: questionId,
-            quizId,
-            type,
-            question: questionText,
-          },
-          { onConflict: 'id' },
-        )
-        .select()
-        .single()
+    const { data: updatedQuestions, error: questionsError } = await supabase
+      .from('quizQuestions')
+      .upsert(questionsToUpsert, { onConflict: 'id' })
+      .select()
 
-      if (questionError || !updatedQuestion) {
-        return NextResponse.json(
-          { error: questionError?.message || 'Failed to update question' },
-          { status: 500 },
-        )
-      }
+    if (questionsError) {
+      return NextResponse.json({ error: questionsError.message }, { status: 500 })
+    }
 
-      for (const answer of answers) {
-        const { id: answerId, answer: answerText, isCorrect } = answer
+    const answersToUpsert = questions.flatMap((question: { answers: any[]; id: any }) =>
+      question.answers.map((answer: { id: any; answer: any; isCorrect: any }) => ({
+        id: answer.id,
+        quizQuestionId: updatedQuestions.find((q) => q.id === question.id)?.id,
+        answer: answer.answer,
+        isCorrect: answer.isCorrect,
+      })),
+    )
 
-        const { error: answerError } = await supabase.from('quizAnswers').upsert(
-          {
-            id: answerId,
-            quizQuestionId: updatedQuestion.id,
-            answer: answerText,
-            isCorrect,
-          },
-          { onConflict: 'id' },
-        )
+    const { error: answersError } = await supabase
+      .from('quizAnswers')
+      .upsert(answersToUpsert, { onConflict: 'id' })
 
-        if (answerError) {
-          return NextResponse.json({ error: answerError.message }, { status: 500 })
-        }
-      }
+    if (answersError) {
+      return NextResponse.json({ error: answersError.message }, { status: 500 })
     }
 
     return NextResponse.json({ message: 'Quiz updated successfully' }, { status: 200 })

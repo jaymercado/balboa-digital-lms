@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
-import { useGetQuiz } from '@/hooks/useGetQuizzes'
 import {
   CForm,
   CFormLabel,
@@ -20,6 +19,7 @@ import {
   CCardBody,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
+import { useGetQuiz } from '@/hooks/useGetQuizzes'
 import { QuizQuestion } from '@/types/quiz'
 import { QuizQuestionInput } from '@/components'
 
@@ -53,19 +53,20 @@ export default function EditQuiz() {
     formState: { errors },
   } = useForm<Inputs>()
 
-  useEffect(() => {
+  const initializeForm = useCallback(() => {
     if (courseQuiz) {
       setValue('title', courseQuiz.title)
       setValue('description', courseQuiz.description)
       setQuestions(courseQuiz?.questions || [{ ...defaultQuizQuestion }])
     }
-  }, [courseQuiz, setValue])
+  }, [courseQuiz, setValue, setQuestions])
+
+  useEffect(() => {
+    initializeForm()
+  }, [initializeForm])
 
   function onSubmit(data: Inputs) {
     setUpdatingQuiz(true)
-    console.log('Submitting data:', data)
-    console.log('Current questions:', questions)
-    console.log('API Payload:', { ...data, questions })
     axios
       .put(`/api/courses/${courseId}/quizzes/${quizId}`, { ...data, questions })
       .then((res) => {
