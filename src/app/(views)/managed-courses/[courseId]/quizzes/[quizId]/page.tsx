@@ -10,7 +10,7 @@ import toast from '@/utils/toast'
 import { useGetQuiz } from '@/hooks/useGetQuizzes'
 import { Loading, ConfirmDeleteModal } from '@/components'
 
-export default function Module() {
+export default function Quiz() {
   const router = useRouter()
   const params = useParams()
   const { courseId, quizId } = params as { courseId: string; quizId: string }
@@ -46,8 +46,6 @@ export default function Module() {
     // TODO: Handle error
     return <p>Error loading quiz</p>
   }
-
-  console.log(courseQuiz)
 
   return (
     <CRow>
@@ -118,19 +116,20 @@ export default function Module() {
                         <div className="fs-6 mb-2">{question.question}</div>
 
                         <strong className="mt-2">Choices:</strong>
-                        {question.answers.map((answer, idx) => (
+                        {question.options.map((option, idx) => (
                           <div className="text-capitalize mb-2" key={idx}>
-                            {answer.answer}
+                            {option.option}
                           </div>
                         ))}
 
                         <div className="mt-2">
                           <span className="fw-semibold">Correct Answer: </span>
-                          {question.answers
-                            .filter((answer) => answer.isCorrect)
-                            .map((answer, idx) => (
+                          {question.options
+                            .filter((option) => option.isCorrect)
+                            .map((option, idx) => (
                               <span key={idx} className="text-capitalize mb-2">
-                                {answer.answer}
+                                {option.option}
+                                {idx === question.options.length - 1 ? '' : ', '}
                               </span>
                             ))}
                         </div>

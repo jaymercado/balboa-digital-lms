@@ -3,47 +3,51 @@
 import React, { useEffect, Dispatch, SetStateAction } from 'react'
 import { CCard, CCol, CFormTextarea, CFormSelect, CCardTitle } from '@coreui/react-pro'
 import { QuizQuestion } from '@/types/quiz'
-import Answer from './Answer'
+import Option from './Option'
 
-interface CreateQuizProps {
+interface QuizQuestionInputProps {
   index: number
   question: QuizQuestion
   setQuestions: Dispatch<SetStateAction<QuizQuestion[]>>
 }
 
-export default function CreateQuiz({ index, question, setQuestions }: CreateQuizProps) {
-  const { type, answers } = question
+export default function QuizQuestionInput({
+  index,
+  question,
+  setQuestions,
+}: QuizQuestionInputProps) {
+  const { type, options } = question
 
   // Handle updates when the type of the question changes
   useEffect(() => {
-    if (type === 'multipleChoice' && answers.length !== 4) {
-      // Ensure there are 4 answers for multiple choice questions
+    if (type === 'multipleChoice' && options.length !== 4) {
+      // Ensure there are 4 options for multiple choice questions
       setQuestions((state) => {
         return state.map((q, i) => {
           if (i === index) {
             return {
               ...q,
-              answers: [
-                { answer: '', isCorrect: false },
-                { answer: '', isCorrect: false },
-                { answer: '', isCorrect: false },
-                { answer: '', isCorrect: false },
+              options: [
+                { option: '', isCorrect: false },
+                { option: '', isCorrect: false },
+                { option: '', isCorrect: false },
+                { option: '', isCorrect: false },
               ],
             }
           }
           return q
         })
       })
-    } else if (type === 'trueOrFalse' && answers.length !== 2) {
-      // Ensure there are 2 answers for true/false questions
+    } else if (type === 'trueOrFalse' && options.length !== 2) {
+      // Ensure there are 2 options for true/false questions
       setQuestions((state) => {
         return state.map((q, i) => {
           if (i === index) {
             return {
               ...q,
-              answers: [
-                { answer: 'true', isCorrect: false },
-                { answer: 'false', isCorrect: false },
+              options: [
+                { option: 'true', isCorrect: false },
+                { option: 'false', isCorrect: false },
               ],
             }
           }
@@ -51,7 +55,7 @@ export default function CreateQuiz({ index, question, setQuestions }: CreateQuiz
         })
       })
     }
-  }, [type, setQuestions, index, answers.length])
+  }, [type, setQuestions, index, options.length])
 
   return (
     <CCard className="p-3 mb-3">
@@ -93,7 +97,7 @@ export default function CreateQuiz({ index, question, setQuestions }: CreateQuiz
           placeholder="Enter question"
         />
 
-        <Answer type={type} answers={answers} setQuestions={setQuestions} index={index} />
+        <Option type={type} options={options} setQuestions={setQuestions} index={index} />
       </CCol>
     </CCard>
   )
