@@ -21,11 +21,11 @@ import toast from '@/utils/toast'
 import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function ManagedCourses() {
-  const [deletingCourse, setDeletingCourse] = useState(false)
   const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
+  const [deletingCourse, setDeletingCourse] = useState(false)
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
-  const itemsPerPage = 8
   const [currentPage, setCurrentPage] = useState(0)
+  const itemsPerPage = 8
   const offset = currentPage * itemsPerPage
   const paginatedData = courses.slice(offset, offset + itemsPerPage)
 
@@ -59,7 +59,6 @@ export default function ManagedCourses() {
           <CButton
             color="primary"
             href="/managed-courses/create"
-            disabled={courses.length <= 0}
             className="bg-primary-emphasis fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />
@@ -116,6 +115,7 @@ export default function ManagedCourses() {
             )}
           </CRow>
         )}
+
         <div className="d-flex align-items-center justify-content-center">
           <small className="text-secondary me-2 page-number">
             Page {currentPage + 1} of {Math.ceil(courses.length / itemsPerPage)}

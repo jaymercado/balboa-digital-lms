@@ -1,9 +1,10 @@
 'use client'
+
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
-const Users = () => {
+export default function Users() {
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -13,5 +14,3 @@ const Users = () => {
 
   return <h1>Users</h1>
 }
-
-export default Users
