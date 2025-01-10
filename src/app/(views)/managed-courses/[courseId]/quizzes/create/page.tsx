@@ -25,18 +25,18 @@ import { QuizQuestionInput } from '@/components'
 const defaultQuizQuestion: QuizQuestion = {
   question: '',
   type: 'multipleChoice',
-  answers: [
-    { answer: '', isCorrect: true },
-    { answer: '', isCorrect: false },
-    { answer: '', isCorrect: false },
-    { answer: '', isCorrect: false },
+  options: [
+    { option: '', isCorrect: true },
+    { option: '', isCorrect: false },
+    { option: '', isCorrect: false },
+    { option: '', isCorrect: false },
   ],
 }
 
 export default function CreateQuiz() {
   const router = useRouter()
   const { courseId } = useParams()
-  const [creatingModule, setCreatingModule] = useState(false)
+  const [creatingQuiz, setCreatingQuiz] = useState(false)
   const [questions, setQuestions] = useState<QuizQuestion[]>([{ ...defaultQuizQuestion }])
   const [isValid, setIsValid] = useState(false)
 
@@ -47,7 +47,7 @@ export default function CreateQuiz() {
   } = useForm<Inputs>()
 
   function onSubmit(data: Inputs) {
-    setCreatingModule(true)
+    setCreatingQuiz(true)
     axios
       .post(`/api/courses/${courseId}/quizzes`, { ...data, questions })
       .then((res) => {
@@ -60,19 +60,19 @@ export default function CreateQuiz() {
         console.error(err)
       })
       .finally(() => {
-        setCreatingModule(false)
+        setCreatingQuiz(false)
       })
   }
 
   useEffect(() => {
     const allQuestionsAreValid = questions.every(({ question }) => question.trim() !== '')
-    const allAnswersAreValid = questions.every(({ answers }) =>
-      answers.every(({ answer }) => answer.trim() !== ''),
+    const allOptionsAreValid = questions.every(({ options }) =>
+      options.every(({ option }) => option.trim() !== ''),
     )
-    const eachQuestionHasAtLeastOneCorrectAnswer = questions.every(({ answers }) =>
-      answers.some(({ isCorrect }) => isCorrect),
+    const eachQuestionHasAtLeastOneCorrectAnswer = questions.every(({ options }) =>
+      options.some(({ isCorrect }) => isCorrect),
     )
-    setIsValid(allQuestionsAreValid && allAnswersAreValid && eachQuestionHasAtLeastOneCorrectAnswer)
+    setIsValid(allQuestionsAreValid && allOptionsAreValid && eachQuestionHasAtLeastOneCorrectAnswer)
   }, [questions])
 
   return (
@@ -128,9 +128,9 @@ export default function CreateQuiz() {
             type="submit"
             color="primary"
             className="text-white"
-            disabled={creatingModule || !isValid}
+            disabled={creatingQuiz || !isValid}
           >
-            {creatingModule ? <CSpinner size="sm" /> : 'Save'}
+            {creatingQuiz ? <CSpinner size="sm" /> : 'Save'}
           </CButton>
         </CCol>
       </CRow>

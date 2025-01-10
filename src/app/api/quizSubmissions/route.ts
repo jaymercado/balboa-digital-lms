@@ -6,13 +6,12 @@ import connectSupabase from '@/utils/databaseConnection'
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession()
+    const { searchParams } = new URL(req.url)
+    const quizId = searchParams.get('quizId')
 
     if (!session?.user.email) {
       return NextResponse.json({ error: 'Session not found' }, { status: 400 })
     }
-
-    const { searchParams } = new URL(req.url)
-    const type = searchParams.get('type')
 
     const supabase = await connectSupabase()
     if (!supabase) {
@@ -24,25 +23,22 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    let courses: string[] = []
-    if (type === 'managed') {
-      // Get courses where the user is an instructor of
-      const foundCourses = await supabase
-        .from('courses')
-        .select('*, courseInstructors!inner(instructorId)')
-        .eq('courseInstructors.instructorId', user.data?.[0].id)
-        .order('id', { ascending: true })
-      courses = foundCourses.data ?? []
-    } else {
-      const foundCourses = await supabase
-        .from('courses')
-        .select('*, enrollments!inner(studentId)')
-        .eq('enrollments.studentId', user.data?.[0].id)
-        .order('id', { ascending: true })
-      courses = foundCourses.data ?? []
-    }
+    let latestSubmission: any = {}
+    const foundQuizResponses = await supabase
+      .from('quizSubmissions')
+      .select(
+        `
+        *,
+        submissionAnswers(*, quizQuestions(question), questionOptions(answer, isCorrect)))
+      `,
+      )
+      .eq('studentId', user.data?.[0].id)
+      .eq('quizId', quizId)
+      .order('id', { ascending: false })
+      .limit(1)
+    latestSubmission = foundQuizResponses?.data?.[0] ?? null
 
-    return NextResponse.json(courses, { status: 200 })
+    return NextResponse.json(latestSubmission, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
@@ -55,7 +51,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const { quizId, answers } = body
-    console.log(answers)
 
     const supabase = await connectSupabase()
     if (!supabase) {
@@ -68,31 +63,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const quizResponse = await supabase
-      .from('quizResponses')
+    const quizSubmission = await supabase
+      .from('quizSubmissions')
       .insert({
         quizId,
         studentId: userId,
       })
       .select()
-    const quizResponseId = quizResponse.data?.[0].id
-    if (!quizResponseId) {
+    const quizSubmissionId = quizSubmission.data?.[0].id
+    if (!quizSubmissionId) {
       return NextResponse.json({ error: 'Failed to create quiz response' }, { status: 500 })
     }
 
-    const responses = answers
+    const submissionAnswers = answers
       .map((answer: any) =>
         answer.answers.map((quizAnswer: any) => ({
-          quizResponseId,
+          quizSubmissionId,
           quizQuestionId: answer.questionId,
-          quizAnswerId: quizAnswer,
+          quizOptionId: quizAnswer,
         })),
       )
       .flat()
 
-    await supabase.from('responses').insert(responses)
+    await supabase.from('submissionAnswers').insert(submissionAnswers)
 
-    return NextResponse.json({ quizResponseId }, { status: 200 })
+    return NextResponse.json({ quizSubmissionId }, { status: 200 })
   } catch (error) {
     console.error('Error in /api/courses (POST): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

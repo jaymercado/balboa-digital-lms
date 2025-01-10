@@ -11,23 +11,23 @@ import {
   CTableRow,
   CFormCheck,
 } from '@coreui/react-pro'
-import { QuizQuestion, QuizAnswer } from '@/types/quiz'
+import { QuizQuestion, QuizOption } from '@/types/quiz'
 
 interface AnswerProps {
   type: string
-  answers: QuizAnswer[]
+  options: QuizOption[]
   setQuestions: Dispatch<SetStateAction<QuizQuestion[]>>
   index: number
 }
 
-export default function Answer({ type, answers, setQuestions, index }: AnswerProps) {
-  const handleAnswerChange = (answerIndex: number, field: 'answer' | 'isCorrect', value: any) => {
+export default function Option({ type, options, setQuestions, index }: AnswerProps) {
+  const handleAnswerChange = (answerIndex: number, field: 'option' | 'isCorrect', value: any) => {
     setQuestions((state) => {
       const updatedQuestions = state.map((q, i) => {
         if (i === index) {
           return {
             ...q,
-            answers: q.answers.map((a, j) => (j === answerIndex ? { ...a, [field]: value } : a)),
+            options: q.options.map((a, j) => (j === answerIndex ? { ...a, [field]: value } : a)),
           }
         }
         return q
@@ -42,11 +42,11 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
         <CTableHead>
           <CTableRow className="text-secondary fs-6">
             <CTableHeaderCell className="fw-semibold">Choices</CTableHeaderCell>
-            <CTableHeaderCell className="fw-semibold">Correct Answer</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Correct Option</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {answers.map((answer, answerIndex) => (
+          {options.map((option, answerIndex) => (
             <CTableRow key={answerIndex}>
               <CTableDataCell>
                 <CFormInput
@@ -58,7 +58,7 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
               </CTableDataCell>
               <CTableDataCell>
                 <CFormCheck
-                  checked={answer.isCorrect}
+                  checked={option.isCorrect}
                   onChange={(e) => handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)}
                 />
               </CTableDataCell>
@@ -75,23 +75,23 @@ export default function Answer({ type, answers, setQuestions, index }: AnswerPro
         <CTableHead>
           <CTableRow>
             <CTableHeaderCell className="fw-semibold">Choices</CTableHeaderCell>
-            <CTableHeaderCell className="fw-semibold">Correct Answer</CTableHeaderCell>
+            <CTableHeaderCell className="fw-semibold">Correct Option</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {answers.map((answer, answerIndex) => (
+          {options.map((option, answerIndex) => (
             <CTableRow key={answerIndex}>
               <CTableDataCell>
                 <CFormInput
-                  value={answer.answer}
-                  placeholder="Type answer here"
+                  value={option.option}
+                  placeholder="Type option here"
                   className="bg-body-tertiary"
-                  onChange={(e) => handleAnswerChange(answerIndex, 'answer', e.target.value)}
+                  onChange={(e) => handleAnswerChange(answerIndex, 'option', e.target.value)}
                 />
               </CTableDataCell>
               <CTableDataCell>
                 <CFormCheck
-                  checked={answer.isCorrect}
+                  checked={option.isCorrect}
                   onChange={(e) => handleAnswerChange(answerIndex, 'isCorrect', e.target.checked)}
                 />
               </CTableDataCell>

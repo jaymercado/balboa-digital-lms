@@ -26,11 +26,11 @@ import { QuizQuestionInput } from '@/components'
 const defaultQuizQuestion: QuizQuestion = {
   question: '',
   type: 'multipleChoice',
-  answers: [
-    { answer: '', isCorrect: true },
-    { answer: '', isCorrect: false },
-    { answer: '', isCorrect: false },
-    { answer: '', isCorrect: false },
+  options: [
+    { option: '', isCorrect: true },
+    { option: '', isCorrect: false },
+    { option: '', isCorrect: false },
+    { option: '', isCorrect: false },
   ],
 }
 
@@ -85,13 +85,13 @@ export default function EditQuiz() {
 
   useEffect(() => {
     const allQuestionsAreValid = questions.every(({ question }) => question.trim() !== '')
-    const allAnswersAreValid = questions.every(({ answers }) =>
-      answers.every(({ answer }) => answer.trim() !== ''),
+    const allOptionsAreValid = questions.every(({ options }) =>
+      options.every(({ option }) => option.trim() !== ''),
     )
-    const eachQuestionHasAtLeastOneCorrectAnswer = questions.every(({ answers }) =>
-      answers.some(({ isCorrect }) => isCorrect),
+    const eachQuestionHasAtLeastOneCorrectAnswer = questions.every(({ options }) =>
+      options.some(({ isCorrect }) => isCorrect),
     )
-    setIsValid(allQuestionsAreValid && allAnswersAreValid && eachQuestionHasAtLeastOneCorrectAnswer)
+    setIsValid(allQuestionsAreValid && allOptionsAreValid && eachQuestionHasAtLeastOneCorrectAnswer)
   }, [questions])
 
   if (fetchingQuiz) {
