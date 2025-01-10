@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
         *,
         quizQuestions (
           *,
-          quizAnswers(*)
+          questionOptions(*)
         )
       `,
       )
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
         id: question.id,
         question: question.question,
         type: question.type,
-        answers: question.quizAnswers.map((answer: any) => ({
+        answers: question.questionOptions.map((answer: any) => ({
           id: answer.id,
           answer: answer.answer,
           isCorrect: answer.isCorrect,

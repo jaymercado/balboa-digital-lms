@@ -27,10 +27,11 @@ export default function Quiz() {
     quizId,
   })
   const [answers, setAnswers] = useState<any[]>([])
+  const [latestSubmission, setLatestSubmission] = useState<any>(null)
 
   function submitQuiz() {
     axios
-      .post(`/api/quizResponses`, {
+      .post(`/api/quizSubmissions`, {
         quizId,
         answers: answers.map(({ questionId, answers }) => ({
           questionId,
@@ -49,6 +50,23 @@ export default function Quiz() {
         toast('error', 'Error submitting quiz')
       })
   }
+
+  useEffect(() => {
+    function getLatestSubmission() {
+      axios
+        .get(`/api/quizSubmissions?quizId=${quizId}`)
+        .then((res) => {
+          if (res.status !== 200) {
+            throw new Error('Error getting latest submission')
+          }
+          setLatestSubmission(res.data)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    }
+    getLatestSubmission()
+  }, [quizId])
 
   useEffect(() => {
     if (courseQuiz?.questions) {

@@ -72,7 +72,7 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
         answer: answer.answer,
         isCorrect: answer.isCorrect,
       }))
-      await supabase.from('quizAnswers').insert(answers).select()
+      await supabase.from('questionOptions').insert(answers).select()
     }
 
     return NextResponse.json(courseQuiz, { status: 200 })
