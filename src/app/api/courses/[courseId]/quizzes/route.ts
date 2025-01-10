@@ -66,18 +66,18 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
       if (!quizQuestion) {
         return NextResponse.json({ error: 'Failed to create quiz question' }, { status: 500 })
       }
-      // Save answers
-      const answers = question.answers.map((answer: any) => ({
+      // Save options
+      const options = question.options.map((option: any) => ({
         quizQuestionId: quizQuestion.id,
-        answer: answer.answer,
-        isCorrect: answer.isCorrect,
+        option: option.option,
+        isCorrect: option.isCorrect,
       }))
-      await supabase.from('questionOptions').insert(answers).select()
+      await supabase.from('questionOptions').insert(options).select()
     }
 
     return NextResponse.json(courseQuiz, { status: 200 })
   } catch (error) {
-    console.error('Error in /api/courses (POST): ', error)
+    console.error('Error in /api/courses/[courseId]/quizzes (POST): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

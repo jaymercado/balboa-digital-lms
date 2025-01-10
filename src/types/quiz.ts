@@ -9,10 +9,11 @@ export interface QuizQuestion {
   id?: string
   question: string
   type: string
-  answers: QuizAnswer[]
+  options: QuizOption[]
 }
 
-export interface QuizAnswer {
-  answer: string
+export interface QuizOption {
+  id?: string
+  option: string
   isCorrect: boolean
 }

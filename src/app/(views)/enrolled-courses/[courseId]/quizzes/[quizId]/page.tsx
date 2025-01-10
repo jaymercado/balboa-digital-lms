@@ -75,7 +75,7 @@ export default function Quiz() {
           questionId: question.id,
           answers: [],
           question: question.question,
-          choices: question.answers,
+          options: question.options,
           onDisplay: index === 0,
         })) || [],
       )
@@ -134,7 +134,7 @@ export default function Quiz() {
               <CCol>
                 <div className="mt-4">
                   {answers?.length === 0 ? <p>No questions found.</p> : ''}
-                  {answers?.map(({ question, onDisplay, choices }, index) =>
+                  {answers?.map(({ question, onDisplay, options }, index) =>
                     onDisplay ? (
                       <div key={index} className="mb-4">
                         {index > 0 && (
@@ -173,29 +173,29 @@ export default function Quiz() {
                         }`}</div>
                         <div className="fs-6 mb-2">{question}</div>
                         <strong className="mt-2">Choices:</strong>
-                        {choices.map((choice: any, idx: any) => (
+                        {options.map((option: any, idx: any) => (
                           <div key={idx}>
                             <CFormCheck
-                              checked={answers[index].answers.includes(choice.id)}
+                              checked={answers[index].answers.includes(option.id)}
                               onChange={(e) => {
                                 const answerIsChecked = e.target.checked
                                 setAnswers((state) => {
                                   const newState = [...state]
                                   const currentAnswers = [...newState[index].answers]
-                                  const answerExists = currentAnswers.includes(choice.id)
+                                  const answerExists = currentAnswers.includes(option.id)
                                   if (answerIsChecked && !answerExists) {
-                                    newState[index].answers = [...currentAnswers, choice.id]
+                                    newState[index].answers = [...currentAnswers, option.id]
                                   }
                                   if (!answerIsChecked && answerExists) {
                                     newState[index].answers = currentAnswers.filter(
-                                      (a) => a !== choice.id,
+                                      (a) => a !== option.id,
                                     )
                                   }
                                   return newState
                                 })
                               }}
                             />
-                            {choice.answer}
+                            {option.option}
                           </div>
                         ))}
                       </div>

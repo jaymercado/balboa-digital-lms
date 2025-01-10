@@ -116,20 +116,20 @@ export default function Quiz() {
                         <div className="fs-6 mb-2">{question.question}</div>
 
                         <strong className="mt-2">Choices:</strong>
-                        {question.answers.map((answer, idx) => (
+                        {question.options.map((option, idx) => (
                           <div className="text-capitalize mb-2" key={idx}>
-                            {answer.answer}
+                            {option.option}
                           </div>
                         ))}
 
                         <div className="mt-2">
                           <span className="fw-semibold">Correct Answer: </span>
-                          {question.answers
-                            .filter((answer) => answer.isCorrect)
-                            .map((answer, idx) => (
+                          {question.options
+                            .filter((option) => option.isCorrect)
+                            .map((option, idx) => (
                               <span key={idx} className="text-capitalize mb-2">
-                                {answer.answer}
-                                {idx === question.answers.length - 1 ? '' : ', '}
+                                {option.option}
+                                {idx === question.options.length - 1 ? '' : ', '}
                               </span>
                             ))}
                         </div>

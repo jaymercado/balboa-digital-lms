@@ -38,12 +38,12 @@ export function useGetQuiz({ courseId, quizId }: { courseId: string; quizId: str
       const res = await fetch(url)
       const fetchedCourseQuiz =
         ((await res.json()) as {
-          formattedCourseQuiz: Quiz
+          courseQuiz: Quiz
           nextQuizId?: string
           previousQuizId?: string
         }) || {}
 
-      setCourseQuiz(fetchedCourseQuiz.formattedCourseQuiz)
+      setCourseQuiz(fetchedCourseQuiz.courseQuiz)
       if (fetchedCourseQuiz.nextQuizId) {
         setNextQuizId(fetchedCourseQuiz.nextQuizId)
       }
