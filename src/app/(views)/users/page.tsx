@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
@@ -7,11 +7,9 @@ const Users = () => {
   const { data: session } = useSession()
   const router = useRouter()
 
-  useEffect(() => {
-    if (session?.user?.role !== 'admin') {
-      router.push('/')
-    }
-  }, [session, router])
+  if (session?.user?.role && session?.user?.role !== 'admin') {
+    router.push('/')
+  }
 
   return <h1>Users</h1>
 }
