@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import connectSupabase from '@/utils/databaseConnection'
-import { getAwsS3UploadUrl } from '@/utils/awsS3Connection'
-import { isModuleContentMultimedia } from '@/utils/isModuleContentMultimedia'
-import { awsBucketUrl } from '@/constants'
 
 export async function GET(req: NextRequest, { params }: { params: { quizId: string } }) {
   try {
@@ -69,43 +66,69 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { quizId: string } }) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { courseId: string; quizId: string } },
+) {
   try {
-    const { quizId } = params
-
-    const formData = await req.formData()
-    const title = formData.get('title')
-    const description = formData.get('description')
-    const type = formData.get('type') as string
-    const courseId = formData.get('courseId')
-    const fileExtension = formData.get('fileExtension') as string
-    const fileName = `${courseId}-${quizId}.${fileExtension}`
-    const isMultimedia = isModuleContentMultimedia(type)
-    const content = isMultimedia ? `${awsBucketUrl}${fileName}` : formData.get('content')
+    const { courseId, quizId } = params
+    const body = await req.json()
+    const { title, description, questions } = body
 
     const supabase = await connectSupabase()
     if (!supabase) {
       return NextResponse.json({ error: 'Failed to connect to Supabase' }, { status: 500 })
     }
 
-    await supabase
-      .from('modules')
+    const { error: quizError } = await supabase
+      .from('quizzes')
       .update({
         title,
         description,
-        type,
-        ...(content ? { content } : {}),
+        courseId,
       })
-      .eq('id', params.quizId)
+      .eq('id', quizId)
 
-    let awsS3UploadUrl = null
-    if (isMultimedia && fileExtension) {
-      awsS3UploadUrl = await getAwsS3UploadUrl(fileName, fileExtension)
+    if (quizError) {
+      return NextResponse.json({ error: quizError.message }, { status: 500 })
     }
 
-    return NextResponse.json({ awsS3UploadUrl }, { status: 200 })
+    const questionsToUpsert = questions.map((question: { id: any; type: any; question: any }) => ({
+      id: question.id,
+      quizId,
+      type: question.type,
+      question: question.question,
+    }))
+
+    const { data: updatedQuestions, error: questionsError } = await supabase
+      .from('quizQuestions')
+      .upsert(questionsToUpsert, { onConflict: 'id' })
+      .select()
+
+    if (questionsError) {
+      return NextResponse.json({ error: questionsError.message }, { status: 500 })
+    }
+
+    const answersToUpsert = questions.flatMap((question: { answers: any[]; id: any }) =>
+      question.answers.map((answer: { id: any; answer: any; isCorrect: any }) => ({
+        id: answer.id,
+        quizQuestionId: updatedQuestions.find((q) => q.id === question.id)?.id,
+        answer: answer.answer,
+        isCorrect: answer.isCorrect,
+      })),
+    )
+
+    const { error: answersError } = await supabase
+      .from('quizAnswers')
+      .upsert(answersToUpsert, { onConflict: 'id' })
+
+    if (answersError) {
+      return NextResponse.json({ error: answersError.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ message: 'Quiz updated successfully' }, { status: 200 })
   } catch (error) {
-    console.error('Error in /api/courses/[id] (PUT): ', error)
+    console.error('Error in /api/courses/[courseId]/quizzes/[quizId] (PUT):', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

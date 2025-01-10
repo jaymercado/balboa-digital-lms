@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import {
   CForm,
-  CInputGroup,
   CFormLabel,
   CFormInput,
   CButton,
@@ -16,198 +15,148 @@ import {
   CCol,
   CFormTextarea,
   CCard,
-  CFormSelect,
   CCardTitle,
+  CCardBody,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
-import { useGetCourseModule } from '@/hooks/useGetCourseModules'
-import { Loading } from '@/components'
-import ModuleContentInput from '@/components/ModuleContentInput'
+import { useGetQuiz } from '@/hooks/useGetQuizzes'
+import { QuizQuestion } from '@/types/quiz'
+import { QuizQuestionInput } from '@/components'
 
-const typeOptions = [
-  { value: '', label: '-- Select --' },
-  { value: 'text', label: 'Text' },
-  { value: 'video', label: 'Video' },
-  { value: 'image', label: 'Image' },
-  { value: 'pdf', label: 'PDF' },
-]
+const defaultQuizQuestion: QuizQuestion = {
+  question: '',
+  type: 'multipleChoice',
+  answers: [
+    { answer: '', isCorrect: true },
+    { answer: '', isCorrect: false },
+    { answer: '', isCorrect: false },
+    { answer: '', isCorrect: false },
+  ],
+}
 
-export default function EditModule() {
+export default function EditQuiz() {
   const router = useRouter()
   const params = useParams()
-  const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const [file, setFile] = useState<File | null>(null)
-  const [fileExtension, setFileExtension] = useState<string>('')
-
-  const { fetchingModule, courseModule } = useGetCourseModule({ courseId, moduleId })
-  const [updatingModule, setUpdatingModule] = useState(false)
-
-  const [currentFile, setCurrentFile] = useState<File | null>(null)
+  const { courseId, quizId } = params as { courseId: string; quizId: string }
+  const [updatingQuiz, setUpdatingQuiz] = useState(false)
+  const [questions, setQuestions] = useState<QuizQuestion[]>([{ ...defaultQuizQuestion }])
+  const { fetchingQuiz, courseQuiz } = useGetQuiz({
+    courseId,
+    quizId,
+  })
+  const [isValid, setIsValid] = useState(false)
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch,
     setValue,
+    formState: { errors },
   } = useForm<Inputs>()
 
-  const convertToFile = async (url: string): Promise<File> => {
-    try {
-      const response = await fetch(url)
-      const blob = await response.blob()
-      const fileName = url.split('/').pop() || 'file'
-      return new File([blob], fileName, { type: blob.type })
-    } catch (err) {
-      console.error('Error fetching and converting the file:', err)
-      throw err
+  const initializeForm = useCallback(() => {
+    if (courseQuiz) {
+      setValue('title', courseQuiz.title)
+      setValue('description', courseQuiz.description)
+      setQuestions(courseQuiz?.questions || [{ ...defaultQuizQuestion }])
     }
-  }
+  }, [courseQuiz, setValue, setQuestions])
 
-  const fetchCurrentFile = useCallback(async (url: string) => {
-    try {
-      const file = await convertToFile(url)
-      setCurrentFile(file)
-      const fileExtension = file.name.split('.').pop() || ''
-      setFileExtension(fileExtension)
-    } catch (err) {
-      console.error('Error fetching and converting the file:', err)
-    }
-  }, [])
+  useEffect(() => {
+    initializeForm()
+  }, [initializeForm])
 
   function onSubmit(data: Inputs) {
-    const content = watch('content')
-    if (!content || content === '<p><br></p>' || content.trim() === '') {
-      data.content = ''
-    }
-
-    setUpdatingModule(true)
-
-    const formData = new FormData()
-    formData.append('title', data.title)
-    formData.append('description', data.description)
-    formData.append('type', data.type)
-    formData.append('content', data.content)
-    if (file && ['video', 'image', 'pdf'].includes(data.type)) {
-      formData.append('fileExtension', fileExtension)
-    }
-    formData.append('courseId', courseId as string)
-
+    setUpdatingQuiz(true)
     axios
-      .put(`/api/courses/${courseId}/modules/${moduleId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      .put(`/api/courses/${courseId}/quizzes/${quizId}`, { ...data, questions })
       .then((res) => {
-        if (res.status === 200) {
-          const { awsS3UploadUrl } = res.data
-          if (awsS3UploadUrl) {
-            fetch(awsS3UploadUrl, {
-              method: 'PUT',
-              body: file,
-              headers: {
-                'Content-Type': fileExtension,
-              },
-            }).then(() => {
-              setUpdatingModule(false)
-              toast('success', 'Module updated successfully')
-              window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
-            })
-          } else {
-            setUpdatingModule(false)
-            toast('success', 'Module updated successfully')
-            window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
-          }
-        } else {
-          throw new Error('Failed to update module')
-        }
+        if (res.status !== 200) throw new Error('Failed to update quiz')
+        toast('success', 'Quiz updated successfully')
+        router.push(`/managed-courses/${courseId}/quizzes`)
       })
       .catch((err) => {
-        setUpdatingModule(false)
-        toast('error', 'Error updating module')
+        toast('error', 'Error updating quiz')
         console.error(err)
+      })
+      .finally(() => {
+        setUpdatingQuiz(false)
       })
   }
 
   useEffect(() => {
-    if (!fetchingModule && courseModule) {
-      setValue('title', courseModule.title)
-      setValue('description', courseModule.description)
-      setValue('type', courseModule.type)
-      setValue('content', courseModule.content)
+    const allQuestionsAreValid = questions.every(({ question }) => question.trim() !== '')
+    const allAnswersAreValid = questions.every(({ answers }) =>
+      answers.every(({ answer }) => answer.trim() !== ''),
+    )
+    const eachQuestionHasAtLeastOneCorrectAnswer = questions.every(({ answers }) =>
+      answers.some(({ isCorrect }) => isCorrect),
+    )
+    setIsValid(allQuestionsAreValid && allAnswersAreValid && eachQuestionHasAtLeastOneCorrectAnswer)
+  }, [questions])
 
-      if (courseModule.content && courseModule.type != 'text') {
-        fetchCurrentFile(courseModule.content)
-      }
-    }
-  }, [fetchingModule, courseModule, setValue, fetchCurrentFile])
-
-  if (fetchingModule) {
-    return <Loading />
+  if (fetchingQuiz) {
+    return <CSpinner />
   }
 
   return (
     <CForm onSubmit={handleSubmit(onSubmit)}>
-      <CCard className="p-4">
-        <CRow>
-          <CCol>
-            <CCardTitle className="mb-4 fw-semibold"> Module Details</CCardTitle>
-            <CFormLabel htmlFor="title">Title</CFormLabel>
-            <CFormInput id="title" {...register('title', { required: true })} />
-            {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
-          </CCol>
-        </CRow>
-
-        <CRow className="mt-3">
-          <CCol>
-            <CFormLabel htmlFor="description">Description</CFormLabel>
-            <CFormTextarea
-              id="description"
-              {...register('description', { required: true })}
-              placeholder="Enter course description"
-            />
-            {errors.description && (
-              <CFormText className="text-danger">This field is required</CFormText>
-            )}
-          </CCol>
-        </CRow>
-        <CRow className="mt-3">
-          <CCol>
-            <CFormLabel htmlFor="type">Type</CFormLabel>
-            <CInputGroup className="mb-3">
-              <CFormSelect id="type" {...register('type', { required: true })}>
-                {typeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </CFormSelect>
-              {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
-            </CInputGroup>
-
-            <ModuleContentInput
-              type={watch('type')}
-              value={watch('content')}
-              setValue={setValue}
-              setFile={setFile}
-              setFileExtension={setFileExtension}
-              currentFile={currentFile}
-            />
-          </CCol>
-        </CRow>
-
-        <CRow className="mt-4">
-          <CCol className="d-flex gap-2">
-            <CButton color="light" onClick={() => router.back()}>
-              Cancel
-            </CButton>
-            <CButton type="submit" color="primary" className="text-white" disabled={updatingModule}>
-              {updatingModule ? <CSpinner size="sm" /> : 'Save'}
-            </CButton>
-          </CCol>
-        </CRow>
+      <CCard className="mb-2">
+        <CCardBody className="p-4">
+          <CCardTitle className="mb-4 fw-semibold">Edit Quiz Details</CCardTitle>
+          <CFormLabel htmlFor="title">Title</CFormLabel>
+          <CFormInput id="title" {...register('title', { required: true })} className="mb-3" />
+          {errors.title && <CFormText className="text-danger">This field is required</CFormText>}
+          <CFormLabel htmlFor="description">Description</CFormLabel>
+          <CFormTextarea
+            rows={3}
+            id="description"
+            {...register('description', { required: true })}
+            placeholder="Enter course description"
+          />
+          {errors.description && (
+            <CFormText className="text-danger">This field is required</CFormText>
+          )}
+        </CCardBody>
       </CCard>
+      <CCard>
+        <CCardBody className="p-4">
+          {questions.map((_, index) => (
+            <QuizQuestionInput
+              key={`question-${index + 1}`}
+              index={index}
+              question={questions[index]}
+              setQuestions={setQuestions}
+            />
+          ))}
+
+          <CRow className="mt-2">
+            <CCol>
+              <CButton
+                color="secondary"
+                variant="outline"
+                onClick={() => setQuestions([...questions, { ...defaultQuizQuestion }])}
+              >
+                Add Question <i className="bi bi-plus" />
+              </CButton>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+      <CRow className="my-3 justify-content-end">
+        <CCol className="d-flex gap-2" xs="auto">
+          <CButton color="secondary" onClick={() => router.back()}>
+            Cancel
+          </CButton>
+          <CButton
+            type="submit"
+            color="primary"
+            className="text-white"
+            disabled={updatingQuiz || !isValid}
+          >
+            {updatingQuiz ? <CSpinner size="sm" /> : 'Save'}
+          </CButton>
+        </CCol>
+      </CRow>
     </CForm>
   )
 }
