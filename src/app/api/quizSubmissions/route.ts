@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
       .select(
         `
         *,
-        submissionAnswers(*, quizQuestions(question), questionOptions(answer, isCorrect)))
+        submissionAnswers(*, quizQuestions(question), questionOptions(option, isCorrect)))
       `,
       )
       .eq('studentId', user.data?.[0].id)
@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const { quizId, answers } = body
+    console.log(JSON.stringify(body))
 
     const supabase = await connectSupabase()
     if (!supabase) {
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
         answer.answers.map((quizAnswer: any) => ({
           quizSubmissionId,
           quizQuestionId: answer.questionId,
-          quizOptionId: quizAnswer,
+          questionOptionId: quizAnswer,
         })),
       )
       .flat()
