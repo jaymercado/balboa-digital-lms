@@ -1,5 +1,5 @@
 import React, { ElementType } from 'react'
-import { cilBook, cilPencil, cilSpeedometer } from '@coreui/icons'
+import { cilBook, cilPencil, cilSpeedometer, cilPeople } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { CNavItem, CNavTitle } from '@coreui/react-pro'
 
@@ -48,6 +48,21 @@ export const generateNav = (role: string) => {
       href: '/managed-courses',
       icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
     })
+  }
+
+  if (role === 'admin') {
+    nav.push(
+      {
+        component: CNavTitle,
+        name: 'Users',
+      },
+      {
+        component: CNavItem,
+        name: 'Users',
+        href: '/users',
+        icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
+      },
+    )
   }
 
   return nav
