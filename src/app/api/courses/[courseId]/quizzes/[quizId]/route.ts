@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
       .from('quizzes')
       .select('id')
       .gt('id', quizId)
-      .eq('courseQuiz', courseQuiz?.courseId)
+      .eq('courseId', courseQuiz?.courseId)
       .order('id', { ascending: true })
       .limit(1)
     const nextQuizId = nextQuizDb.data?.[0]?.id
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
       .from('quizzes')
       .select('id')
       .lt('id', quizId)
-      .eq('courseQuiz', courseQuiz?.courseId)
+      .eq('courseId', courseQuiz?.courseId)
       .order('id', { ascending: false })
       .limit(1)
     const previousQuizId = previousQuizDb.data?.[0]?.id
