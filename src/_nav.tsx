@@ -42,21 +42,24 @@ export const generateNav = (role: string) => {
   ]
 
   if (role === 'instructor') {
+    nav.push({
+      component: CNavItem,
+      name: 'Managed Courses',
+      href: '/managed-courses',
+      icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+    })
+  }
+
+  if (role === 'admin') {
     nav.push(
-      {
-        component: CNavItem,
-        name: 'Managed Courses',
-        href: '/managed-courses',
-        icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-      },
       {
         component: CNavTitle,
         name: 'Users',
       },
       {
         component: CNavItem,
-        name: 'Managed Users',
-        href: '/managed-users',
+        name: 'Users',
+        href: '/users',
         icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
       },
     )

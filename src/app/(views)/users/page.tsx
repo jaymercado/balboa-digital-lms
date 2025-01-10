@@ -3,17 +3,17 @@ import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
-const ManagedUsers = () => {
+const Users = () => {
   const { data: session } = useSession()
   const router = useRouter()
 
   useEffect(() => {
-    if (session?.user?.role !== 'instructor') {
+    if (session?.user?.role !== 'admin') {
       router.push('/')
     }
   }, [session, router])
 
-  return <h1>Managed Users</h1>
+  return <h1>Users</h1>
 }
 
-export default ManagedUsers
+export default Users
