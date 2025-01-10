@@ -89,7 +89,7 @@ export default function Course() {
               <CIcon icon={cilPeople} size="sm" className="me-2" />
               <strong>Enrollees:</strong>{' '}
               {course.enrollees.map((enrollee, index) => (
-                <span key={enrollee.id}>
+                <span key={enrollee?.id}>
                   {enrollee?.name} {index < course.enrollees.length - 1 ? ', ' : ''}
                 </span>
               ))}
@@ -98,13 +98,22 @@ export default function Course() {
               <CIcon icon={cilPenAlt} size="sm" className="me-2" />
               <strong>Instructors:</strong>{' '}
               {course.instructors.map((instructor, index) => (
-                <span key={instructor.id}>
+                <span key={instructor?.id}>
                   {instructor?.name} {index < course.instructors.length - 1 ? ', ' : ''}
                 </span>
               ))}
             </CCardText>
+            <CCardText>
+              <strong>Contents:</strong>
+              <ul>
+                {course.courseItems.map((item) => (
+                  <li key={item.id}>{item.title}</li>
+                ))}
+              </ul>
+            </CCardText>
           </CCardBody>
         </CCard>
+
         <CRow className="mb-3">
           <CCol>
             <CRow className="mb-3">

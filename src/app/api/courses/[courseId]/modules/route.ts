@@ -61,6 +61,36 @@ export async function POST(req: NextRequest) {
       .select()
     const courseModule = courseModuleDB.data?.[0]
 
+    if (!courseModule) {
+      return NextResponse.json({ error: 'Failed to create course module' }, { status: 500 })
+    }
+
+    // Get latest course item
+    const latestCourseItemDB = await supabase
+      .from('courseItems')
+      .select()
+      .eq('courseId', courseId)
+      .order('position', { ascending: false })
+      .limit(1)
+    const latestCourseItem = latestCourseItemDB.data?.[0]
+
+    // Add course item
+    const createdCourseItemRes = await supabase
+      .from('courseItems')
+      .insert({
+        courseId,
+        moduleId: courseModule?.id,
+        type: 'module',
+        position: (latestCourseItem?.position || 0) + 1,
+      })
+      .select()
+    const courseItem = createdCourseItemRes.data?.[0]
+    const courseItemId = courseItem?.id ?? null
+
+    if (!courseItemId) {
+      return NextResponse.json({ error: 'Failed to create course item' }, { status: 500 })
+    }
+
     let awsS3UploadUrl = null
     if (isMultimedia && fileExtension) {
       const fileName = `${courseId}-${courseModule?.id}.${fileExtension}`
