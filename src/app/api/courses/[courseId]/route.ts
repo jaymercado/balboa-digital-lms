@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { PostgrestFilterBuilder } from '@supabase/postgrest-js'
-
+import { CourseItem } from '@/types/courseItem'
 import connectSupabase from '@/utils/databaseConnection'
 
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
         *,
         courseInstructors(users (id, name)),
         enrollments(users (id, name)),
-        modules(*)
+        courseItems(*, modules(*), quizzes(*))
       `,
       )
       .eq('id', params.courseId)
@@ -33,6 +33,15 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
         id: enrollment.users.id,
         name: enrollment.users.name,
       })),
+      courseItems: foundCourse.courseItems.map((item: any) => ({
+        id: item.id,
+        courseId: item.courseId,
+        title: item?.modules?.title || item?.quizzes?.title,
+        moduleId: item?.modules?.id || null,
+        quizId: item?.quizzes?.id || null,
+        position: item.position,
+        type: item.type,
+      })),
     }
 
     return NextResponse.json(formattedCourse, { status: 200 })
@@ -45,7 +54,7 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
 export async function PUT(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
     const body = await req.json()
-    const { title, description, enrollees, instructors } = body
+    const { title, description, enrollees, instructors, courseItems } = body
     const { courseId } = params
 
     const supabase = await connectSupabase()
@@ -75,15 +84,24 @@ export async function PUT(req: NextRequest, { params }: { params: { courseId: st
         .from('enrollments')
         .insert(enrollees.map((studentId: string) => ({ courseId, studentId }))),
     )
-
     // Add courseInstructors
     requests.push(
       supabase
         .from('courseInstructors')
         .insert(instructors.map((instructorId: string) => ({ courseId, instructorId }))),
     )
-
     await Promise.all(requests)
+
+    // Update course items order
+    const updates = courseItems.map((item: CourseItem, index: number) => ({
+      id: item.id,
+      courseId: item.courseId,
+      moduleId: item.moduleId || null,
+      quizId: item.quizId || null,
+      type: item.type,
+      position: index + 1,
+    }))
+    await supabase.from('courseItems').upsert(updates, { onConflict: 'id' })
 
     const course = res.data?.[0]
 

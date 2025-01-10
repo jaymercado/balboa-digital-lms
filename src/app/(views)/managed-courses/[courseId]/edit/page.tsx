@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import {
@@ -16,10 +16,12 @@ import {
   CCard,
 } from '@coreui/react-pro'
 import Select, { MultiValue } from 'react-select'
-import useGetUsers from '@/hooks/useGetUsers'
-import { useGetCourses } from '@/hooks/useGetCourses'
+import { CourseItem } from '@/types/courseItem'
 import toast from '@/utils/toast'
+import useGetUsers from '@/hooks/useGetUsers'
+import { useGetCourse } from '@/hooks/useGetCourses'
 import { Loading } from '@/components'
+import EditCourseItemsOrder from '@/components/EditCourseItemsOrder'
 
 type UserOption = {
   value: string
@@ -32,8 +34,9 @@ export default function EditCourse() {
   const params = useParams()
   const { courseId } = params as { courseId: string }
 
-  const { courses, fetchingCourses } = useGetCourses({ courseId })
+  const { course, fetchingCourse } = useGetCourse({ courseId })
   const { users, fetchingUsers } = useGetUsers()
+  const [courseItems, setCourseItems] = useState<CourseItem[]>(course?.courseItems || [])
   const [updatingCourse, setUpdatingCourse] = useState(false)
 
   const {
@@ -44,27 +47,30 @@ export default function EditCourse() {
     control,
   } = useForm<Inputs>()
 
-  function onSubmit(data: Inputs) {
-    setUpdatingCourse(true)
-    fetch(`/api/courses/${courseId}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    })
-      .then(() => {
-        setUpdatingCourse(false)
-        toast('success', 'Course updated successfully')
-        router.push(`/managed-courses/${courseId}`)
+  const onSubmit = useCallback(
+    (data: Inputs) => {
+      setUpdatingCourse(true)
+      console.log(123456, { ...data, courseItems })
+      fetch(`/api/courses/${courseId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ ...data, courseItems }),
       })
-      .catch((err) => {
-        setUpdatingCourse(false)
-        toast('error', 'Error updating course')
-        console.error(err)
-      })
-  }
+        .then(() => {
+          setUpdatingCourse(false)
+          toast('success', 'Course updated successfully')
+          router.push(`/managed-courses/${courseId}`)
+        })
+        .catch((err) => {
+          setUpdatingCourse(false)
+          toast('error', 'Error updating course')
+          console.error(err)
+        })
+    },
+    [courseId, courseItems, router],
+  )
 
   useEffect(() => {
-    if (!fetchingCourses && courses.length > 0) {
-      const course = courses[0]
+    if (!fetchingCourse && course) {
       setValue('title', course.title)
       setValue('description', course.description)
       setValue(
@@ -75,10 +81,11 @@ export default function EditCourse() {
         'instructors',
         course.instructors.map((instructor) => instructor.id),
       )
+      setCourseItems(course.courseItems)
     }
-  }, [fetchingCourses, courses, setValue])
+  }, [fetchingCourse, course, setValue])
 
-  if (fetchingCourses) {
+  if (fetchingCourse) {
     return <Loading />
   }
 
@@ -178,6 +185,20 @@ export default function EditCourse() {
             )}
           </CCol>
         </CRow>
+
+        {course && (
+          <CRow className="mt-4">
+            <p className="mb-0 pb-0">Items</p>
+            <p className="text-muted small text-sm mt-0 pt-0">
+              Drag and drop items to change their order
+            </p>
+            <CCol className="d-flex gap-2">
+              <div className="w-100">
+                <EditCourseItemsOrder courseItems={courseItems} setCourseItems={setCourseItems} />
+              </div>
+            </CCol>
+          </CRow>
+        )}
 
         <CRow className="mt-4">
           <CCol className="d-flex gap-2">

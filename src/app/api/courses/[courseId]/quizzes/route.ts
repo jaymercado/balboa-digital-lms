@@ -55,6 +55,31 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
     if (!courseQuiz) {
       return NextResponse.json({ error: 'Failed to create quiz' }, { status: 500 })
     }
+    // Get latest course item
+    const latestCourseItemDB = await supabase
+      .from('courseItems')
+      .select()
+      .eq('courseId', courseId)
+      .order('position', { ascending: false })
+      .limit(1)
+    const latestCourseItem = latestCourseItemDB.data?.[0]
+
+    // Add course item
+    const createdCourseItemRes = await supabase
+      .from('courseItems')
+      .insert({
+        courseId,
+        quizId: courseQuiz?.id,
+        type: 'quiz',
+        position: (latestCourseItem?.position || 0) + 1,
+      })
+      .select()
+    const courseItem = createdCourseItemRes.data?.[0]
+    const courseItemId = courseItem?.id ?? null
+
+    if (!courseItemId) {
+      return NextResponse.json({ error: 'Failed to create course item' }, { status: 500 })
+    }
 
     for (const question of questions) {
       // Save question
