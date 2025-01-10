@@ -1,22 +1,13 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import axios from 'axios'
-import {
-  CRow,
-  CCol,
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CButton,
-  CCardText,
-  CFormCheck,
-} from '@coreui/react-pro'
-import toast from '@/utils/toast'
+import { CRow, CCol, CCard, CCardBody, CCardTitle, CButton, CCardText } from '@coreui/react-pro'
 import { useGetQuiz } from '@/hooks/useGetQuizzes'
+import { useGetLatestQuizSubmission } from '@/hooks/useGetQuizSubmissions'
 import { Loading } from '@/components'
+import QuizComponent from './Quiz'
+import Submission from './Submission'
 
 export default function Quiz() {
   const router = useRouter()
@@ -26,63 +17,12 @@ export default function Quiz() {
     courseId,
     quizId,
   })
-  const [answers, setAnswers] = useState<any[]>([])
-  const [latestSubmission, setLatestSubmission] = useState<any>(null)
+  const { fetchingSubmissions, latestSubmission } = useGetLatestQuizSubmission({
+    quizId,
+  })
+  const [retakeQuiz, setRetakeQuiz] = useState(false)
 
-  function submitQuiz() {
-    axios
-      .post(`/api/quizSubmissions`, {
-        quizId,
-        answers: answers.map(({ questionId, answers }) => ({
-          questionId,
-          answers,
-        })),
-      })
-      .then((res) => {
-        if (res.status !== 200) {
-          throw new Error('Error submitting quiz')
-        }
-        toast('success', 'Quiz submitted successfully')
-        router.push(`/enrolled-courses/${courseId}`)
-      })
-      .catch((err) => {
-        console.error(err)
-        toast('error', 'Error submitting quiz')
-      })
-  }
-
-  useEffect(() => {
-    function getLatestSubmission() {
-      axios
-        .get(`/api/quizSubmissions?quizId=${quizId}`)
-        .then((res) => {
-          if (res.status !== 200) {
-            throw new Error('Error getting latest submission')
-          }
-          setLatestSubmission(res.data)
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-    }
-    getLatestSubmission()
-  }, [quizId])
-
-  useEffect(() => {
-    if (courseQuiz?.questions) {
-      setAnswers(
-        courseQuiz?.questions?.map((question, index) => ({
-          questionId: question.id,
-          answers: [],
-          question: question.question,
-          options: question.options,
-          onDisplay: index === 0,
-        })) || [],
-      )
-    }
-  }, [courseQuiz?.questions])
-
-  if (fetchingQuiz) {
+  if (fetchingQuiz || fetchingSubmissions) {
     return <Loading />
   }
 
@@ -102,7 +42,7 @@ export default function Quiz() {
                   <CButton
                     color="light"
                     onClick={() =>
-                      router.push(`/managed-courses/${courseId}/quizzes/${previousQuizId}`)
+                      router.push(`/enrolled-courses/${courseId}/quizzes/${previousQuizId}`)
                     }
                     className="mb-2"
                   >
@@ -114,10 +54,10 @@ export default function Quiz() {
                 <CCol xs="auto">
                   <CButton
                     color="light"
-                    onClick={() =>
-                      router.push(`/managed-courses/${courseId}/quizzes/${nextQuizId}`)
-                    }
                     className="mb-2"
+                    onClick={() =>
+                      router.push(`/enrolled-courses/${courseId}/quizzes/${nextQuizId}`)
+                    }
                   >
                     Next
                   </CButton>
@@ -126,84 +66,27 @@ export default function Quiz() {
             </CRow>
             <CRow>
               <CCol>
-                <CCardTitle className="fw-semibold fs-4">{courseQuiz.title}</CCardTitle>
+                {latestSubmission && !retakeQuiz && (
+                  <CCardTitle className="fw-semibold fs-4">
+                    {courseQuiz.title}{' '}
+                    <CButton color="light" className="mb-2" onClick={() => setRetakeQuiz(true)}>
+                      Retake
+                    </CButton>
+                  </CCardTitle>
+                )}
+
                 <CCardText className="text-secondary">{courseQuiz.description}</CCardText>
               </CCol>
             </CRow>
-            <CRow>
-              <CCol>
-                <div className="mt-4">
-                  {answers?.length === 0 ? <p>No questions found.</p> : ''}
-                  {answers?.map(({ question, onDisplay, options }, index) =>
-                    onDisplay ? (
-                      <div key={index} className="mb-4">
-                        {index > 0 && (
-                          <CButton
-                            onClick={() =>
-                              setAnswers(
-                                answers.map((answer, idx) => ({
-                                  ...answer,
-                                  onDisplay: idx === index - 1,
-                                })),
-                              )
-                            }
-                          >
-                            Previous
-                          </CButton>
-                        )}
-                        {index < answers.length - 1 && (
-                          <CButton
-                            onClick={() =>
-                              setAnswers(
-                                answers.map((answer, idx) => ({
-                                  ...answer,
-                                  onDisplay: idx === index + 1,
-                                })),
-                              )
-                            }
-                          >
-                            Next
-                          </CButton>
-                        )}
-                        {index === answers.length - 1 && (
-                          <CButton onClick={submitQuiz}>Submit</CButton>
-                        )}
-                        <div className="fw-semibold fs-5 text-primary">{`Question ${
-                          index + 1
-                        }`}</div>
-                        <div className="fs-6 mb-2">{question}</div>
-                        <strong className="mt-2">Choices:</strong>
-                        {options.map((option: any, idx: any) => (
-                          <div key={idx}>
-                            <CFormCheck
-                              checked={answers[index].answers.includes(option.id)}
-                              onChange={(e) => {
-                                const answerIsChecked = e.target.checked
-                                setAnswers((state) => {
-                                  const newState = [...state]
-                                  const currentAnswers = [...newState[index].answers]
-                                  const answerExists = currentAnswers.includes(option.id)
-                                  if (answerIsChecked && !answerExists) {
-                                    newState[index].answers = [...currentAnswers, option.id]
-                                  }
-                                  if (!answerIsChecked && answerExists) {
-                                    newState[index].answers = currentAnswers.filter(
-                                      (a) => a !== option.id,
-                                    )
-                                  }
-                                  return newState
-                                })
-                              }}
-                            />
-                            {option.option}
-                          </div>
-                        ))}
-                      </div>
-                    ) : null,
-                  )}
-                </div>
-              </CCol>
-            </CRow>
+            {latestSubmission && !retakeQuiz ? (
+              <Submission
+                fetchingSubmissions={fetchingSubmissions}
+                courseQuiz={courseQuiz}
+                latestSubmission={latestSubmission}
+              />
+            ) : (
+              <QuizComponent fetchingQuiz={fetchingQuiz} courseQuiz={courseQuiz} quizId={quizId} />
+            )}
           </CCardBody>
         </CCard>
       </CCol>
