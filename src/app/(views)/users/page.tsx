@@ -17,9 +17,10 @@ import {
   CCardBody,
   CFormSelect,
 } from '@coreui/react-pro'
-
 import useGetUsers from '@/hooks/useGetUsers'
 import { Loading } from '@/components'
+import { User } from '@/types/user'
+import { roles } from '@/shared/constants'
 
 export default function Users() {
   const router = useRouter()
@@ -29,12 +30,6 @@ export default function Users() {
   const itemsPerPage = 10
   const offset = currentPage * itemsPerPage
   const paginatedData = users.slice(offset, offset + itemsPerPage)
-
-  const roles = [
-    { label: 'Instructor', value: 'instructor' },
-    { label: 'Student', value: 'student' },
-    { label: 'Admin', value: 'admin' },
-  ]
 
   const handlePageClick = useCallback((selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected)
@@ -67,7 +62,7 @@ export default function Users() {
   return (
     <CCard>
       <CCardBody>
-        <CTable>
+        <CTable className="table table-striped">
           <CTableHead>
             <CTableRow>
               <CTableHeaderCell>Name</CTableHeaderCell>
@@ -86,9 +81,7 @@ export default function Users() {
                       key={user.id}
                       aria-label="Select Role"
                       value={user.role}
-                      onChange={(e) =>
-                        handleRoleChange(user.id, e.target.value as 'instructor' | 'admin' | 'user')
-                      }
+                      onChange={(e) => handleRoleChange(user.id, e.target.value as User['role'])}
                       options={roles.map((role) => ({
                         label: role.label,
                         value: role.value,
