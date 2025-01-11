@@ -35,7 +35,7 @@ export default function Users() {
     setCurrentPage(selectedPage.selected)
   }, [])
 
-  const handleRoleChange = async (userId: string, role: 'user' | 'instructor' | 'admin') => {
+  const handleRoleChange = async (userId: string, role: User['role']) => {
     axios
       .put(`/api/users/${userId}`, { role })
       .then((res) => {
