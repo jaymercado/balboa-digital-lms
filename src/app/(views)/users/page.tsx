@@ -4,8 +4,6 @@ import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import ReactPaginate from 'react-paginate'
-import { Loading } from '@/components'
-import useGetUsers from '@/hooks/useGetUsers'
 import {
   CTable,
   CTableHead,
@@ -16,6 +14,9 @@ import {
   CCard,
   CCardBody,
 } from '@coreui/react-pro'
+
+import useGetUsers from '@/hooks/useGetUsers'
+import { Loading } from '@/components'
 
 export default function Users() {
   const router = useRouter()
