@@ -16,5 +16,5 @@ export default function useGetUsers() {
     fetchUsers().finally(() => setFetchingUsers(false))
   }, [])
 
-  return { users, fetchingUsers }
+  return { users, setUsers, fetchingUsers }
 }

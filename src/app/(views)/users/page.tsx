@@ -4,6 +4,8 @@ import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import ReactPaginate from 'react-paginate'
+import axios from 'axios'
+import toast from '@/utils/toast'
 import {
   CTable,
   CTableHead,
@@ -13,6 +15,7 @@ import {
   CTableDataCell,
   CCard,
   CCardBody,
+  CFormSelect,
 } from '@coreui/react-pro'
 
 import useGetUsers from '@/hooks/useGetUsers'
@@ -21,15 +24,37 @@ import { Loading } from '@/components'
 export default function Users() {
   const router = useRouter()
   const { data: session } = useSession()
-  const { users, fetchingUsers } = useGetUsers()
+  const { users, setUsers, fetchingUsers } = useGetUsers()
   const [currentPage, setCurrentPage] = useState(0)
   const itemsPerPage = 10
   const offset = currentPage * itemsPerPage
   const paginatedData = users.slice(offset, offset + itemsPerPage)
 
+  const roles = [
+    { label: 'Instructor', value: 'instructor' },
+    { label: 'Student', value: 'student' },
+    { label: 'Admin', value: 'admin' },
+  ]
+
   const handlePageClick = useCallback((selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected)
   }, [])
+
+  const handleRoleChange = async (userId: string, role: 'user' | 'instructor' | 'admin') => {
+    axios
+      .put(`/api/users/${userId}`, { role })
+      .then((res) => {
+        if (res.status !== 200) throw new Error('Failed to update role')
+        toast('success', 'Role updated successfully')
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.id === userId ? { ...user, role } : user)),
+        )
+      })
+      .catch((err) => {
+        toast('error', 'Error updating role')
+        console.error(err)
+      })
+  }
 
   if (session?.user?.role && session?.user?.role !== 'admin') {
     router.push('/')
@@ -56,7 +81,20 @@ export default function Users() {
                 <CTableRow key={user.id}>
                   <CTableDataCell>{user.name}</CTableDataCell>
                   <CTableDataCell>{user.email}</CTableDataCell>
-                  <CTableDataCell>{user.role}</CTableDataCell>
+                  <CTableDataCell>
+                    <CFormSelect
+                      key={user.id}
+                      aria-label="Select Role"
+                      value={user.role}
+                      onChange={(e) =>
+                        handleRoleChange(user.id, e.target.value as 'instructor' | 'admin' | 'user')
+                      }
+                      options={roles.map((role) => ({
+                        label: role.label,
+                        value: role.value,
+                      }))}
+                    />
+                  </CTableDataCell>
                 </CTableRow>
               ))
             ) : (
