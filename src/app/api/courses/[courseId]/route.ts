@@ -77,14 +77,13 @@ export async function PUT(req: NextRequest, { params }: { params: { courseId: st
       supabase.from('enrollments').delete().eq('courseId', courseId),
     ])
 
+    // Add enrollments and courseInstructors
     const requests: PostgrestFilterBuilder<any, any, null, 'courseInstructors', unknown>[] = []
-    // Add enrollments
     requests.push(
       supabase
         .from('enrollments')
         .insert(enrollees.map((studentId: string) => ({ courseId, studentId }))),
     )
-    // Add courseInstructors
     requests.push(
       supabase
         .from('courseInstructors')

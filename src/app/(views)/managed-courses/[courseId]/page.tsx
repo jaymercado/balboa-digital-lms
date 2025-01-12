@@ -104,7 +104,7 @@ export default function Course() {
               ))}
             </CCardText>
             <CCardText>
-              <strong>Contents:</strong>
+              <strong>Items:</strong>
               <ul>
                 {course.courseItems.map((item) => (
                   <li key={item.id}>{item.title}</li>

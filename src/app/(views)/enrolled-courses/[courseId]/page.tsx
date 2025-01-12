@@ -54,6 +54,22 @@ export default function Course() {
                 </span>
               ))}
             </CCardText>
+            <CCardText>
+              <strong>Items:</strong>
+              <ul>
+                {course.courseItems.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/enrolled-courses/${courseId}/${
+                      item.type === 'module' ? 'modules' : 'quizzes'
+                    }/${item.moduleId || item.quizId}`}
+                    className="text-decoration-none"
+                  >
+                    <li key={item.id}>{item.title}</li>
+                  </Link>
+                ))}
+              </ul>
+            </CCardText>
           </CCardBody>
         </CCard>
 

@@ -21,7 +21,7 @@ import toast from '@/utils/toast'
 import useGetUsers from '@/hooks/useGetUsers'
 import { useGetCourse } from '@/hooks/useGetCourses'
 import { Loading } from '@/components'
-import EditCourseItemsOrder from '@/components/EditCourseItemsOrder'
+import { EditCourseItemsOrder } from '@/components'
 
 type UserOption = {
   value: string
