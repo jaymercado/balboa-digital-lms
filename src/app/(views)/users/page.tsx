@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import ReactPaginate from 'react-paginate'
 import axios from 'axios'
-import toast from '@/utils/toast'
 import {
   CTable,
   CTableHead,
@@ -17,6 +16,7 @@ import {
   CCardBody,
   CFormSelect,
 } from '@coreui/react-pro'
+import toast from '@/utils/toast'
 import useGetUsers from '@/hooks/useGetUsers'
 import { Loading } from '@/components'
 import { User } from '@/types/user'
@@ -35,7 +35,7 @@ export default function Users() {
     setCurrentPage(selectedPage.selected)
   }, [])
 
-  const handleRoleChange = async (userId: string, role: User['role']) => {
+  const handleRoleChange = (userId: string, role: User['role']) => {
     axios
       .put(`/api/users/${userId}`, { role })
       .then((res) => {
@@ -78,7 +78,6 @@ export default function Users() {
                   <CTableDataCell>{user.email}</CTableDataCell>
                   <CTableDataCell>
                     <CFormSelect
-                      key={user.id}
                       aria-label="Select Role"
                       value={user.role}
                       onChange={(e) => handleRoleChange(user.id, e.target.value as User['role'])}
