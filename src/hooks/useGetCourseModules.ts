@@ -26,8 +26,8 @@ export function useGetCourseModules({ courseId }: { courseId: string }) {
 export function useGetCourseModule({ courseId, moduleId }: { courseId: string; moduleId: string }) {
   const [fetchingModule, setFetchingModule] = useState<boolean>(false)
   const [courseModule, setCourseModule] = useState<Module | null>(null)
-  const [previousCourseId, setPreviousCourseId] = useState<string | null>(null)
-  const [nextCourseId, setNextCourseId] = useState<string | null>(null)
+  const [previousCourseModuleId, setPreviousCourseId] = useState<string | null>(null)
+  const [nextCourseModuleId, setNextCourseId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchModule = async () => {
@@ -39,21 +39,27 @@ export function useGetCourseModule({ courseId, moduleId }: { courseId: string; m
       const fetchedCourseModule =
         ((await res.json()) as {
           courseModule: Module
-          nextCourseId?: string
-          previousCourseId?: string
+          nextCourseModuleId?: string
+          previousCourseModuleId?: string
         }) || {}
 
       setCourseModule(fetchedCourseModule.courseModule)
-      if (fetchedCourseModule.nextCourseId) {
-        setNextCourseId(fetchedCourseModule.nextCourseId)
+      if (fetchedCourseModule.nextCourseModuleId) {
+        setNextCourseId(fetchedCourseModule.nextCourseModuleId)
       }
-      if (fetchedCourseModule.previousCourseId) {
-        setPreviousCourseId(fetchedCourseModule.previousCourseId)
+      if (fetchedCourseModule.previousCourseModuleId) {
+        setPreviousCourseId(fetchedCourseModule.previousCourseModuleId)
       }
     }
 
     fetchModule().finally(() => setFetchingModule(false))
   }, [courseId, moduleId])
 
-  return { fetchingModule, courseModule, setCourseModule, nextCourseId, previousCourseId }
+  return {
+    fetchingModule,
+    courseModule,
+    setCourseModule,
+    nextCourseModuleId,
+    previousCourseModuleId,
+  }
 }

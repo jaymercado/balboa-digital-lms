@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { useState } from 'react'
@@ -26,7 +25,7 @@ export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { fetchingModule, courseModule, nextCourseId, previousCourseId } = useGetCourseModule({
+  const { fetchingModule, courseModule, nextCourseModuleId, previousCourseModuleId } = useGetCourseModule({
     courseId,
     moduleId,
   })
@@ -90,9 +89,9 @@ export default function Module() {
               <CButton
                 color="light"
                 onClick={() =>
-                  router.push(`/managed-courses/${courseId}/modules/${previousCourseId}`)
+                  router.push(`/managed-courses/${courseId}/modules/${previousCourseModuleId}`)
                 }
-                disabled={!previousCourseId}
+                disabled={!previousCourseModuleId}
               >
                 <i className="bi bi-chevron-left me-1"></i>
                 Previous
@@ -100,8 +99,8 @@ export default function Module() {
               <div className="fw-semibold fs-4 align-items-center">{courseModule.title}</div>
               <CButton
                 color="light"
-                onClick={() => router.push(`/managed-courses/${courseId}/modules/${nextCourseId}`)}
-                disabled={!nextCourseId}
+                onClick={() => router.push(`/managed-courses/${courseId}/modules/${nextCourseModuleId}`)}
+                disabled={!nextCourseModuleId}
               >
                 Next
                 <i className="bi bi-chevron-right ms-1"></i>

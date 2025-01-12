@@ -6,12 +6,14 @@ import CreateLink from './CreateLink'
 import Nav from './Nav'
 import LandingPage from './LandingPage'
 import Loading from './Loading'
+import CourseItemsTable from './CourseItemsTable'
 import CourseModuleContent from './CourseModuleContent'
 import CourseModulesTable from './CourseModulesTable'
 import CourseQuizzesTable from './CourseQuizzesTable'
 import QuizQuestionInput from './QuizQuestionInput'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 import PDFRenderer from './PDFRenderer'
+import EditCourseItemsOrder from './EditCourseItemsOrder'
 
 export {
   AppBreadcrumb,
@@ -23,9 +25,11 @@ export {
   LandingPage,
   Loading,
   CourseModuleContent,
+  CourseItemsTable,
   CourseModulesTable,
   CourseQuizzesTable,
   QuizQuestionInput,
   ConfirmDeleteModal,
   PDFRenderer,
+  EditCourseItemsOrder,
 }

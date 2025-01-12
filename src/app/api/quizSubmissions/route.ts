@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const { quizId, answers } = body
-    console.log(JSON.stringify(body))
 
     const supabase = await connectSupabase()
     if (!supabase) {

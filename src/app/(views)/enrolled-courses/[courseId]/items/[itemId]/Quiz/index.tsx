@@ -9,10 +9,10 @@ import { Loading } from '@/components'
 import QuizComponent from './Quiz'
 import Submission from './Submission'
 
-export default function Quiz() {
+export default function Quiz({ quizId }: { quizId: string }) {
   const router = useRouter()
   const params = useParams()
-  const { courseId, quizId } = params as { courseId: string; quizId: string }
+  const { courseId } = params as { courseId: string }
   const { fetchingQuiz, courseQuiz, nextQuizId, previousQuizId } = useGetQuiz({
     courseId,
     quizId,

@@ -21,7 +21,7 @@ import toast from '@/utils/toast'
 import useGetUsers from '@/hooks/useGetUsers'
 import { useGetCourse } from '@/hooks/useGetCourses'
 import { Loading } from '@/components'
-import EditCourseItemsOrder from '@/components/EditCourseItemsOrder'
+import { EditCourseItemsOrder } from '@/components'
 
 type UserOption = {
   value: string
@@ -50,7 +50,6 @@ export default function EditCourse() {
   const onSubmit = useCallback(
     (data: Inputs) => {
       setUpdatingCourse(true)
-      console.log(123456, { ...data, courseItems })
       fetch(`/api/courses/${courseId}`, {
         method: 'PUT',
         body: JSON.stringify({ ...data, courseItems }),
