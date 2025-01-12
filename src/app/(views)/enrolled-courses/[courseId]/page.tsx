@@ -6,7 +6,7 @@ import { useGetCourse } from '@/hooks/useGetCourses'
 import { CCard, CCardBody, CCardTitle, CCardText, CRow, CCol, CBadge } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilPeople } from '@coreui/icons'
-import { Loading, CourseModulesTable, CourseQuizzesTable } from '@/components'
+import { Loading, CourseItemsTable, CourseModulesTable, CourseQuizzesTable } from '@/components'
 
 export default function Course() {
   const params = useParams()
@@ -54,22 +54,6 @@ export default function Course() {
                 </span>
               ))}
             </CCardText>
-            <CCardText>
-              <strong>Items:</strong>
-              <ul>
-                {course.courseItems.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/enrolled-courses/${courseId}/${
-                      item.type === 'module' ? 'modules' : 'quizzes'
-                    }/${item.moduleId || item.quizId}`}
-                    className="text-decoration-none"
-                  >
-                    <li key={item.id}>{item.title}</li>
-                  </Link>
-                ))}
-              </ul>
-            </CCardText>
           </CCardBody>
         </CCard>
 
@@ -77,34 +61,18 @@ export default function Course() {
           <CCol>
             <CRow className="mb-3">
               <CCol>
-                <div className="fs-4 fw-bold">Modules</div>
+                <div className="fs-4 fw-bold">Items</div>
                 <Link
-                  href={`/enrolled-courses/${course.id}/modules`}
+                  href={`/enrolled-courses/${course.id}/items`}
                   className="me-2 text-decoration-none"
                 >
-                  <small className="text-secondary d-none d-sm-inline">View All Modules</small>
+                  <small className="text-secondary d-none d-sm-inline">View All Items</small>
                   <small className="text-secondary d-inline d-sm-none">View All</small>
                   <i className="bi bi-chevron-right text-secondary"></i>
                 </Link>
               </CCol>
             </CRow>
-            <CourseModulesTable courseId={course.id} />
-          </CCol>
-          <CCol>
-            <CRow className="mb-3">
-              <CCol>
-                <div className="fs-4 fw-bold">Quizzes</div>
-                <Link
-                  href={`/enrolled-courses/${course.id}/quizzes`}
-                  className="me-2 text-decoration-none"
-                >
-                  <small className="text-secondary d-none d-sm-inline">View All Quizzes</small>
-                  <small className="text-secondary d-inline d-sm-none">View All</small>
-                  <i className="bi bi-chevron-right text-secondary"></i>
-                </Link>
-              </CCol>
-            </CRow>
-            <CourseQuizzesTable courseId={course.id} userIsStudent={true} />
+            <CourseItemsTable courseId={course.id} userIsStudent={true} />
           </CCol>
         </CRow>
       </CCol>

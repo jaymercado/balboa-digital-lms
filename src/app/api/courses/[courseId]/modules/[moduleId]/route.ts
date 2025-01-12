@@ -15,24 +15,27 @@ export async function GET(req: NextRequest, { params }: { params: { moduleId: st
 
     const courseModuleDb = await supabase.from('modules').select().eq('id', moduleId)
     const courseModule = courseModuleDb.data?.[0]
-    const nextCourseIdDb = await supabase
+    const nextCourseModuleIdDb = await supabase
       .from('modules')
       .select('id')
       .gt('id', moduleId)
       .eq('courseId', courseModule?.courseId)
       .order('id', { ascending: true })
       .limit(1)
-    const nextCourseId = nextCourseIdDb.data?.[0]?.id
-    const previousCourseIdDb = await supabase
+    const nextCourseModuleId = nextCourseModuleIdDb.data?.[0]?.id
+    const previousCourseModuleIdDb = await supabase
       .from('modules')
       .select('id')
       .lt('id', moduleId)
       .eq('courseId', courseModule?.courseId)
       .order('id', { ascending: false })
       .limit(1)
-    const previousCourseId = previousCourseIdDb.data?.[0]?.id
+    const previousCourseModuleId = previousCourseModuleIdDb.data?.[0]?.id
 
-    return NextResponse.json({ courseModule, nextCourseId, previousCourseId }, { status: 200 })
+    return NextResponse.json(
+      { courseModule, nextCourseModuleId, previousCourseModuleId },
+      { status: 200 },
+    )
   } catch (error) {
     console.error('Error in /api/courses/[id] (GET): ', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
