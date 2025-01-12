@@ -53,6 +53,12 @@ export const generateNav = (role: string) => {
   if (role === 'admin') {
     nav.push(
       {
+        component: CNavItem,
+        name: 'All Courses',
+        href: '/all-courses',
+        icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+      },
+      {
         component: CNavTitle,
         name: 'Users',
       },

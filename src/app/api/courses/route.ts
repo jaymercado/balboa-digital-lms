@@ -34,13 +34,16 @@ export async function GET(req: NextRequest) {
         .eq('courseInstructors.instructorId', user.data?.[0].id)
         .order('id', { ascending: true })
       courses = foundCourses.data ?? []
-    } else {
+    } else if (type === 'enrolled') {
       const foundCourses = await supabase
         .from('courses')
         .select('*, enrollments!inner(studentId)')
         .eq('enrollments.studentId', user.data?.[0].id)
         .order('id', { ascending: true })
       courses = foundCourses.data ?? []
+    } else {
+      const allCourses = await supabase.from('courses').select('*').order('id', { ascending: true })
+      courses = allCourses.data ?? []
     }
 
     return NextResponse.json(courses, { status: 200 })
