@@ -3,16 +3,7 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useGetCourse } from '@/hooks/useGetCourses'
-import {
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CCardText,
-  CRow,
-  CCol,
-  CBadge,
-  CButton,
-} from '@coreui/react-pro'
+import { CCard, CCardBody, CCardTitle, CCardText, CRow, CCol, CBadge } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilPeople } from '@coreui/icons'
 import { Loading, CourseItemsTable, EnrolledCourseActionButton } from '@/components'

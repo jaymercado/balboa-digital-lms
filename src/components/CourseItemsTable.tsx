@@ -14,6 +14,19 @@ import { useGetCourseItems } from '@/hooks/useGetCourseItems'
 import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
 import { Loading } from '@/components'
 
+const getCourseItemStatus = (userCourseItemLog: any) => {
+  if (!userCourseItemLog) {
+    return 'Not Completed'
+  }
+  if (userCourseItemLog.courseItem.type === 'module') {
+    return 'Completed'
+  } else {
+    return userCourseItemLog.courseItem.score
+      ? `${userCourseItemLog.courseItem.score}/100`
+      : 'Not Completed'
+  }
+}
+
 export default function CourseItemsTable({ courseId, userIsStudent }: CourseItemsTableProps) {
   const { courseItems, fetchingCourseItems } = useGetCourseItems({ courseId })
   const { userCourseItemLogs, fetchingUserCourseItemLogs } = useGetUserCourseItemLogs({
@@ -71,9 +84,9 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
                 <span className="text-capitalize">
                   {fetchingUserCourseItemLogs && 'Loading...'}
                   {!fetchingUserCourseItemLogs &&
-                    (userCourseItemLogs.find((log) => log.courseItemId === item.id)
-                      ? 'Completed'
-                      : 'Not Completed')}
+                    getCourseItemStatus(
+                      userCourseItemLogs?.find((log) => log.courseItemId === item.id),
+                    )}
                 </span>
               </CTableDataCell>
             </CTableRow>
