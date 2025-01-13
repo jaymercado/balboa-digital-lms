@@ -2,17 +2,25 @@
 
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import ReactPaginate from 'react-paginate'
 import { CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CRow } from '@coreui/react-pro'
 import { useGetCourses } from '@/hooks/useGetCourses'
 import { Loading } from '@/components'
 
 export default function AllCourses() {
+  const router = useRouter()
+  const { data: session } = useSession()
   const { courses, fetchingCourses } = useGetCourses({})
   const itemsPerPage = 8
   const [currentPage, setCurrentPage] = useState(0)
   const offset = currentPage * itemsPerPage
   const paginatedData = courses.slice(offset, offset + itemsPerPage)
+
+  if (session?.user?.role && session?.user?.role !== 'admin') {
+    router.push('/')
+  }
 
   const handlePageClick = useCallback((selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected)
