@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import axios from 'axios'
 import { CRow, CCol, CCard, CCardBody, CCardTitle, CButton, CCardText } from '@coreui/react-pro'
 import { useGetQuiz } from '@/hooks/useGetQuizzes'
 import { useGetLatestQuizSubmission } from '@/hooks/useGetQuizSubmissions'
@@ -9,7 +10,7 @@ import { Loading } from '@/components'
 import QuizComponent from './Quiz'
 import Submission from './Submission'
 
-export default function Quiz({ quizId }: { quizId: string }) {
+export default function Quiz({ quizId, itemId }: { quizId: string; itemId: string }) {
   const router = useRouter()
   const params = useParams()
   const { courseId } = params as { courseId: string }
@@ -21,6 +22,15 @@ export default function Quiz({ quizId }: { quizId: string }) {
     quizId,
   })
   const [retakeQuiz, setRetakeQuiz] = useState(false)
+
+  useEffect(() => {
+    if (courseQuiz) {
+      axios.post(`/api/courses/${courseId}/userCourseItemLogs`, {
+        courseItemId: itemId,
+        courseId,
+      })
+    }
+  }, [courseQuiz, courseId, itemId])
 
   if (fetchingQuiz || fetchingSubmissions) {
     return <Loading />

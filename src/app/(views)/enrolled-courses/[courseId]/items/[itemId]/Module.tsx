@@ -1,18 +1,28 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import axios from 'axios'
 import { CCardText, CTab, CTabContent, CTabList, CTabPanel, CTabs } from '@coreui/react-pro'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
 import { Loading, CourseModuleContent } from '@/components'
 
-export default function Module({ moduleId }: { moduleId: string }) {
+export default function Module({ moduleId, itemId }: { moduleId: string; itemId: string }) {
   const params = useParams()
   const { courseId } = params as { courseId: string }
   const { fetchingModule, courseModule } = useGetCourseModule({
     courseId,
     moduleId,
   })
+
+  useEffect(() => {
+    if (courseModule) {
+      axios.post(`/api/courses/${courseId}/userCourseItemLogs`, {
+        courseItemId: itemId,
+        courseId,
+      })
+    }
+  }, [courseModule, courseId, itemId])
 
   if (fetchingModule) {
     return <Loading />
