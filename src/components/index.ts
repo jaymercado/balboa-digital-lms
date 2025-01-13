@@ -14,6 +14,7 @@ import QuizQuestionInput from './QuizQuestionInput'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 import PDFRenderer from './PDFRenderer'
 import EditCourseItemsOrder from './EditCourseItemsOrder'
+import EnrolledCourseActionButton from './EnrolledCourseActionButton'
 
 export {
   AppBreadcrumb,
@@ -32,4 +33,5 @@ export {
   ConfirmDeleteModal,
   PDFRenderer,
   EditCourseItemsOrder,
+  EnrolledCourseActionButton,
 }

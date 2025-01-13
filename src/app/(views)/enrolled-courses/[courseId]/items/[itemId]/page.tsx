@@ -55,8 +55,8 @@ export default function Item() {
                 <i className="bi bi-chevron-right ms-1"></i>
               </CButton>
             </div>
-            {courseItem.moduleId && <Module moduleId={courseItem.moduleId} />}
-            {courseItem.quizId && <Quiz quizId={courseItem.quizId} />}
+            {courseItem.moduleId && <Module moduleId={courseItem.moduleId} itemId={itemId} />}
+            {courseItem.quizId && <Quiz quizId={courseItem.quizId} itemId={itemId} />}
           </CCardBody>
         </CCard>
       </CCol>

@@ -11,10 +11,14 @@ import {
   CTableRow,
 } from '@coreui/react-pro'
 import { useGetCourseItems } from '@/hooks/useGetCourseItems'
+import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
 import { Loading } from '@/components'
 
 export default function CourseItemsTable({ courseId, userIsStudent }: CourseItemsTableProps) {
   const { courseItems, fetchingCourseItems } = useGetCourseItems({ courseId })
+  const { userCourseItemLogs, fetchingUserCourseItemLogs } = useGetUserCourseItemLogs({
+    courseId,
+  })
 
   if (fetchingCourseItems) {
     return <Loading />
@@ -38,6 +42,9 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
           <CTableHeaderCell>
             <small>Type</small>
           </CTableHeaderCell>
+          <CTableHeaderCell>
+            <small>status</small>
+          </CTableHeaderCell>
         </CTableRow>
       </CTableHead>
       <CTableBody>
@@ -59,6 +66,15 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
               </CTableDataCell>
               <CTableDataCell>
                 <span className="text-capitalize">{item.type}</span>
+              </CTableDataCell>
+              <CTableDataCell>
+                <span className="text-capitalize">
+                  {fetchingUserCourseItemLogs && 'Loading...'}
+                  {!fetchingUserCourseItemLogs &&
+                    (userCourseItemLogs.find((log) => log.courseItemId === item.id)
+                      ? 'Completed'
+                      : 'Not Completed')}
+                </span>
               </CTableDataCell>
             </CTableRow>
           ))
