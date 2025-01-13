@@ -40,7 +40,7 @@ export default function CreateCourse() {
       .then((res) => res.json())
       .then((course) => {
         toast('success', 'Course created successfully')
-        router.push(`/managed-courses/${course.id}`)
+        router.push(`/all-courses/${course.id}`)
       })
       .catch((err) => {
         toast('error', 'Error creating course')
@@ -128,7 +128,7 @@ export default function CreateCourse() {
                   <Select
                     id="instructors"
                     isMulti
-                    options={userOptions.filter((user) => user.role === 'instructor')}
+                    options={userOptions.filter((user) => user.role === 'instructor' || 'admin')}
                     onChange={(selectedOptions: MultiValue<UserOption>) => {
                       field.onChange(selectedOptions.map((option) => option.value))
                     }}

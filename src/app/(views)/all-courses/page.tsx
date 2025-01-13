@@ -2,29 +2,53 @@
 
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import {
+  CCard,
+  CCardBody,
+  CButton,
+  CCardImage,
+  CCardText,
+  CCardTitle,
+  CCol,
+  CRow,
+} from '@coreui/react-pro'
+import { cilPlus } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 import ReactPaginate from 'react-paginate'
-import { CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CRow } from '@coreui/react-pro'
+import { Course } from '@/types/course'
 import { useGetCourses } from '@/hooks/useGetCourses'
-import { Loading } from '@/components'
+import toast from '@/utils/toast'
+import { Loading, ConfirmDeleteModal } from '@/components'
 
 export default function AllCourses() {
-  const router = useRouter()
-  const { data: session } = useSession()
-  const { courses, fetchingCourses } = useGetCourses({})
-  const itemsPerPage = 8
+  const { courses, setCourses, fetchingCourses } = useGetCourses({})
+  const [deletingCourse, setDeletingCourse] = useState(false)
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
+  const itemsPerPage = 8
   const offset = currentPage * itemsPerPage
   const paginatedData = courses.slice(offset, offset + itemsPerPage)
-
-  if (session?.user?.role && session?.user?.role !== 'admin') {
-    router.push('/')
-  }
 
   const handlePageClick = useCallback((selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected)
   }, [])
+
+  function deleteCourse(courseId: string) {
+    setDeletingCourse(true)
+    fetch(`/api/courses/${courseId}`, {
+      method: 'DELETE',
+    })
+      .then((res) => res.json())
+      .then((deletedCourse: Course) => {
+        setCourses(courses.filter((course) => course?.id !== deletedCourse?.id))
+        toast('success', 'Course deleted successfully')
+      })
+      .catch((err) => {
+        console.error(err)
+        toast('error', 'Error deleting course')
+      })
+      .finally(() => setDeletingCourse(false))
+  }
 
   return (
     <CCard className="h-100">
@@ -32,6 +56,15 @@ export default function AllCourses() {
         <CCardTitle className="d-flex justify-content-between align-items-center fw-bold mb-3">
           <span className="d-none d-sm-inline">All Courses ({courses.length})</span>
           <span className="d-inline d-sm-none">Courses ({courses.length})</span>
+          <CButton
+            color="primary"
+            href="/all-courses/create"
+            className="bg-primary-emphasis fw-semibold"
+          >
+            <CIcon icon={cilPlus} className="me-2" />
+            <span className="d-none d-sm-inline">Create Course</span>
+            <span className="d-inline d-sm-none">Create</span>
+          </CButton>
         </CCardTitle>
         {fetchingCourses ? (
           <Loading />
@@ -69,6 +102,12 @@ export default function AllCourses() {
                       </CCardBody>
                     </CCard>
                   </CCol>
+                  <ConfirmDeleteModal
+                    visible={isDeleteModalVisible}
+                    onClose={() => setIsDeleteModalVisible(false)}
+                    onConfirm={() => [deleteCourse(course.id), setIsDeleteModalVisible(false)]}
+                    disabled={deletingCourse}
+                  />
                 </div>
               ))
             ) : (
@@ -76,6 +115,7 @@ export default function AllCourses() {
             )}
           </CRow>
         )}
+
         <div className="d-flex align-items-center justify-content-center">
           <small className="text-secondary me-2 page-number">
             Page {currentPage + 1} of {Math.ceil(courses.length / itemsPerPage)}

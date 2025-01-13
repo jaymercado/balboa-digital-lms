@@ -11,10 +11,27 @@ import {
   CTableRow,
 } from '@coreui/react-pro'
 import { useGetCourseItems } from '@/hooks/useGetCourseItems'
+import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
 import { Loading } from '@/components'
+
+const getCourseItemStatus = (userCourseItemLog: any) => {
+  if (!userCourseItemLog) {
+    return 'Not Completed'
+  }
+  if (userCourseItemLog.courseItem.type === 'module') {
+    return 'Completed'
+  } else {
+    return userCourseItemLog.courseItem.score
+      ? `${userCourseItemLog.courseItem.score}/100`
+      : 'Not Completed'
+  }
+}
 
 export default function CourseItemsTable({ courseId, userIsStudent }: CourseItemsTableProps) {
   const { courseItems, fetchingCourseItems } = useGetCourseItems({ courseId })
+  const { userCourseItemLogs, fetchingUserCourseItemLogs } = useGetUserCourseItemLogs({
+    courseId,
+  })
 
   if (fetchingCourseItems) {
     return <Loading />
@@ -38,6 +55,9 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
           <CTableHeaderCell>
             <small>Type</small>
           </CTableHeaderCell>
+          <CTableHeaderCell>
+            <small>status</small>
+          </CTableHeaderCell>
         </CTableRow>
       </CTableHead>
       <CTableBody>
@@ -59,6 +79,15 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
               </CTableDataCell>
               <CTableDataCell>
                 <span className="text-capitalize">{item.type}</span>
+              </CTableDataCell>
+              <CTableDataCell>
+                <span className="text-capitalize">
+                  {fetchingUserCourseItemLogs && 'Loading...'}
+                  {!fetchingUserCourseItemLogs &&
+                    getCourseItemStatus(
+                      userCourseItemLogs?.find((log) => log.courseItemId === item.id),
+                    )}
+                </span>
               </CTableDataCell>
             </CTableRow>
           ))

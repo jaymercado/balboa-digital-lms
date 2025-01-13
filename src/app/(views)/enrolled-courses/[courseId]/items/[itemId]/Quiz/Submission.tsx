@@ -3,7 +3,7 @@
 import React from 'react'
 import { CRow } from '@coreui/react-pro'
 import { Loading } from '@/components'
-import { calculateQuestionPoints, calculateScore } from './utilities'
+import { calculateQuestionPoints, calculateQuizScore } from '@/utils/calculateQuizScore'
 
 export default function Submission({
   fetchingSubmissions,
@@ -14,7 +14,7 @@ export default function Submission({
   latestSubmission: any
   courseQuiz: any
 }) {
-  const score = calculateScore(courseQuiz, latestSubmission)
+  const score = calculateQuizScore(courseQuiz?.questions, latestSubmission?.submissionAnswers)
 
   if (fetchingSubmissions) return <Loading />
 
@@ -58,7 +58,7 @@ export default function Submission({
         )
       })}
 
-      <p>Total Score: {score.toFixed(0)}/100</p>
+      <p>Total Score: {score}/100</p>
     </CRow>
   )
 }

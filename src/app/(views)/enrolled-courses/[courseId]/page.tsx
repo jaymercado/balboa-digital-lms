@@ -6,7 +6,7 @@ import { useGetCourse } from '@/hooks/useGetCourses'
 import { CCard, CCardBody, CCardTitle, CCardText, CRow, CCol, CBadge } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilPeople } from '@coreui/icons'
-import { Loading, CourseItemsTable, CourseModulesTable, CourseQuizzesTable } from '@/components'
+import { Loading, CourseItemsTable, EnrolledCourseActionButton } from '@/components'
 
 export default function Course() {
   const params = useParams()
@@ -32,7 +32,9 @@ export default function Course() {
                 <CBadge color="primary" shape="rounded-pill" className="text-normal mb-2">
                   Course ID: {courseId}
                 </CBadge>
-                <CCardTitle className="fw-semibold fs-4">{course.title}</CCardTitle>
+                <CCardTitle className="fw-semibold fs-4">
+                  {course.title} <EnrolledCourseActionButton courseId={courseId} />
+                </CCardTitle>
               </CCol>
             </CRow>
             <CCardText className="text-secondary">{course.description}</CCardText>
