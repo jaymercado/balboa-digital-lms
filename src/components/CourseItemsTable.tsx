@@ -10,22 +10,10 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react-pro'
+import getCourseItemStatus from '@/utils/getCourseItemStatus'
 import { useGetCourseItems } from '@/hooks/useGetCourseItems'
 import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
-import { Loading } from '@/components'
-
-const getCourseItemStatus = (userCourseItemLog: any) => {
-  if (!userCourseItemLog) {
-    return 'Not Completed'
-  }
-  if (userCourseItemLog.courseItem.type === 'module') {
-    return 'Completed'
-  } else {
-    return userCourseItemLog.courseItem.score
-      ? `${userCourseItemLog.courseItem.score}/100`
-      : 'Not Completed'
-  }
-}
+import { Loading, PrintCertificateButton } from '@/components'
 
 export default function CourseItemsTable({ courseId, userIsStudent }: CourseItemsTableProps) {
   const { courseItems, fetchingCourseItems } = useGetCourseItems({ courseId })
@@ -98,6 +86,22 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
             </CTableDataCell>
           </CTableRow>
         )}
+        {courseItems.length > 0 &&
+          courseItems.every(
+            (item) =>
+              getCourseItemStatus(
+                userCourseItemLogs?.find((log) => log.courseItemId === item.id),
+              ) === 'Completed' ||
+              getCourseItemStatus(
+                userCourseItemLogs?.find((log) => log.courseItemId === item.id),
+              ) === '100/100',
+          ) && (
+            <CTableRow>
+              <CTableDataCell colSpan={4} className="text-center">
+                <PrintCertificateButton />
+              </CTableDataCell>
+            </CTableRow>
+          )}
       </CTableBody>
     </CTable>
   )
