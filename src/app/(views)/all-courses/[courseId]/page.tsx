@@ -35,7 +35,7 @@ export default function Course() {
       .then((res) => res.json())
       .then(() => {
         toast('success', 'Course deleted successfully')
-        router.push('/managed-courses')
+        router.push('/all-courses')
       })
       .catch((err) => {
         console.error(err)
@@ -66,7 +66,7 @@ export default function Course() {
                 <CCardTitle className="fw-semibold fs-4">{course.title}</CCardTitle>
               </CCol>
               <CCol xs="auto">
-                <CButton color="light" className="me-2" href={`/managed-courses/${course.id}/edit`}>
+                <CButton color="light" className="me-2" href={`/all-courses/${course.id}/edit`}>
                   <CIcon icon={cilPencil} size="sm" /> Edit
                 </CButton>
                 <CButton
@@ -120,7 +120,7 @@ export default function Course() {
               <CCol>
                 <div className="fs-4 fw-bold">Modules</div>
                 <Link
-                  href={`/managed-courses/${course.id}/modules`}
+                  href={`/all-courses/${course.id}/modules`}
                   className="me-2 text-decoration-none"
                 >
                   <small className="text-secondary d-none d-sm-inline">View All Modules</small>
@@ -133,7 +133,7 @@ export default function Course() {
                 <CButton
                   as="a"
                   color="primary"
-                  href={`/managed-courses/${course.id}/modules/create`}
+                  href={`/all-courses/${course.id}/modules/create`}
                   className="fw-semibold"
                 >
                   <CIcon icon={cilPlus} size="sm" className="me-2" />
@@ -149,7 +149,7 @@ export default function Course() {
               <CCol>
                 <div className="fs-4 fw-bold">Quizzes</div>
                 <Link
-                  href={`/managed-courses/${course.id}/quizzes`}
+                  href={`/all-courses/${course.id}/quizzes`}
                   className="me-2 text-decoration-none"
                 >
                   <small className="text-secondary d-none d-sm-inline">View All Quizzes</small>
@@ -162,7 +162,7 @@ export default function Course() {
                 <CButton
                   as="a"
                   color="primary"
-                  href={`/managed-courses/${course.id}/quizzes/create`}
+                  href={`/all-courses/${course.id}/quizzes/create`}
                   className="fw-semibold"
                 >
                   <CIcon icon={cilPlus} size="sm" className="me-2" />

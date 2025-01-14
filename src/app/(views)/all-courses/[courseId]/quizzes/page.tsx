@@ -18,7 +18,7 @@ export default function Quizzes() {
           <CButton
             color="primary"
             as="a"
-            href={`/managed-courses/${courseId}/quizzes/create`}
+            href={`/all-courses/${courseId}/quizzes/create`}
             className="fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />

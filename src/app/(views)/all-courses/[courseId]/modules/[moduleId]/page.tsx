@@ -25,10 +25,11 @@ export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { fetchingModule, courseModule, nextCourseModuleId, previousCourseModuleId } = useGetCourseModule({
-    courseId,
-    moduleId,
-  })
+  const { fetchingModule, courseModule, nextCourseModuleId, previousCourseModuleId } =
+    useGetCourseModule({
+      courseId,
+      moduleId,
+    })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
@@ -40,7 +41,7 @@ export default function Module() {
       .then((res) => res.json())
       .then(() => {
         toast('success', 'Module deleted successfully')
-        router.push(`/managed-courses/${courseId}`)
+        router.push(`/all-courses/${courseId}`)
       })
       .catch((err) => {
         console.error(err)
@@ -65,7 +66,7 @@ export default function Module() {
           <CButton
             color="secondary"
             className="me-2"
-            href={`/managed-courses/${courseId}/modules/${moduleId}/edit`}
+            href={`/all-courses/${courseId}/modules/${moduleId}/edit`}
           >
             <CIcon icon={cilPencil} size="sm" /> Edit
           </CButton>
@@ -89,7 +90,7 @@ export default function Module() {
               <CButton
                 color="light"
                 onClick={() =>
-                  router.push(`/managed-courses/${courseId}/modules/${previousCourseModuleId}`)
+                  router.push(`/all-courses/${courseId}/modules/${previousCourseModuleId}`)
                 }
                 disabled={!previousCourseModuleId}
               >
@@ -99,7 +100,9 @@ export default function Module() {
               <div className="fw-semibold fs-4 align-items-center">{courseModule.title}</div>
               <CButton
                 color="light"
-                onClick={() => router.push(`/managed-courses/${courseId}/modules/${nextCourseModuleId}`)}
+                onClick={() =>
+                  router.push(`/all-courses/${courseId}/modules/${nextCourseModuleId}`)
+                }
                 disabled={!nextCourseModuleId}
               >
                 Next

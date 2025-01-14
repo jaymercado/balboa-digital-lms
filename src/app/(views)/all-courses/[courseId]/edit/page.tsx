@@ -57,7 +57,7 @@ export default function EditCourse() {
         .then(() => {
           setUpdatingCourse(false)
           toast('success', 'Course updated successfully')
-          router.push(`/managed-courses/${courseId}`)
+          router.push(`/all-courses/${courseId}`)
         })
         .catch((err) => {
           setUpdatingCourse(false)
@@ -167,7 +167,7 @@ export default function EditCourse() {
                   <Select
                     id="instructors"
                     isMulti
-                    options={userOptions.filter((user) => user.role === 'instructor')}
+                    options={userOptions.filter((user) => user.role === 'instructor' || 'admin')}
                     onChange={(selectedOptions: MultiValue<UserOption>) => {
                       field.onChange(selectedOptions.map((option) => option.value))
                     }}
