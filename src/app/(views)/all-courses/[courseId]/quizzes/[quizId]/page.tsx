@@ -28,7 +28,7 @@ export default function Quiz() {
       .then((res) => res.json())
       .then(() => {
         toast('success', 'Quiz deleted successfully')
-        router.push(`/managed-courses/${courseId}`)
+        router.push(`/all-courses/${courseId}`)
       })
       .catch((err) => {
         console.error(err)
@@ -57,7 +57,7 @@ export default function Quiz() {
                   <CButton
                     color="light"
                     onClick={() =>
-                      router.push(`/managed-courses/${courseId}/quizzes/${previousQuizId}`)
+                      router.push(`/all-courses/${courseId}/quizzes/${previousQuizId}`)
                     }
                     className="mb-2"
                   >
@@ -69,9 +69,7 @@ export default function Quiz() {
                 <CCol xs="auto">
                   <CButton
                     color="light"
-                    onClick={() =>
-                      router.push(`/managed-courses/${courseId}/quizzes/${nextQuizId}`)
-                    }
+                    onClick={() => router.push(`/all-courses/${courseId}/quizzes/${nextQuizId}`)}
                     className="mb-2"
                   >
                     Next
@@ -88,7 +86,7 @@ export default function Quiz() {
                 <CButton
                   color="light"
                   className="me-2"
-                  href={`/managed-courses/${courseId}/quizzes/${quizId}/edit`}
+                  href={`/all-courses/${courseId}/quizzes/${quizId}/edit`}
                 >
                   <CIcon icon={cilPencil} size="sm" /> Edit
                 </CButton>

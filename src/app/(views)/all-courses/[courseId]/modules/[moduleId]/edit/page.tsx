@@ -111,12 +111,12 @@ export default function EditModule() {
             }).then(() => {
               setUpdatingModule(false)
               toast('success', 'Module updated successfully')
-              window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
+              window.location.href = `/all-courses/${courseId}/modules/${moduleId}`
             })
           } else {
             setUpdatingModule(false)
             toast('success', 'Module updated successfully')
-            window.location.href = `/managed-courses/${courseId}/modules/${moduleId}`
+            window.location.href = `/all-courses/${courseId}/modules/${moduleId}`
           }
         } else {
           throw new Error('Failed to update module')

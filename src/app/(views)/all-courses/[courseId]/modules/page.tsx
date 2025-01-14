@@ -18,7 +18,7 @@ export default function Modules() {
           <CButton
             color="primary"
             as="a"
-            href={`/managed-courses/${courseId}/modules/create`}
+            href={`/all-courses/${courseId}/modules/create`}
             className="fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />

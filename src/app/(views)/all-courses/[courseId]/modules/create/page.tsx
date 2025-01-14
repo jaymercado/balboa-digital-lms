@@ -82,12 +82,12 @@ export default function CreateModule() {
             }).then(() => {
               setCreatingModule(false)
               toast('success', 'Module created successfully')
-              router.push(`/managed-courses/${courseId}`)
+              router.push(`/all-courses/${courseId}`)
             })
           } else {
             setCreatingModule(false)
             toast('success', 'Module created successfully')
-            router.push(`/managed-courses/${courseId}`)
+            router.push(`/all-courses/${courseId}`)
           }
         } else {
           throw new Error('Failed to create module')

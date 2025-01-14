@@ -53,7 +53,7 @@ export default function CreateQuiz() {
       .then((res) => {
         if (res.status !== 200) throw new Error('Failed to create quiz')
         toast('success', 'Quiz created successfully')
-        router.push(`/managed-courses/${courseId}/quizzes`)
+        router.push(`/all-courses/${courseId}/quizzes`)
       })
       .catch((err) => {
         toast('error', 'Error creating quiz')

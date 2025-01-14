@@ -72,7 +72,7 @@ export default function EditQuiz() {
       .then((res) => {
         if (res.status !== 200) throw new Error('Failed to update quiz')
         toast('success', 'Quiz updated successfully')
-        router.push(`/managed-courses/${courseId}/quizzes`)
+        router.push(`/all-courses/${courseId}/quizzes`)
       })
       .catch((err) => {
         toast('error', 'Error updating quiz')

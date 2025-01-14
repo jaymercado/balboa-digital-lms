@@ -20,8 +20,8 @@ import { useGetCourses } from '@/hooks/useGetCourses'
 import toast from '@/utils/toast'
 import { Loading, ConfirmDeleteModal } from '@/components'
 
-export default function ManagedCourses() {
-  const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
+export default function AllCourses() {
+  const { courses, setCourses, fetchingCourses } = useGetCourses({})
   const [deletingCourse, setDeletingCourse] = useState(false)
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
@@ -54,11 +54,11 @@ export default function ManagedCourses() {
     <CCard className="h-100">
       <CCardBody>
         <CCardTitle className="d-flex justify-content-between align-items-center fw-bold mb-3">
-          <span className="d-none d-sm-inline">Your Managed Courses ({courses.length})</span>
+          <span className="d-none d-sm-inline">All Courses ({courses.length})</span>
           <span className="d-inline d-sm-none">Courses ({courses.length})</span>
           <CButton
             color="primary"
-            href="/managed-courses/create"
+            href="/all-courses/create"
             className="bg-primary-emphasis fw-semibold"
           >
             <CIcon icon={cilPlus} className="me-2" />
@@ -75,12 +75,12 @@ export default function ManagedCourses() {
                 <div key={course.id}>
                   <CCol>
                     <CCard className="h-100">
-                      <Link href={`/managed-courses/${course.id}`} className="text-decoration-none">
+                      <Link href={`/all-courses/${course.id}`} className="text-decoration-none">
                         <CCardImage orientation="top" src="/images/react.jpg" alt={course.title} />
                       </Link>
                       <CCardBody className="d-flex flex-column">
                         <Link
-                          href={`/managed-courses/${course.id}`}
+                          href={`/all-courses/${course.id}`}
                           className="text-decoration-none text-body"
                         >
                           <CCardTitle className="text-dark-emphasis text-truncate fs-6 fw-semibold">
@@ -92,7 +92,7 @@ export default function ManagedCourses() {
                         </Link>
                         <div className="d-flex justify-content-end mt-auto">
                           <Link
-                            href={`/managed-courses/${course.id}`}
+                            href={`/all-courses/${course.id}`}
                             className="me-2 d-flex align-items-center gap-1 text-decoration-none"
                           >
                             <small className="text-secondary d-none d-sm-inline">View Course</small>
