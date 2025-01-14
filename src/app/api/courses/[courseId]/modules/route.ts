@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import connectSupabase from '@/utils/databaseConnection'
 import { getAwsS3UploadUrl } from '@/utils/awsS3Connection'
-import { isModuleContentMultimedia } from '@/utils/isModuleContentMultimedia'
+import isModuleContentMultimedia from '@/utils/isModuleContentMultimedia'
 import { awsBucketUrl } from '@/constants'
 
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {

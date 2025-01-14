@@ -15,6 +15,7 @@ import ConfirmDeleteModal from './ConfirmDeleteModal'
 import PDFRenderer from './PDFRenderer'
 import EditCourseItemsOrder from './EditCourseItemsOrder'
 import EnrolledCourseActionButton from './EnrolledCourseActionButton'
+import PrintCertificateButton from './PrintCertificateButton'
 
 export {
   AppBreadcrumb,
@@ -34,4 +35,5 @@ export {
   PDFRenderer,
   EditCourseItemsOrder,
   EnrolledCourseActionButton,
+  PrintCertificateButton,
 }
