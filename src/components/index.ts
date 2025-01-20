@@ -16,6 +16,7 @@ import PDFRenderer from './PDFRenderer'
 import EditCourseItemsOrder from './EditCourseItemsOrder'
 import EnrolledCourseActionButton from './EnrolledCourseActionButton'
 import PrintCertificateButton from './PrintCertificateButton'
+import ManagedCourseAnalytics from './ManagedCourseAnalytics'
 
 export {
   AppBreadcrumb,
@@ -36,4 +37,5 @@ export {
   EditCourseItemsOrder,
   EnrolledCourseActionButton,
   PrintCertificateButton,
+  ManagedCourseAnalytics,
 }

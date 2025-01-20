@@ -12,12 +12,23 @@ import {
   CRow,
   CCol,
   CBadge,
+  CTabs,
+  CTabList,
+  CTab,
+  CTabContent,
+  CTabPanel,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilPlus, cilPenAlt, cilPeople } from '@coreui/icons'
 import toast from '@/utils/toast'
 import { useGetCourse } from '@/hooks/useGetCourses'
-import { Loading, CourseModulesTable, CourseQuizzesTable, ConfirmDeleteModal } from '@/components'
+import {
+  Loading,
+  CourseModulesTable,
+  CourseQuizzesTable,
+  ConfirmDeleteModal,
+  ManagedCourseAnalytics,
+} from '@/components'
 
 export default function Course() {
   const router = useRouter()
@@ -114,66 +125,87 @@ export default function Course() {
           </CCardBody>
         </CCard>
 
-        <CRow className="mb-3">
-          <CCol>
-            <CRow className="mb-3">
-              <CCol>
-                <div className="fs-4 fw-bold">Modules</div>
-                <Link
-                  href={`/managed-courses/${course.id}/modules`}
-                  className="me-2 text-decoration-none"
-                >
-                  <small className="text-secondary d-none d-sm-inline">View All Modules</small>
-                  <small className="text-secondary d-inline d-sm-none">View All</small>
-                  <i className="bi bi-chevron-right text-secondary"></i>
-                </Link>
-              </CCol>
+        <CTabs activeItemKey={1}>
+          <CTabList variant="underline-border">
+            <CTab aria-controls="items-tab-pane" itemKey={1}>
+              <small>Items</small>
+            </CTab>
+            <CTab aria-controls="analytics-tab-pane" itemKey={2}>
+              <small>Analytics</small>
+            </CTab>
+          </CTabList>
+          <CTabContent>
+            <CTabPanel className="py-3" aria-labelledby="items-tab-pane" itemKey={1}>
+              <CRow className="mb-3">
+                <CCol>
+                  <CRow className="mb-3">
+                    <CCol>
+                      <div className="fs-4 fw-bold">Modules</div>
+                      <Link
+                        href={`/managed-courses/${course.id}/modules`}
+                        className="me-2 text-decoration-none"
+                      >
+                        <small className="text-secondary d-none d-sm-inline">
+                          View All Modules
+                        </small>
+                        <small className="text-secondary d-inline d-sm-none">View All</small>
+                        <i className="bi bi-chevron-right text-secondary"></i>
+                      </Link>
+                    </CCol>
 
-              <CCol xs="auto">
-                <CButton
-                  as="a"
-                  color="primary"
-                  href={`/managed-courses/${course.id}/modules/create`}
-                  className="fw-semibold"
-                >
-                  <CIcon icon={cilPlus} size="sm" className="me-2" />
-                  <small className="d-none d-sm-inline">Create Module</small>
-                  <small className="d-inline d-sm-none">Create</small>
-                </CButton>
-              </CCol>
-            </CRow>
-            <CourseModulesTable courseId={course.id} />
-          </CCol>
-          <CCol>
-            <CRow className="mb-3">
-              <CCol>
-                <div className="fs-4 fw-bold">Quizzes</div>
-                <Link
-                  href={`/managed-courses/${course.id}/quizzes`}
-                  className="me-2 text-decoration-none"
-                >
-                  <small className="text-secondary d-none d-sm-inline">View All Quizzes</small>
-                  <small className="text-secondary d-inline d-sm-none">View All</small>
-                  <i className="bi bi-chevron-right text-secondary"></i>
-                </Link>
-              </CCol>
+                    <CCol xs="auto">
+                      <CButton
+                        as="a"
+                        color="primary"
+                        href={`/managed-courses/${course.id}/modules/create`}
+                        className="fw-semibold"
+                      >
+                        <CIcon icon={cilPlus} size="sm" className="me-2" />
+                        <small className="d-none d-sm-inline">Create Module</small>
+                        <small className="d-inline d-sm-none">Create</small>
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                  <CourseModulesTable courseId={course.id} />
+                </CCol>
+                <CCol>
+                  <CRow className="mb-3">
+                    <CCol>
+                      <div className="fs-4 fw-bold">Quizzes</div>
+                      <Link
+                        href={`/managed-courses/${course.id}/quizzes`}
+                        className="me-2 text-decoration-none"
+                      >
+                        <small className="text-secondary d-none d-sm-inline">
+                          View All Quizzes
+                        </small>
+                        <small className="text-secondary d-inline d-sm-none">View All</small>
+                        <i className="bi bi-chevron-right text-secondary"></i>
+                      </Link>
+                    </CCol>
 
-              <CCol xs="auto">
-                <CButton
-                  as="a"
-                  color="primary"
-                  href={`/managed-courses/${course.id}/quizzes/create`}
-                  className="fw-semibold"
-                >
-                  <CIcon icon={cilPlus} size="sm" className="me-2" />
-                  <small className="d-none d-sm-inline">Create Quiz</small>
-                  <small className="d-inline d-sm-none">Create</small>
-                </CButton>
-              </CCol>
-            </CRow>
-            <CourseQuizzesTable courseId={course.id} />
-          </CCol>
-        </CRow>
+                    <CCol xs="auto">
+                      <CButton
+                        as="a"
+                        color="primary"
+                        href={`/managed-courses/${course.id}/quizzes/create`}
+                        className="fw-semibold"
+                      >
+                        <CIcon icon={cilPlus} size="sm" className="me-2" />
+                        <small className="d-none d-sm-inline">Create Quiz</small>
+                        <small className="d-inline d-sm-none">Create</small>
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                  <CourseQuizzesTable courseId={course.id} />
+                </CCol>
+              </CRow>
+            </CTabPanel>
+            <CTabPanel className="py-3" aria-labelledby="analytics-tab-pane" itemKey={2}>
+              <ManagedCourseAnalytics courseId={courseId} />
+            </CTabPanel>
+          </CTabContent>
+        </CTabs>
       </CCol>
     </CRow>
   )
