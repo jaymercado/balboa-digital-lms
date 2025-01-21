@@ -1,17 +1,21 @@
 'use client'
 
+import React, { use, useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useGetCourse } from '@/hooks/useGetCourses'
 import { CCard, CCardBody, CCardTitle, CCardText, CRow, CCol, CBadge } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilPeople } from '@coreui/icons'
+import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
 import { Loading, CourseItemsTable, EnrolledCourseActionButton } from '@/components'
+import CertificateGenerator from '@/components/CertificateGenerator'
 
 export default function Course() {
   const params = useParams()
   const { courseId } = params as { courseId: string }
   const { course, fetchingCourse } = useGetCourse({ courseId })
+  const { userCourseItemLogs, fetchingUserCourseItemLogs } = useGetUserCourseItemLogs({ courseId })
 
   if (fetchingCourse) {
     return <Loading />
@@ -21,6 +25,17 @@ export default function Course() {
   if (!course) {
     return <div>Course not found</div>
   }
+
+  const areAllModulesAndQuizzesCompleted =
+    userCourseItemLogs.length > 0 &&
+    userCourseItemLogs.every((log) => {
+      if (log.courseItem.type === 'module') {
+        return log.completed
+      } else if (log.courseItem.type === 'quiz') {
+        return log.completed && log.courseItem.score === 100
+      }
+      return false
+    })
 
   return (
     <CRow>
@@ -32,9 +47,10 @@ export default function Course() {
                 <CBadge color="primary" shape="rounded-pill" className="text-normal mb-2">
                   Course ID: {courseId}
                 </CBadge>
-                <CCardTitle className="fw-semibold fs-4">
-                  {course.title} <EnrolledCourseActionButton courseId={courseId} />
-                </CCardTitle>
+                <CCardTitle className="fw-semibold fs-4">{course.title}</CCardTitle>
+              </CCol>
+              <CCol className="justify-content-end d-flex">
+                <EnrolledCourseActionButton courseId={course.id} />
               </CCol>
             </CRow>
             <CCardText className="text-secondary">{course.description}</CCardText>
@@ -56,6 +72,15 @@ export default function Course() {
                 </span>
               ))}
             </CCardText>
+
+            {userCourseItemLogs.length > 0 && (
+              <CertificateGenerator
+                name="Alexander Oxales"
+                course={course.title}
+                instructors={course.instructors}
+                isDisabled={!areAllModulesAndQuizzesCompleted}
+              />
+            )}
           </CCardBody>
         </CCard>
 
