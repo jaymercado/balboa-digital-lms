@@ -6,17 +6,30 @@ import { CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CRow } from 
 import { useGetCourses } from '@/hooks/useGetCourses'
 import { Loading } from '@/components'
 import ReactPaginate from 'react-paginate'
+import SearchBox from '@/components/SearchBox'
 
 export default function EnrolledCourses() {
   const { courses, fetchingCourses } = useGetCourses({ type: 'enrolled' })
-  const itemsPerPage = 8
   const [currentPage, setCurrentPage] = useState(0)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const itemsPerPage = 8
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchQuery.toLowerCase()),
+  )
   const offset = currentPage * itemsPerPage
-  const paginatedData = courses.slice(offset, offset + itemsPerPage)
+  const paginatedData = filteredCourses.slice(offset, offset + itemsPerPage)
 
   const handlePageClick = useCallback((selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected)
   }, [])
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value)
+    setCurrentPage(0)
+  }
 
   return (
     <CCard className="h-100">
@@ -24,6 +37,11 @@ export default function EnrolledCourses() {
         <CCardTitle className="d-flex justify-content-between align-items-center fw-bold mb-3">
           <span className="d-none d-sm-inline">Your Enrolled Courses ({courses.length})</span>
           <span className="d-inline d-sm-none">Courses ({courses.length})</span>
+          <SearchBox
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search courses..."
+          />
         </CCardTitle>
         {fetchingCourses ? (
           <Loading />
@@ -67,7 +85,7 @@ export default function EnrolledCourses() {
                 </div>
               ))
             ) : (
-              <div className="text-center">No courses found</div>
+              <div className="text-center fw-bold mx-auto py-5">No courses found</div>
             )}
           </CRow>
         )}
