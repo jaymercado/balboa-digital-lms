@@ -1,6 +1,6 @@
 'use client'
 
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useGetCourse } from '@/hooks/useGetCourses'
@@ -8,6 +8,7 @@ import { CCard, CCardBody, CCardTitle, CCardText, CRow, CCol, CBadge } from '@co
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilPeople } from '@coreui/icons'
 import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
+import { areAllCourseItemsCompleted } from '@/utils/areAllCoursesCompleted'
 import { Loading, CourseItemsTable, EnrolledCourseActionButton } from '@/components'
 import CertificateGenerator from '@/components/CertificateGenerator'
 
@@ -26,16 +27,7 @@ export default function Course() {
     return <div>Course not found</div>
   }
 
-  const areAllModulesAndQuizzesCompleted =
-    userCourseItemLogs.length > 0 &&
-    userCourseItemLogs.every((log) => {
-      if (log.courseItem.type === 'module') {
-        return log.completed
-      } else if (log.courseItem.type === 'quiz') {
-        return log.completed && log.courseItem.score === 100
-      }
-      return false
-    })
+  const areAllModulesAndQuizzesCompleted = areAllCourseItemsCompleted(userCourseItemLogs)
 
   return (
     <CRow>
@@ -73,7 +65,7 @@ export default function Course() {
               ))}
             </CCardText>
 
-            {userCourseItemLogs.length > 0 && (
+            {userCourseItemLogs?.length > 0 && (
               <CertificateGenerator
                 name="Alexander Oxales"
                 course={course.title}

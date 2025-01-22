@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import jsPDF from 'jspdf'
 import { CButton } from '@coreui/react-pro'
 import { User } from '../types/user'
@@ -71,7 +70,7 @@ const generateCertificate = (name: string, course: string, instructors: User[]):
   doc.setFont('Lato-Bold', 'normal')
   doc.setTextColor('#737373')
   {
-    instructors.length > 1
+    instructors?.length > 1
       ? doc.text(instructors.map((instructor) => instructor.name).join(', '), 47, 135)
       : doc.text(instructors[0].name, 47, 135)
   }
@@ -104,7 +103,12 @@ const generateCertificate = (name: string, course: string, instructors: User[]):
   return doc.output('dataurlstring')
 }
 
-export default function CertificateGenerator(props: {
+export default function CertificateGenerator({
+  name,
+  course,
+  instructors,
+  isDisabled = true,
+}: {
   name: string
   course: string
   instructors: User[]
@@ -113,7 +117,7 @@ export default function CertificateGenerator(props: {
   const [pdfFile, setPdfFile] = useState<string>('')
 
   const handleGenerateCertificate = () => {
-    const file = generateCertificate(props.name, props.course, props.instructors)
+    const file = generateCertificate(name, course, instructors)
     setPdfFile(file)
   }
 
@@ -123,7 +127,7 @@ export default function CertificateGenerator(props: {
         onClick={handleGenerateCertificate}
         color="success"
         className="mb-2"
-        disabled={props.isDisabled}
+        disabled={isDisabled}
       >
         Generate Certificate
       </CButton>
