@@ -16,7 +16,7 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve.alias.canvas = false
 
     config.module.rules.push({
@@ -24,6 +24,10 @@ const nextConfig = {
       include: /node_modules/,
       type: 'javascript/auto',
     })
+
+    if (!isServer) {
+      config.resolve.fallback = { fs: false }
+    }
 
     return config
   },
