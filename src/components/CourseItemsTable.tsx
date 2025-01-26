@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import {
   CTable,
   CTableBody,
@@ -11,11 +12,15 @@ import {
   CTableRow,
 } from '@coreui/react-pro'
 import getCourseItemStatus from '@/utils/getCourseItemStatus'
+import { useGetCourse } from '@/hooks/useGetCourses'
 import { useGetCourseItems } from '@/hooks/useGetCourseItems'
 import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
-import { Loading, PrintCertificateButton } from '@/components'
+import { Loading } from '@/components'
+import CertificateGenerator from './CertificateGenerator'
 
 export default function CourseItemsTable({ courseId, userIsStudent }: CourseItemsTableProps) {
+  const { data: session } = useSession()
+  const { course, fetchingCourse } = useGetCourse({ courseId })
   const { courseItems, fetchingCourseItems } = useGetCourseItems({ courseId })
   const { userCourseItemLogs, fetchingUserCourseItemLogs } = useGetUserCourseItemLogs({
     courseId,
@@ -98,7 +103,11 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
           ) && (
             <CTableRow>
               <CTableDataCell colSpan={4} className="text-center">
-                <PrintCertificateButton />
+                <CertificateGenerator
+                  name={session?.user.name}
+                  course={course?.title}
+                  instructors={course?.instructors}
+                />
               </CTableDataCell>
             </CTableRow>
           )}
