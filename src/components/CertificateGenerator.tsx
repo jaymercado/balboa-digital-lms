@@ -8,7 +8,11 @@ import { LatoBold } from '../../public/fonts/Lato-Bold'
 import { LatoRegular } from '../../public/fonts/Lato-Regular'
 import { PoppinsBold } from '../../public/fonts/Poppins-Bold'
 
-const generateCertificate = (name: string, course: string, instructors: User[]): string => {
+const generateCertificate = (
+  name: string | null | undefined,
+  course: string | null | undefined,
+  instructors: User[] | undefined,
+): string => {
   const doc = new jsPDF({ orientation: 'landscape', format: 'a4' })
   const date = new Date()
 
@@ -19,8 +23,8 @@ const generateCertificate = (name: string, course: string, instructors: User[]):
   }).format(date)
 
   doc.addImage(
-    '../images/certificate-background-1.jpg',
-    'JPG',
+    '../../images/certificate-background-1.jpg',
+    'JPEG',
     0,
     0,
     doc.internal.pageSize.getWidth(),
@@ -49,7 +53,7 @@ const generateCertificate = (name: string, course: string, instructors: User[]):
   doc.setFontSize(45)
   doc.setTextColor('black')
   doc.setFont('Poppins-Bold', 'normal')
-  doc.text(name, 20, 97)
+  doc.text(name ?? '', 20, 97)
 
   doc.setFontSize(15)
   doc.setFont('Lato-Regular', 'normal')
@@ -59,7 +63,7 @@ const generateCertificate = (name: string, course: string, instructors: User[]):
   doc.setFontSize(15)
   doc.setFont('Lato-Bold', 'normal')
   doc.setTextColor('black')
-  doc.text(course, 20, 125)
+  doc.text(course ?? '', 20, 125)
 
   doc.setFontSize(14)
   doc.setFont('Lato-Regular', 'normal')
@@ -70,9 +74,9 @@ const generateCertificate = (name: string, course: string, instructors: User[]):
   doc.setFont('Lato-Bold', 'normal')
   doc.setTextColor('#737373')
   {
-    instructors?.length > 1
+    instructors && instructors.length > 1
       ? doc.text(instructors.map((instructor) => instructor.name).join(', '), 47, 135)
-      : doc.text(instructors[0].name, 47, 135)
+      : doc.text(instructors ? instructors[0].name : '', 47, 135)
   }
 
   doc.setFontSize(14)
@@ -107,12 +111,10 @@ export default function CertificateGenerator({
   name,
   course,
   instructors,
-  isDisabled = true,
 }: {
-  name: string
-  course: string
-  instructors: User[]
-  isDisabled?: boolean
+  name: string | null | undefined
+  course: string | null | undefined
+  instructors: User[] | undefined
 }) {
   const [pdfFile, setPdfFile] = useState<string>('')
 
@@ -123,12 +125,7 @@ export default function CertificateGenerator({
 
   return (
     <div>
-      <CButton
-        onClick={handleGenerateCertificate}
-        color="success"
-        className="mb-2"
-        disabled={isDisabled}
-      >
+      <CButton onClick={handleGenerateCertificate} color="success" className="mb-2">
         Generate Certificate
       </CButton>
       {pdfFile && <PDFRenderer file={pdfFile} />}
