@@ -27,6 +27,8 @@ export default function Item() {
     return <p>Item not found</p>
   }
 
+  console.log(nextCourseItemId)
+
   return (
     <CRow>
       <CCol>
