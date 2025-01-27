@@ -44,6 +44,7 @@ export function useGetCourseItem({ courseId, itemId }: { courseId: string; itemI
         }) || {}
 
       setCourseItem(fetchedCourseItem.courseItem)
+      console.log('nextCourseItemId.nextCourseItemId', fetchedCourseItem.nextCourseItemId)
       if (fetchedCourseItem.nextCourseItemId) {
         setNextCourseItemId(fetchedCourseItem.nextCourseItemId)
       }

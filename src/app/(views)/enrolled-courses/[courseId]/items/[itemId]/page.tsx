@@ -27,7 +27,7 @@ export default function Item() {
     return <p>Item not found</p>
   }
 
-  console.log(nextCourseItemId)
+  console.log('nextCourseItemId', nextCourseItemId)
 
   return (
     <CRow>
