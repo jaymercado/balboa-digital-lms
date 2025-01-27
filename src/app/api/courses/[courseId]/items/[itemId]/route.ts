@@ -16,21 +16,23 @@ export async function GET(req: NextRequest, { params }: { params: { itemId: stri
       .eq('id', itemId)
     const courseItem = courseItemDb.data?.[0]
 
+    const { position } = courseItem
+
     const nextCourseItemDb = await supabase
       .from('courseItems')
       .select('id')
-      .gt('id', itemId)
+      .gt('position', position)
       .eq('courseId', courseItem?.courseId)
-      .order('id', { ascending: true })
+      .order('position', { ascending: true })
       .limit(1)
     const nextCourseItemId = nextCourseItemDb.data?.[0]?.id
 
     const previousCourseItemIdDb = await supabase
       .from('courseItems')
       .select('id')
-      .lt('id', itemId)
+      .lt('position', position)
       .eq('courseId', courseItem?.courseId)
-      .order('id', { ascending: false })
+      .order('position', { ascending: false })
       .limit(1)
     const previousCourseItemId = previousCourseItemIdDb.data?.[0]?.id
 
