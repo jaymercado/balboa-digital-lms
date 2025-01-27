@@ -1,3 +1,5 @@
+export const revalidate = 0
+
 import { NextRequest, NextResponse } from 'next/server'
 import type { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { CourseItem } from '@/types/courseItem'
