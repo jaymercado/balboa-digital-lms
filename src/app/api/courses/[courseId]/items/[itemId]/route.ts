@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { itemId: stri
 
     const nextCourseItemDb = await supabase
       .from('courseItems')
-      .select('id')
+      .select('id, position')
       .gt('position', position)
       .eq('courseId', courseItem?.courseId)
       .order('position', { ascending: true })
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: { itemId: stri
 
     const previousCourseItemIdDb = await supabase
       .from('courseItems')
-      .select('id')
+      .select('id, position')
       .lt('position', position)
       .eq('courseId', courseItem?.courseId)
       .order('position', { ascending: false })
