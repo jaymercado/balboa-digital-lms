@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
       .from('courseItems')
       .select('*, modules(title), quizzes(title)')
       .eq('courseId', params.courseId)
-      .order('id', { ascending: true })
+      .order('position', { ascending: true })
     const courseItems = courseItemsDB.data
     const formattedCourseItems =
       courseItems?.map((item) => {
