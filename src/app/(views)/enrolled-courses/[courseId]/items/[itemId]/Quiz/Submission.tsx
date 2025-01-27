@@ -21,6 +21,7 @@ export default function Submission({
   return (
     <CRow>
       <p>Last Submission: {latestSubmission?.createdAt}</p>
+      <p>Total Score: {score}/100</p>
 
       {courseQuiz?.questions?.map((question: any, index: any) => {
         const correctOptions = question.options.filter((option: any) => option.isCorrect)
@@ -57,8 +58,6 @@ export default function Submission({
           </div>
         )
       })}
-
-      <p>Total Score: {score}/100</p>
     </CRow>
   )
 }
