@@ -47,34 +47,6 @@ export default function Quiz({ quizId, itemId }: { quizId: string; itemId: strin
         <CCard className="mb-4">
           <CCardBody>
             <CRow>
-              {previousQuizId && (
-                <CCol xs="auto">
-                  <CButton
-                    color="light"
-                    onClick={() =>
-                      router.push(`/enrolled-courses/${courseId}/quizzes/${previousQuizId}`)
-                    }
-                    className="mb-2"
-                  >
-                    Previous
-                  </CButton>
-                </CCol>
-              )}
-              {nextQuizId && (
-                <CCol xs="auto">
-                  <CButton
-                    color="light"
-                    className="mb-2"
-                    onClick={() =>
-                      router.push(`/enrolled-courses/${courseId}/quizzes/${nextQuizId}`)
-                    }
-                  >
-                    Next
-                  </CButton>
-                </CCol>
-              )}
-            </CRow>
-            <CRow>
               <CCol>
                 {latestSubmission && !retakeQuiz && (
                   <CCardTitle className="fw-semibold fs-4">
