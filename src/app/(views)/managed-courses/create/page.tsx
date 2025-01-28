@@ -128,7 +128,9 @@ export default function CreateCourse() {
                   <Select
                     id="instructors"
                     isMulti
-                    options={userOptions.filter((user) => user.role === 'instructor')}
+                    options={userOptions.filter(
+                      (user) => user.role === 'instructor' || user.role === 'admin',
+                    )}
                     onChange={(selectedOptions: MultiValue<UserOption>) => {
                       field.onChange(selectedOptions.map((option) => option.value))
                     }}
