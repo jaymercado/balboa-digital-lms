@@ -32,7 +32,7 @@ export default function Submission({
 
         return (
           <div key={question.id}>
-            <p>
+            <p className="text-primary">
               <strong>Question {index + 1}</strong>
             </p>
             <p>Question: {question.question}</p>

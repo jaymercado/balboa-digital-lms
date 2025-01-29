@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
-import { CRow, CCol, CCard, CCardBody, CCardTitle, CButton, CCardText } from '@coreui/react-pro'
+import { CRow, CCol, CCard, CCardBody, CCardTitle, CButton } from '@coreui/react-pro'
+import CIcon from '@coreui/icons-react'
+import { cilReload } from '@coreui/icons'
 import { useGetQuiz } from '@/hooks/useGetQuizzes'
 import { useGetLatestQuizSubmission } from '@/hooks/useGetQuizSubmissions'
 import { Loading } from '@/components'
@@ -50,14 +52,17 @@ export default function Quiz({ quizId, itemId }: { quizId: string; itemId: strin
               <CCol>
                 {latestSubmission && !retakeQuiz && (
                   <CCardTitle className="fw-semibold fs-4">
-                    {courseQuiz.title}{' '}
-                    <CButton color="light" className="mb-2" onClick={() => setRetakeQuiz(true)}>
+                    <span className="me-2">{courseQuiz.title}</span>
+                    <CButton
+                      color="primary"
+                      className="mb-2 text-white"
+                      onClick={() => setRetakeQuiz(true)}
+                    >
                       Retake
+                      <CIcon className="ms-2" icon={cilReload} />
                     </CButton>
                   </CCardTitle>
                 )}
-
-                <CCardText className="text-secondary">{courseQuiz.description}</CCardText>
               </CCol>
             </CRow>
             {latestSubmission && !retakeQuiz ? (

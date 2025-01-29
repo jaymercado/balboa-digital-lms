@@ -57,73 +57,102 @@ export default function Quiz({
     return <Loading />
   }
 
+  const handleOptionToggle = (index: number, optionId: any, setAnswers: any, answers: any) => {
+    const isChecked = answers[index].answers.includes(optionId)
+    setAnswers((state: any) => {
+      const newState = [...state]
+      const currentAnswers = [...newState[index].answers]
+
+      if (!isChecked) {
+        newState[index].answers = Array.from(new Set([...currentAnswers, optionId]))
+      } else {
+        newState[index].answers = currentAnswers.filter((a: any) => a !== optionId)
+      }
+
+      return newState
+    })
+  }
+
   return (
     <CRow>
       <CCol>
-        <div className="mt-4">
-          {answers?.length === 0 ? <p>No questions found.</p> : ''}
-          {answers?.map(({ question, onDisplay, options }, index) =>
-            onDisplay ? (
-              <div key={index} className="mb-4">
-                {index > 0 && (
-                  <CButton
-                    onClick={() =>
-                      setAnswers(
-                        answers.map((answer, idx) => ({
-                          ...answer,
-                          onDisplay: idx === index - 1,
-                        })),
-                      )
-                    }
+        {answers?.length === 0 ? <p>No questions found.</p> : ''}
+        {answers?.map(({ question, onDisplay, options }, index) =>
+          onDisplay ? (
+            <div key={index} className="mb-4">
+              <div className="fw-semibold fs-5 text-primary">{`Question ${index + 1}`}</div>
+              <div className="fs-6 mb-3">{question}</div>
+              {options.map((option: any, idx: any) => (
+                <div
+                  key={idx}
+                  className={`mb-3 option ${
+                    answers[index].answers.includes(option.id) ? 'option-selected' : ''
+                  }`}
+                >
+                  <div
+                    className="d-flex align-items-center p-3 border border-1 rounded"
+                    onClick={() => handleOptionToggle(index, option.id, setAnswers, answers)}
                   >
-                    Previous
-                  </CButton>
-                )}
-                {index < answers.length - 1 && (
-                  <CButton
-                    onClick={() =>
-                      setAnswers(
-                        answers.map((answer, idx) => ({
-                          ...answer,
-                          onDisplay: idx === index + 1,
-                        })),
-                      )
-                    }
-                  >
-                    Next
-                  </CButton>
-                )}
-                {index === answers.length - 1 && <CButton onClick={submitQuiz}>Submit</CButton>}
-                <div className="fw-semibold fs-5 text-primary">{`Question ${index + 1}`}</div>
-                <div className="fs-6 mb-2">{question}</div>
-                <strong className="mt-2">Choices:</strong>
-                {options.map((option: any, idx: any) => (
-                  <div key={idx}>
-                    <CFormCheck
-                      checked={answers[index].answers.includes(option.id)}
-                      onChange={(e) => {
-                        const answerIsChecked = e.target.checked
-                        setAnswers((state) => {
-                          const newState = [...state]
-                          const currentAnswers = [...newState[index].answers]
-                          const answerExists = currentAnswers.includes(option.id)
-                          if (answerIsChecked && !answerExists) {
-                            newState[index].answers = [...currentAnswers, option.id]
-                          }
-                          if (!answerIsChecked && answerExists) {
-                            newState[index].answers = currentAnswers.filter((a) => a !== option.id)
-                          }
-                          return newState
-                        })
-                      }}
-                    />
-                    {option.option}
+                    <div className="d-flex align-items-center">
+                      <CFormCheck
+                        checked={answers[index].answers.includes(option.id)} // Reflect the checked state
+                        onChange={() => {}} // No need to handle this here, it's controlled by the card's onClick
+                      />
+                      <span className="ms-2">{option.option}</span>
+                    </div>
                   </div>
-                ))}
+                </div>
+              ))}
+              <div>
+                <div className="d-flex flex-row-reverse justify-content-between">
+                  {index < answers.length - 1 && (
+                    <div className="text-end">
+                      <CButton
+                        color="primary"
+                        variant="outline"
+                        onClick={() =>
+                          setAnswers(
+                            answers.map((answer, idx) => ({
+                              ...answer,
+                              onDisplay: idx === index + 1,
+                            })),
+                          )
+                        }
+                      >
+                        Next
+                      </CButton>
+                    </div>
+                  )}
+
+                  {index === answers.length - 1 && (
+                    <div className="text-end">
+                      <CButton color="success" onClick={submitQuiz} className="fw-bold text-white">
+                        Submit
+                      </CButton>
+                    </div>
+                  )}
+
+                  {index > 0 && (
+                    <CButton
+                      color="primary"
+                      variant="outline"
+                      onClick={() =>
+                        setAnswers(
+                          answers.map((answer, idx) => ({
+                            ...answer,
+                            onDisplay: idx === index - 1,
+                          })),
+                        )
+                      }
+                    >
+                      Previous
+                    </CButton>
+                  )}
+                </div>
               </div>
-            ) : null,
-          )}
-        </div>
+            </div>
+          ) : null,
+        )}
       </CCol>
     </CRow>
   )
