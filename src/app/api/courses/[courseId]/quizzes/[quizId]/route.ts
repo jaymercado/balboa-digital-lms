@@ -96,39 +96,101 @@ export async function PUT(
       return NextResponse.json({ error: quizError.message }, { status: 500 })
     }
 
-    // Update the questions
-    const questionsToUpsert = questions.map((question: { id: any; type: any; question: any }) => ({
-      id: question.id,
-      quizId,
-      type: question.type,
-      question: question.question,
-    }))
-
-    const { data: updatedQuestions, error: questionsError } = await supabase
+    // Fetch existing questions from the database
+    const { data: existingQuestionsInDb, error: fetchQuestionsError } = await supabase
       .from('quizQuestions')
-      .upsert(questionsToUpsert, { onConflict: 'id' })
-      .select()
+      .select('*')
+      .eq('quizId', quizId)
 
-    if (questionsError) {
-      return NextResponse.json({ error: questionsError.message }, { status: 500 })
+    if (fetchQuestionsError) {
+      return NextResponse.json({ error: fetchQuestionsError.message }, { status: 500 })
     }
 
-    // Update the options
-    const optionsToUpsert = questions.flatMap((question: { options: any[]; id: any }) =>
-      question.options.map((option: { id: any; option: any; isCorrect: any }) => ({
-        id: option.id,
-        quizQuestionId: updatedQuestions.find((q) => q.id === question.id)?.id,
-        option: option.option,
-        isCorrect: option.isCorrect,
-      })),
+    // Identify deleted questions
+    const deletedQuestions = existingQuestionsInDb.filter(
+      (dbQuestion) => !questions.some((question: any) => question.id === dbQuestion.id),
     )
 
-    const { error: optionsError } = await supabase
-      .from('questionOptions')
-      .upsert(optionsToUpsert, { onConflict: 'id' })
+    // Delete questions that are no longer in the updated list
+    for (const deletedQuestion of deletedQuestions) {
+      // Delete the question (cascade rule will handle associated options)
+      const { error: deleteQuestionError } = await supabase
+        .from('quizQuestions')
+        .delete()
+        .eq('id', deletedQuestion.id)
 
-    if (optionsError) {
-      return NextResponse.json({ error: optionsError.message }, { status: 500 })
+      if (deleteQuestionError) {
+        return NextResponse.json({ error: deleteQuestionError.message }, { status: 500 })
+      }
+    }
+
+    // Separate existing and new questions
+    const existingQuestions = questions.filter((question: any) => question.id)
+    const newQuestions = questions.filter((question: any) => !question.id)
+
+    // Update existing questions
+    for (const question of existingQuestions) {
+      const { error: questionError } = await supabase
+        .from('quizQuestions')
+        .update({
+          type: question.type,
+          question: question.question,
+        })
+        .eq('id', question.id)
+
+      if (questionError) {
+        return NextResponse.json({ error: questionError.message }, { status: 500 })
+      }
+
+      // Update options for existing questions
+      const optionsToUpsert = question.options.map((option: any) => ({
+        id: option.id,
+        quizQuestionId: question.id,
+        option: option.option,
+        isCorrect: option.isCorrect,
+      }))
+
+      const { error: optionsError } = await supabase
+        .from('questionOptions')
+        .upsert(optionsToUpsert, { onConflict: 'id' })
+
+      if (optionsError) {
+        return NextResponse.json({ error: optionsError.message }, { status: 500 })
+      }
+    }
+
+    // Insert new questions
+    for (const question of newQuestions) {
+      // Insert new question
+      const { data: newQuestion, error: questionError } = await supabase
+        .from('quizQuestions')
+        .insert({
+          quizId,
+          type: question.type,
+          question: question.question,
+        })
+        .select()
+        .single()
+
+      if (questionError || !newQuestion) {
+        return NextResponse.json(
+          { error: questionError?.message || 'Failed to create question' },
+          { status: 500 },
+        )
+      }
+
+      // Insert options for the new question
+      const optionsToInsert = question.options.map((option: any) => ({
+        quizQuestionId: newQuestion.id,
+        option: option.option,
+        isCorrect: option.isCorrect,
+      }))
+
+      const { error: optionsError } = await supabase.from('questionOptions').insert(optionsToInsert)
+
+      if (optionsError) {
+        return NextResponse.json({ error: optionsError.message }, { status: 500 })
+      }
     }
 
     return NextResponse.json({ message: 'Quiz updated successfully' }, { status: 200 })

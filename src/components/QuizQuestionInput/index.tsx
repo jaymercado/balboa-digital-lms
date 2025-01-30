@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useEffect, Dispatch, SetStateAction } from 'react'
-import { CCard, CCol, CFormTextarea, CFormSelect, CCardTitle } from '@coreui/react-pro'
+import { CCard, CCol, CFormTextarea, CFormSelect, CCardTitle, CButton } from '@coreui/react-pro'
+import CIcon from '@coreui/icons-react'
+import { cilTrash } from '@coreui/icons'
 import { QuizQuestion } from '@/types/quiz'
 import Option from './Option'
 
@@ -98,6 +100,20 @@ export default function QuizQuestionInput({
         />
 
         <Option type={type} options={options} setQuestions={setQuestions} index={index} />
+        <div className="text-end">
+          <CButton
+            color="danger"
+            className="text-white"
+            onClick={() => {
+              setQuestions((currentQuestions) => {
+                const updatedQuestions = currentQuestions.filter((_, i) => i !== index)
+                return updatedQuestions
+              })
+            }}
+          >
+            <CIcon icon={cilTrash} />
+          </CButton>
+        </div>
       </CCol>
     </CCard>
   )
