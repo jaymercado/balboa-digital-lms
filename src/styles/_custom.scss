@@ -198,6 +198,17 @@
   }
 }
 
+option {
+  background-color: var(--cui-body-bg);
+  color: var(--cui-text-primary);
+}
+
+.option-selected {
+  background-color: rgba(var(--cui-secondary-bg-rgb), 0.5);
+  color: var(--cui-body-color);
+  border-color: var(--cui-border-color);
+}
+
 @media (max-width: 426px) {
   .page-number {
     display: flex;
