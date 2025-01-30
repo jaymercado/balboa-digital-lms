@@ -113,17 +113,7 @@ export async function PUT(
 
     // Delete questions that are no longer in the updated list
     for (const deletedQuestion of deletedQuestions) {
-      // First, delete the options associated with the deleted question
-      const { error: deleteOptionsError } = await supabase
-        .from('questionOptions')
-        .delete()
-        .eq('quizQuestionId', deletedQuestion.id)
-
-      if (deleteOptionsError) {
-        return NextResponse.json({ error: deleteOptionsError.message }, { status: 500 })
-      }
-
-      // Then, delete the question itself
+      // Delete the question (cascade rule will handle associated options)
       const { error: deleteQuestionError } = await supabase
         .from('quizQuestions')
         .delete()

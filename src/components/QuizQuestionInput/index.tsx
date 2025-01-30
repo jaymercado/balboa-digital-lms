@@ -107,7 +107,6 @@ export default function QuizQuestionInput({
             onClick={() => {
               setQuestions((currentQuestions) => {
                 const updatedQuestions = currentQuestions.filter((_, i) => i !== index)
-                console.log(updatedQuestions)
                 return updatedQuestions
               })
             }}
