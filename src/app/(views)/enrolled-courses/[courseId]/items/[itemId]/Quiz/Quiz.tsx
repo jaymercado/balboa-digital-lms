@@ -111,8 +111,8 @@ export default function Quiz({
                         color="primary"
                         variant="outline"
                         onClick={() =>
-                          setAnswers(
-                            answers.map((answer, idx) => ({
+                          setAnswers((prevAnswers) =>
+                            prevAnswers.map((answer, idx) => ({
                               ...answer,
                               onDisplay: idx === index + 1,
                             })),
@@ -137,8 +137,8 @@ export default function Quiz({
                       color="primary"
                       variant="outline"
                       onClick={() =>
-                        setAnswers(
-                          answers.map((answer, idx) => ({
+                        setAnswers((prevAnswers) =>
+                          prevAnswers.map((answer, idx) => ({
                             ...answer,
                             onDisplay: idx === index - 1,
                           })),
