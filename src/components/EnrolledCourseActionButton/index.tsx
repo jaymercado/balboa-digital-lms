@@ -39,13 +39,15 @@ export default function EnrolledCourseActionButton({ courseId }: { courseId: str
   }
 
   return (
-    <CButton
-      color="primary"
-      shape="rounded-pill"
-      disabled={fetchingUserCourseItemLogs}
-      onClick={handleClick}
-    >
-      {actionText}
-    </CButton>
+    <div>
+      <CButton
+        color="primary"
+        shape="text-white"
+        disabled={fetchingUserCourseItemLogs}
+        onClick={handleClick}
+      >
+        {actionText}
+      </CButton>
+    </div>
   )
 }

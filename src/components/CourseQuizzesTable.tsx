@@ -121,7 +121,7 @@ export default function CourseQuizzesTable({
         ) : (
           <CTableRow>
             <CTableDataCell colSpan={4} className="text-center">
-              No modules available
+              No quizzes available
             </CTableDataCell>
           </CTableRow>
         )}
