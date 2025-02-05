@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { UserCourseItemLog } from '@/types/userCourseItemLog'
-import { useGetCourses } from './useGetCourses' // Assuming you have this hook
+import { useGetCourses } from './useGetCourses' // Hook for fetching enrolled courses
 
 export function useGetAllUserCourseItemLogs() {
   const { courses, fetchingCourses } = useGetCourses({ type: 'enrolled' }) // Fetch enrolled courses
@@ -18,10 +17,27 @@ export function useGetAllUserCourseItemLogs() {
         ),
       )
 
-      console.log('Fetched course item logs:', logs)
       return logs
     } catch (error) {
       console.error('Error fetching course item logs:', error)
+      return []
+    }
+  }
+
+  // Function to fetch all course items in parallel
+  const fetchAllCourseItems = async (courseIds: string[]) => {
+    try {
+      const items = await Promise.all(
+        courseIds.map((courseId) =>
+          fetch(`/api/courses/${courseId}/items`)
+            .then((res) => res.json())
+            .then((data) => ({ courseId, items: data })),
+        ),
+      )
+
+      return items
+    } catch (error) {
+      console.error('Error fetching course items:', error)
       return []
     }
   }
@@ -30,29 +46,38 @@ export function useGetAllUserCourseItemLogs() {
     const fetchUserCourseItemLogs = async () => {
       if (!courses || courses.length === 0) return // If no courses, return early
 
+      // Limit the courses to the first 5
+      const coursesToFetch = courses.slice(0, 5)
+
       setFetchingUserCourseItemLogs(true)
 
       try {
-        // Fetch all logs in parallel
-        const logs = await fetchAllCourseItemLogs(courses.map((course) => course.id))
+        // Fetch course items and course item logs for the first 5 courses in parallel
+        const [items, logs] = await Promise.all([
+          fetchAllCourseItems(coursesToFetch.map((course) => course.id)),
+          fetchAllCourseItemLogs(coursesToFetch.map((course) => course.id)),
+        ])
 
-        const updatedCourses = courses.map((course) => {
+        const updatedCourses = coursesToFetch.map((course) => {
+          // Find the course items and course item logs for the current course
+          const courseItems = items.find((itemData) => itemData.courseId === course.id)?.items || []
           const courseLogs = logs.find((logData) => logData.courseId === course.id)?.logs || []
 
-          // If no course item logs exist for this course, consider it "Not Started"
+          // Check the lengths
           if (courseLogs.length === 0) {
             return { ...course, status: 'notStarted' } // No logs means "Not Started"
           }
 
-          // Check if all course items are completed
-          const isCompleted = courseLogs.every((log: UserCourseItemLog) => log.completed)
+          if (courseLogs.length < courseItems.length) {
+            return { ...course, status: 'inProgress' } // Some course items don't have logs yet
+          }
 
-          return { ...course, status: isCompleted ? 'completed' : 'inProgress' }
+          return { ...course, status: 'completed' } // All items have corresponding logs
         })
 
         setCoursesWithCompletionStatus(updatedCourses) // Set the updated courses with completion status
       } catch (error) {
-        console.error('Error fetching user course item logs:', error)
+        console.error('Error fetching course items or logs:', error)
       } finally {
         setFetchingUserCourseItemLogs(false)
       }

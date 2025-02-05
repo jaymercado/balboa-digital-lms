@@ -75,7 +75,7 @@ export default function InstructorDashboard() {
         data: [
           courses?.length,
           coursesWithCompletionStatus?.length,
-          inProgressCourses?.length,
+          completedCourses?.length,
           inProgressCourses?.length,
           notStartedCourses?.length,
         ],
@@ -85,7 +85,7 @@ export default function InstructorDashboard() {
 
   return (
     <div className="mb-3">
-      <CRow>
+      <CRow className="gx-2">
         <CCol className="mb-3">
           <CCard className="p-3 bg-info-subtle text-info-emphasis d-flex justify-content-between flex-row">
             <div className="border-start border-start-4 border-start-info py-1 px-3">
@@ -170,7 +170,7 @@ export default function InstructorDashboard() {
                         <tr key={course.id}>
                           <td>
                             <Link
-                              href={`/enrolled-courses/${course.id}`}
+                              href={`/managed-courses/${course.id}`}
                               className="text-decoration-none"
                             >
                               {course.id}
@@ -178,7 +178,7 @@ export default function InstructorDashboard() {
                           </td>
                           <td>
                             <Link
-                              href={`/enrolled-courses/${course.id}`}
+                              href={`/managed-courses/${course.id}`}
                               className="text-decoration-none"
                             >
                               {course.title}
@@ -208,7 +208,7 @@ export default function InstructorDashboard() {
                 data={data}
                 options={{
                   responsive: true,
-                  aspectRatio: 1,
+                  aspectRatio: 1.2,
                   plugins: {
                     legend: {
                       position: 'bottom',
