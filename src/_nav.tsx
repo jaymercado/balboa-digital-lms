@@ -23,10 +23,6 @@ export const generateNav = (role: string) => {
       component: CNavItem,
       name: 'Dashboard',
       icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-      badge: {
-        color: 'info-gradient',
-        text: 'NEW',
-      },
       href: '/',
     },
     {

@@ -1,37 +1,105 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { getStyle } from '@coreui/utils'
+import {
+  CBadge,
+  CCard,
+  CCardBody,
+  CCardTitle,
+  CCol,
+  CRow,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { CRow, CCol, CCard, CCardBody, CCardTitle, CTable, CBadge } from '@coreui/react-pro'
-import { cilEducation, cilBadge, cilBook, cilPencil, cilPeople } from '@coreui/icons'
+import { cilBadge, cilBook, cilEducation, cilPencil, cilPeople } from '@coreui/icons'
+import type { ChartData } from 'chart.js'
+import { CChart } from '@coreui/react-chartjs'
+import { useGetAllUserCourseItemLogs } from '@/hooks/useGetAllUserCourseItemLogs'
 import { useGetCourses } from '@/hooks/useGetCourses'
 import useGetUsers from '@/hooks/useGetUsers'
-import { useGetAllUserCourseItemLogs } from '@/hooks/useGetAllUserCourseItemLogs'
 import Loading from './Loading'
 
 export default function AdminDashboard() {
   const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
   const { coursesWithCompletionStatus, fetchingUserCourseItemLogs } = useGetAllUserCourseItemLogs()
   const { users, fetchingUsers } = useGetUsers()
-  const completedCourses = coursesWithCompletionStatus.filter((course) => course.completed)
+
+  const notStartedCourses = coursesWithCompletionStatus.filter(
+    (course) => course.status === 'notStarted',
+  )
+  const completedCourses = coursesWithCompletionStatus.filter(
+    (course) => course.status === 'completed',
+  )
   const inProgressCourses = coursesWithCompletionStatus.filter(
-    (course) => course.completed === false,
+    (course) => course.status === 'inProgress',
   )
 
+  const chartRef = useRef<any>(null)
+
+  useEffect(() => {
+    const handleColorSchemeChange = () => {
+      const chartInstance = chartRef.current
+      if (chartInstance) {
+        const { options } = chartInstance
+
+        if (options.plugins?.legend?.labels) {
+          options.plugins.legend.labels.color = getStyle('--cui-body-color')
+        }
+
+        chartInstance.update()
+      }
+    }
+
+    document.documentElement.addEventListener('ColorSchemeChange', handleColorSchemeChange)
+
+    return () => {
+      document.documentElement.removeEventListener('ColorSchemeChange', handleColorSchemeChange)
+    }
+  }, [])
+
+  const data: ChartData<'doughnut'> = {
+    labels: ['Managed', 'Enrolled', 'Completed', 'In Progress', 'Not Started'],
+    datasets: [
+      {
+        backgroundColor: [
+          getStyle('--cui-info'),
+          getStyle('--cui-primary'),
+          getStyle('--cui-success'),
+          getStyle('--cui-warning'),
+          getStyle('--cui-danger'),
+        ],
+        data: [
+          courses?.length,
+          coursesWithCompletionStatus?.length,
+          inProgressCourses?.length,
+          inProgressCourses?.length,
+          notStartedCourses?.length,
+        ],
+      },
+    ],
+  }
+
   return (
-    <div>
+    <div className="mb-3">
       <CRow>
         <CCol className="mb-3">
-          <CCard className="p-3 bg-info-subtle text-info-emphasis d-flex justify-content-between flex-row">
-            <div className="border-start border-start-4 border-start-info py-1 px-3">
-              <div className="text-secondary text-truncate small">Users</div>
+          <CCard className="p-3 bg-secondary-subtle text-dark d-flex justify-content-between flex-row">
+            <div className="border-start border-4 border-secondary py-1 px-3">
+              <div className="text-truncate small text-secondary">Users</div>
               <div className="fs-4 fw-semibold">{users?.length}</div>
             </div>
-            <div className="bg-info bg-opacity-25 rounded p-3 d-flex align-items-center">
-              <CIcon icon={cilPeople} color="info" size="xl" />
+            <div className="rounded p-3 d-flex align-items-center bg-light text-dark">
+              <CIcon icon={cilPeople} size="xl" />
             </div>
           </CCard>
         </CCol>
+
         <CCol className="mb-3">
           <CCard className="p-3 bg-danger-subtle text-danger-emphasis d-flex justify-content-between flex-row">
             <div className="border-start border-start-4 border-start-danger py-1 px-3">
@@ -88,51 +156,75 @@ export default function AdminDashboard() {
                 </Link>
               </CCardTitle>
               {fetchingUsers ? (
-                <tr className="mx-auto">
+                <div className="d-flex justify-content-center align-items-center">
                   <Loading />
-                </tr>
+                </div>
               ) : (
                 <CTable hover responsive>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Role</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>ID</CTableHeaderCell>
+                      <CTableHeaderCell>Name</CTableHeaderCell>
+                      <CTableHeaderCell>Role</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
                     {users.length > 0 ? (
                       users.slice(0, 5).map((user) => (
-                        <tr key={user.id}>
-                          <td>
+                        <CTableRow key={user.id}>
+                          <CTableDataCell>
                             <Link
                               href={`/enrolled-courses/${user.id}`}
                               className="text-decoration-none"
                             >
                               {user.id}
                             </Link>
-                          </td>
-                          <td>
+                          </CTableDataCell>
+                          <CTableDataCell>
                             <Link
                               href={`/enrolled-courses/${user.id}`}
                               className="text-decoration-none"
                             >
                               {user.name}
                             </Link>
-                          </td>
-                          <td>{user.role}</td>
-                        </tr>
+                          </CTableDataCell>
+                          <CTableDataCell>{user.role}</CTableDataCell>
+                        </CTableRow>
                       ))
                     ) : (
-                      <tr>
-                        <td colSpan={3} className="text-center fw-bold">
+                      <CTableRow>
+                        <CTableDataCell colSpan={3} className="text-center fw-bold">
                           No users found
-                        </td>
-                      </tr>
+                        </CTableDataCell>
+                      </CTableRow>
                     )}
-                  </tbody>
+                  </CTableBody>
                 </CTable>
               )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol xs={4}>
+          <CCard className="h-100">
+            <CCardBody>
+              <CCardTitle className="fw-semibold">Course Status</CCardTitle>
+              <CChart
+                type="doughnut"
+                data={data}
+                options={{
+                  responsive: true,
+                  aspectRatio: 1,
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                    },
+                    tooltip: {
+                      enabled: true,
+                    },
+                  },
+                }}
+                ref={chartRef}
+              />
             </CCardBody>
           </CCard>
         </CCol>
@@ -148,47 +240,47 @@ export default function AdminDashboard() {
                 </Link>
               </CCardTitle>
               {fetchingCourses ? (
-                <tr>
+                <div className="d-flex justify-content-center align-items-center">
                   <Loading />
-                </tr>
+                </div>
               ) : (
                 <CTable hover responsive>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Course Title</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>ID</CTableHeaderCell>
+                      <CTableHeaderCell>Course Title</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
                     {courses.length > 0 ? (
                       courses.slice(0, 5).map((course) => (
-                        <tr key={course.id}>
-                          <td>
+                        <CTableRow key={course.id}>
+                          <CTableDataCell>
                             <Link
                               href={`/enrolled-courses/${course.id}`}
                               className="text-decoration-none"
                             >
                               {course.id}
                             </Link>
-                          </td>
-                          <td>
+                          </CTableDataCell>
+                          <CTableDataCell>
                             <Link
                               href={`/enrolled-courses/${course.id}`}
                               className="text-decoration-none"
                             >
                               {course.title}
                             </Link>
-                          </td>
-                        </tr>
+                          </CTableDataCell>
+                        </CTableRow>
                       ))
                     ) : (
-                      <tr>
-                        <td colSpan={3} className="text-center fw-bold">
+                      <CTableRow>
+                        <CTableDataCell colSpan={3} className="text-center fw-bold">
                           No courses found
-                        </td>
-                      </tr>
+                        </CTableDataCell>
+                      </CTableRow>
                     )}
-                  </tbody>
+                  </CTableBody>
                 </CTable>
               )}
             </CCardBody>
@@ -204,40 +296,40 @@ export default function AdminDashboard() {
                 </Link>
               </CCardTitle>
               {fetchingUserCourseItemLogs ? (
-                <tr>
+                <div className="d-flex justify-content-center align-items-center">
                   <Loading />
-                </tr>
+                </div>
               ) : (
                 <CTable hover responsive>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Course Title</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>ID</CTableHeaderCell>
+                      <CTableHeaderCell>Course Title</CTableHeaderCell>
+                      <CTableHeaderCell>Status</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
                     {coursesWithCompletionStatus.length > 0 ? (
                       coursesWithCompletionStatus.slice(0, 5).map((course) => (
-                        <tr key={course.id}>
-                          <td>
+                        <CTableRow key={course.id}>
+                          <CTableDataCell>
                             <Link
                               href={`/enrolled-courses/${course.id}`}
                               className="text-decoration-none"
                             >
                               {course.id}
                             </Link>
-                          </td>
-                          <td>
+                          </CTableDataCell>
+                          <CTableDataCell>
                             <Link
                               href={`/enrolled-courses/${course.id}`}
                               className="text-decoration-none"
                             >
                               {course.title}
                             </Link>
-                          </td>
-                          <td>
-                            {course.completed ? (
+                          </CTableDataCell>
+                          <CTableDataCell>
+                            {course.status === 'completed' ? (
                               <CBadge
                                 color="success"
                                 shape="rounded-pill"
@@ -245,25 +337,32 @@ export default function AdminDashboard() {
                               >
                                 Completed
                               </CBadge>
-                            ) : (
+                            ) : course.status === 'inProgress' ? (
                               <CBadge
                                 shape="rounded-pill"
                                 className="text-warning-emphasis bg-warning-subtle"
                               >
                                 In Progress
                               </CBadge>
+                            ) : (
+                              <CBadge
+                                shape="rounded-pill"
+                                className="text-danger-emphasis bg-danger-subtle"
+                              >
+                                Not Started
+                              </CBadge>
                             )}
-                          </td>
-                        </tr>
+                          </CTableDataCell>
+                        </CTableRow>
                       ))
                     ) : (
-                      <tr>
-                        <td colSpan={3} className="text-center fw-bold">
+                      <CTableRow>
+                        <CTableDataCell colSpan={3} className="text-center fw-bold">
                           No courses found
-                        </td>
-                      </tr>
+                        </CTableDataCell>
+                      </CTableRow>
                     )}
-                  </tbody>
+                  </CTableBody>
                 </CTable>
               )}
             </CCardBody>
