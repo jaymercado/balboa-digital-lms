@@ -3,6 +3,8 @@ export interface CourseItem {
   courseId: string
   quizId?: string
   moduleId?: string
+  modules: { title: string }
+  quizzes: { title: string }
   position: number
   type: 'module' | 'quiz'
   title?: string

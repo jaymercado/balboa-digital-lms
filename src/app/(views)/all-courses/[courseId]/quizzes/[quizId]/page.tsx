@@ -49,54 +49,55 @@ export default function Quiz() {
   return (
     <CRow>
       <CCol>
+        <div className="text-end mb-2">
+          <CButton
+            color="secondary"
+            className="me-2"
+            href={`/managed-courses/${courseId}/quizzes/${quizId}/edit`}
+          >
+            <CIcon icon={cilPencil} size="sm" /> Edit
+          </CButton>
+          <CButton
+            color="danger"
+            onClick={() => setShowDeleteQuizModal((prevState) => !prevState)}
+            className="text-light"
+          >
+            <CIcon icon={cilTrash} className="text-white" /> Delete
+          </CButton>
+          <ConfirmDeleteModal
+            visible={showDeleteQuizModal}
+            onClose={() => setShowDeleteQuizModal(false)}
+            onConfirm={() => [deleteQuiz(quizId), setShowDeleteQuizModal(false)]}
+            disabled={deletingQuiz}
+          />
+        </div>
         <CCard className="mb-4">
           <CCardBody>
             <CRow>
-              {previousQuizId && (
-                <CCol xs="auto">
-                  <CButton
-                    color="light"
-                    onClick={() =>
-                      router.push(`/all-courses/${courseId}/quizzes/${previousQuizId}`)
-                    }
-                    className="mb-2"
-                  >
-                    Previous
-                  </CButton>
-                </CCol>
-              )}
-              {nextQuizId && (
-                <CCol xs="auto">
-                  <CButton
-                    color="light"
-                    onClick={() => router.push(`/all-courses/${courseId}/quizzes/${nextQuizId}`)}
-                    className="mb-2"
-                  >
-                    Next
-                  </CButton>
-                </CCol>
-              )}
+              <div className="d-flex justify-content-between align-items-center py-2">
+                <CButton
+                  color="light"
+                  onClick={() => router.push(`/all-courses/${courseId}/quizzes/${previousQuizId}`)}
+                  className="mb-2"
+                  disabled={!previousQuizId}
+                >
+                  Previous
+                </CButton>
+                <div className="fw-semibold fs-4 align-items-center">{courseQuiz.title}</div>
+                <CButton
+                  color="light"
+                  onClick={() => router.push(`/all-courses/${courseId}/quizzes/${nextQuizId}`)}
+                  className="mb-2"
+                  disabled={!nextQuizId}
+                >
+                  Next
+                </CButton>
+              </div>
             </CRow>
             <CRow>
               <CCol>
                 <CCardTitle className="fw-semibold fs-4">{courseQuiz.title}</CCardTitle>
                 <CCardText className="text-secondary">{courseQuiz.description}</CCardText>
-              </CCol>
-              <CCol xs="auto">
-                <CButton
-                  color="light"
-                  className="me-2"
-                  href={`/all-courses/${courseId}/quizzes/${quizId}/edit`}
-                >
-                  <CIcon icon={cilPencil} size="sm" /> Edit
-                </CButton>
-                <CButton
-                  color="danger"
-                  onClick={() => setShowDeleteQuizModal((prevState) => !prevState)}
-                  className="text-light"
-                >
-                  <CIcon icon={cilTrash} className="text-white" /> Delete
-                </CButton>
               </CCol>
             </CRow>
             <CRow>
@@ -136,12 +137,6 @@ export default function Quiz() {
                 </div>
               </CCol>
             </CRow>
-            <ConfirmDeleteModal
-              visible={showDeleteQuizModal}
-              onClose={() => setShowDeleteQuizModal(false)}
-              onConfirm={() => [deleteQuiz(quizId), setShowDeleteQuizModal(false)]}
-              disabled={deletingQuiz}
-            />
           </CCardBody>
         </CCard>
       </CCol>

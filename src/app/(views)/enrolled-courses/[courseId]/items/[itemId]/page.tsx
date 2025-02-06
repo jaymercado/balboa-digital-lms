@@ -27,8 +27,6 @@ export default function Item() {
     return <p>Item not found</p>
   }
 
-  console.log('nextCourseItemId', nextCourseItemId)
-
   return (
     <CRow>
       <CCol>
@@ -45,7 +43,16 @@ export default function Item() {
                 <i className="bi bi-chevron-left me-1"></i>
                 Previous
               </CButton>
-              <div className="fw-semibold fs-4 align-items-center">{courseItem.title}</div>
+              {courseItem.moduleId && (
+                <div className="fw-semibold fs-4 align-items-center">
+                  {courseItem.modules.title}
+                </div>
+              )}
+              {courseItem.quizId && (
+                <div className="fw-semibold fs-4 align-items-center">
+                  {courseItem.quizzes.title}
+                </div>
+              )}
               <CButton
                 color="light"
                 onClick={() =>
