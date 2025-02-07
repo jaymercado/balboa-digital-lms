@@ -1,58 +1,73 @@
 import React, { useState, useEffect } from 'react'
-import { UserCourseItemLog } from '@/types/userCourseItemLog'
-import { useGetCourses } from './useGetCourses' // Assuming you have this hook
+import { useGetCourses } from './useGetCourses' // Hook for fetching enrolled courses
 
 export function useGetAllUserCourseItemLogs() {
   const { courses, fetchingCourses } = useGetCourses({ type: 'enrolled' }) // Fetch enrolled courses
   const [fetchingUserCourseItemLogs, setFetchingUserCourseItemLogs] = useState<boolean>(false)
   const [coursesWithCompletionStatus, setCoursesWithCompletionStatus] = useState<any[]>([]) // Courses with completion status
 
-  // Function to fetch all course item logs in parallel
-  const fetchAllCourseItemLogs = async (courseIds: string[]) => {
-    try {
-      const logs = await Promise.all(
-        courseIds.map((courseId) =>
-          fetch(`/api/courses/${courseId}/userCourseItemLogs`)
-            .then((res) => res.json())
-            .then((data) => ({ courseId, logs: data })),
-        ),
-      )
-
-      console.log('Fetched course item logs:', logs)
-      return logs
-    } catch (error) {
-      console.error('Error fetching course item logs:', error)
-      return []
-    }
-  }
-
   useEffect(() => {
     const fetchUserCourseItemLogs = async () => {
       if (!courses || courses.length === 0) return // If no courses, return early
 
+      // Limit the courses to the first 5
+      const coursesToFetch = courses.slice(0, 5)
+
       setFetchingUserCourseItemLogs(true)
 
-      try {
-        // Fetch all logs in parallel
-        const logs = await fetchAllCourseItemLogs(courses.map((course) => course.id))
+      // Function to fetch all course item logs in parallel
+      const fetchAllCourseItemLogs = async (courseIds: string[]) => {
+        try {
+          return await Promise.all(
+            courseIds.map((courseId) =>
+              fetch(`/api/courses/${courseId}/userCourseItemLogs`)
+                .then((res) => res.json())
+                .then((data) => ({ courseId, logs: data })),
+            ),
+          )
+        } catch (error) {
+          console.error('Error fetching course item logs:', error)
+          return []
+        }
+      }
 
-        const updatedCourses = courses.map((course) => {
+      // Function to fetch all course items in parallel
+      const fetchAllCourseItems = async (courseIds: string[]) => {
+        try {
+          return await Promise.all(
+            courseIds.map((courseId) =>
+              fetch(`/api/courses/${courseId}/items`)
+                .then((res) => res.json())
+                .then((data) => ({ courseId, items: data })),
+            ),
+          )
+        } catch (error) {
+          console.error('Error fetching course items:', error)
+          return []
+        }
+      }
+
+      try {
+        // Fetch course items and course item logs for the first 5 courses in parallel
+        const [items, logs] = await Promise.all([
+          fetchAllCourseItems(coursesToFetch.map((course) => course.id)),
+          fetchAllCourseItemLogs(coursesToFetch.map((course) => course.id)),
+        ])
+
+        const updatedCourses = coursesToFetch.map((course) => {
+          // Find the course items and course item logs for the current course
+          const courseItems = items.find((itemData) => itemData.courseId === course.id)?.items || []
           const courseLogs = logs.find((logData) => logData.courseId === course.id)?.logs || []
 
-          // If no course item logs exist for this course, consider it "Not Started"
-          if (courseLogs.length === 0) {
-            return { ...course, status: 'notStarted' } // No logs means "Not Started"
-          }
-
-          // Check if all course items are completed
-          const isCompleted = courseLogs.every((log: UserCourseItemLog) => log.completed)
-
-          return { ...course, status: isCompleted ? 'completed' : 'inProgress' }
+          // Determine the course status based on logs
+          if (courseLogs.length === 0) return { ...course, status: 'notStarted' } // No logs = Not Started
+          if (courseLogs.length < courseItems.length) return { ...course, status: 'inProgress' } // Some logs missing = In Progress
+          return { ...course, status: 'completed' } // All items have logs = Completed
         })
 
         setCoursesWithCompletionStatus(updatedCourses) // Set the updated courses with completion status
       } catch (error) {
-        console.error('Error fetching user course item logs:', error)
+        console.error('Error fetching course items or logs:', error)
       } finally {
         setFetchingUserCourseItemLogs(false)
       }
