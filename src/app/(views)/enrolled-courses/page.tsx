@@ -2,23 +2,41 @@
 
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CRow } from '@coreui/react-pro'
+import {
+  CCard,
+  CCardBody,
+  CCardImage,
+  CCardText,
+  CCardTitle,
+  CCol,
+  CRow,
+  CBadge,
+} from '@coreui/react-pro'
 import { useGetCourses } from '@/hooks/useGetCourses'
+import { useGetAllUserCourseItemLogs } from '@/hooks/useGetAllUserCourseItemLogs'
 import { Loading } from '@/components'
 import ReactPaginate from 'react-paginate'
 import SearchBox from '@/components/SearchBox'
 
 export default function EnrolledCourses() {
   const { courses, fetchingCourses } = useGetCourses({ type: 'enrolled' })
+  const { coursesWithCompletionStatus, fetchingUserCourseItemLogs } = useGetAllUserCourseItemLogs()
   const [currentPage, setCurrentPage] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
 
   const itemsPerPage = 8
-  const filteredCourses = courses.filter(
-    (course) =>
+
+  const mergedCourses = courses.map((course) => {
+    const courseStatus = coursesWithCompletionStatus.find((status) => status.id === course.id)
+    return { ...course, status: courseStatus?.status || 'notStarted' }
+  })
+
+  const filteredCourses = mergedCourses.filter(
+    (course: any) =>
       course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.description.toLowerCase().includes(searchQuery.toLowerCase()),
   )
+
   const offset = currentPage * itemsPerPage
   const paginatedData = filteredCourses.slice(offset, offset + itemsPerPage)
 
@@ -51,13 +69,37 @@ export default function EnrolledCourses() {
               paginatedData.map((course) => (
                 <div key={course.id}>
                   <CCol>
-                    <CCard className="h-100">
+                    <CCard className="h-100 position-relative">
                       <Link
                         href={`/enrolled-courses/${course.id}`}
                         className="text-decoration-none"
                       >
                         <CCardImage orientation="top" src="/images/react.jpg" alt={course.title} />
                       </Link>
+                      {/* Badge */}
+                      {course.status === 'completed' ? (
+                        <CBadge
+                          color="success"
+                          shape="rounded-pill"
+                          className="text-success-emphasis bg-success-subtle position-absolute top-0 end-0 m-2"
+                        >
+                          Completed
+                        </CBadge>
+                      ) : course.status === 'inProgress' ? (
+                        <CBadge
+                          shape="rounded-pill"
+                          className="text-warning-emphasis bg-warning-subtle position-absolute top-0 end-0 m-2"
+                        >
+                          In Progress
+                        </CBadge>
+                      ) : (
+                        <CBadge
+                          shape="rounded-pill"
+                          className="text-danger-emphasis bg-danger-subtle position-absolute top-0 end-0 m-2"
+                        >
+                          Not Started
+                        </CBadge>
+                      )}
                       <CCardBody className="d-flex flex-column">
                         <Link
                           href={`/enrolled-courses/${course.id}`}
