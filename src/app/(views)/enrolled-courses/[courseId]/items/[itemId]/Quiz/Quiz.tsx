@@ -95,8 +95,8 @@ export default function Quiz({
                   >
                     <div className="d-flex align-items-center">
                       <CFormCheck
-                        checked={answers[index].answers.includes(option.id)} // Reflect the checked state
-                        onChange={() => {}} // No need to handle this here, it's controlled by the card's onClick
+                        checked={answers[index].answers.includes(option.id)}
+                        onChange={() => {}}
                       />
                       <span className="ms-2">{option.option}</span>
                     </div>

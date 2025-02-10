@@ -10,6 +10,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CBadge,
 } from '@coreui/react-pro'
 import getCourseItemStatus from '@/utils/getCourseItemStatus'
 import { useGetCourse } from '@/hooks/useGetCourses'
@@ -49,7 +50,7 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
             <small>Type</small>
           </CTableHeaderCell>
           <CTableHeaderCell>
-            <small>status</small>
+            <small>Status</small>
           </CTableHeaderCell>
         </CTableRow>
       </CTableHead>
@@ -74,13 +75,30 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
                 <span className="text-capitalize">{item.type}</span>
               </CTableDataCell>
               <CTableDataCell>
-                <span className="text-capitalize">
+                <CBadge
+                  className="text-capitalize"
+                  shape="rounded-pill"
+                  color={
+                    fetchingUserCourseItemLogs
+                      ? 'secondary'
+                      : item.type === 'quiz'
+                      ? userCourseItemLogs?.find((log) => log.courseItemId === item.id)?.courseItem
+                          .score === 100
+                        ? 'success'
+                        : 'danger'
+                      : getCourseItemStatus(
+                          userCourseItemLogs?.find((log) => log.courseItemId === item.id),
+                        ) === 'Completed'
+                      ? 'success'
+                      : 'danger'
+                  }
+                >
                   {fetchingUserCourseItemLogs && 'Loading...'}
                   {!fetchingUserCourseItemLogs &&
                     getCourseItemStatus(
                       userCourseItemLogs?.find((log) => log.courseItemId === item.id),
                     )}
-                </span>
+                </CBadge>
               </CTableDataCell>
             </CTableRow>
           ))

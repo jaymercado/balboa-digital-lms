@@ -61,7 +61,7 @@ export default function Course() {
           </CCardBody>
         </CCard>
 
-        <CRow className="mb-3">
+        <CCard className="mb-3 p-3">
           <CCol>
             <CRow className="mb-3">
               <CCol>
@@ -78,7 +78,7 @@ export default function Course() {
             </CRow>
             <CourseItemsTable courseId={course.id} userIsStudent={true} />
           </CCol>
-        </CRow>
+        </CCard>
       </CCol>
     </CRow>
   )
