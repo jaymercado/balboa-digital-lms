@@ -45,12 +45,12 @@ export default function Item() {
               </CButton>
               {courseItem.moduleId && (
                 <div className="fw-semibold fs-4 align-items-center">
-                  {courseItem.modules.title}
+                  {courseItem.modules?.title}
                 </div>
               )}
               {courseItem.quizId && (
                 <div className="fw-semibold fs-4 align-items-center">
-                  {courseItem.quizzes.title}
+                  {courseItem.quizzes?.title}
                 </div>
               )}
               <CButton
