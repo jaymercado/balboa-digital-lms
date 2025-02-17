@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
 import { CCardText, CTab, CTabContent, CTabList, CTabPanel, CTabs } from '@coreui/react-pro'
 import { useGetCourseModule } from '@/hooks/useGetCourseModules'
@@ -9,8 +9,9 @@ import { Loading, CourseModuleContent } from '@/components'
 
 export default function Module({ moduleId, itemId }: { moduleId: string; itemId: string }) {
   const params = useParams()
+  const router = useRouter()
   const { courseId } = params as { courseId: string }
-  const { fetchingModule, courseModule } = useGetCourseModule({
+  const { fetchingModule, courseModule, courseModuleNotFound } = useGetCourseModule({
     courseId,
     moduleId,
   })
@@ -24,13 +25,19 @@ export default function Module({ moduleId, itemId }: { moduleId: string; itemId:
     }
   }, [courseModule, courseId, itemId])
 
+
+  useEffect(() => {
+    if (!fetchingModule && courseModuleNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingModule, courseModule, router])
+
   if (fetchingModule) {
     return <Loading />
   }
 
-  if (!courseModule) {
-    // TODO: Handle this error
-    return <p>Module not found</p>
+  if (courseModuleNotFound) {
+    return null
   }
 
   return (
@@ -45,10 +52,10 @@ export default function Module({ moduleId, itemId }: { moduleId: string; itemId:
       </CTabList>
       <CTabContent>
         <CTabPanel className="py-3" aria-labelledby="content-tab-pane" itemKey={1}>
-          <CourseModuleContent type={courseModule.type} content={courseModule.content} />
+          <CourseModuleContent type={courseModule?.type || 'text'} content={courseModule?.content || ''} />
         </CTabPanel>
         <CTabPanel className="py-3" aria-labelledby="description-tab-pane" itemKey={2}>
-          <CCardText>{courseModule.description}</CCardText>
+          <CCardText>{courseModule?.description}</CCardText>
         </CTabPanel>
       </CTabContent>
     </CTabs>

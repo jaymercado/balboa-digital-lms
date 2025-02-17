@@ -1,8 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import {
   CTable,
   CTableBody,
@@ -20,20 +21,26 @@ import { Loading } from '@/components'
 import CertificateGenerator from './CertificateGenerator'
 
 export default function CourseItemsTable({ courseId, userIsStudent }: CourseItemsTableProps) {
+  const router = useRouter()
   const { data: session } = useSession()
   const { course, fetchingCourse } = useGetCourse({ courseId })
-  const { courseItems, fetchingCourseItems } = useGetCourseItems({ courseId })
+  const { courseItems, fetchingCourseItems, courseItemsNotFound } = useGetCourseItems({ courseId })
   const { userCourseItemLogs, fetchingUserCourseItemLogs } = useGetUserCourseItemLogs({
     courseId,
   })
+
+  useEffect(() => {
+    if (!fetchingCourseItems && courseItemsNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingCourseItems, courseItemsNotFound])
 
   if (fetchingCourseItems) {
     return <Loading />
   }
 
-  // TODO: Add a 404 page
-  if (!courseItems) {
-    return <div>Modules not found</div>
+  if (courseItemsNotFound) {
+    return null
   }
 
   return (

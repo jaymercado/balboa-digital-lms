@@ -16,7 +16,7 @@ export default function Quiz({ quizId, itemId }: { quizId: string; itemId: strin
   const router = useRouter()
   const params = useParams()
   const { courseId } = params as { courseId: string }
-  const { fetchingQuiz, courseQuiz, nextQuizId, previousQuizId } = useGetQuiz({
+  const { fetchingQuiz, courseQuiz, nextQuizId, previousQuizId, quizNotFound } = useGetQuiz({
     courseId,
     quizId,
   })
@@ -34,13 +34,18 @@ export default function Quiz({ quizId, itemId }: { quizId: string; itemId: strin
     }
   }, [courseQuiz, courseId, itemId])
 
+  useEffect(() => {
+    if (!fetchingQuiz && quizNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingQuiz, quizNotFound, router])
+
   if (fetchingQuiz || fetchingSubmissions) {
     return <Loading />
   }
 
-  if (!courseQuiz) {
-    // TODO: Handle error
-    return <p>Error loading quiz</p>
+  if (quizNotFound) {
+    return null
   }
 
   return (
@@ -52,7 +57,7 @@ export default function Quiz({ quizId, itemId }: { quizId: string; itemId: strin
               <CCol>
                 {latestSubmission && !retakeQuiz && (
                   <CCardTitle className="fw-semibold fs-4">
-                    <span className="me-2">{courseQuiz.title}</span>
+                    <span className="me-2">{courseQuiz?.title}</span>
                     <CButton
                       color="primary"
                       className="mb-2 text-white"

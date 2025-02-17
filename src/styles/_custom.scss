@@ -209,6 +209,14 @@ option {
   border-color: var(--cui-border-color);
 }
 
+.error-text {
+  font-size: 7rem;
+  background: -webkit-linear-gradient(90deg, #06639b, #80d28a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @media (max-width: 426px) {
   .page-number {
     display: flex;

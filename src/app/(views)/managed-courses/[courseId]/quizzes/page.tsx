@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useParams } from 'next/navigation'
-import { CButton, CContainer, CCol } from '@coreui/react-pro'
+import { CButton, CCard, CCardBody } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
 import { CourseQuizzesTable } from '@/components'
@@ -12,8 +12,8 @@ export default function Quizzes() {
   const { courseId } = params as { courseId: string }
 
   return (
-    <CContainer className="mt-4">
-      <CCol>
+    <CCard className="mt-4">
+      <CCardBody>
         <div className="d-flex justify-content-end align-items-center mb-4">
           <CButton
             color="primary"
@@ -27,7 +27,7 @@ export default function Quizzes() {
         </div>
 
         <CourseQuizzesTable courseId={courseId} />
-      </CCol>
-    </CContainer>
+      </CCardBody>
+    </CCard>
   )
 }
