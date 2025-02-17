@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   CDropdown,
   CDropdownItem,
@@ -24,9 +25,17 @@ export default function CourseModulesTable({
   courseId,
   userIsStudent = false,
 }: CourseModulesTableProps) {
-  const { courseModules, fetchingModules, setCourseModules } = useGetCourseModules({ courseId })
+  const router = useRouter()
+  const { courseModules, fetchingModules, setCourseModules, courseModulesNotFound } =
+    useGetCourseModules({ courseId })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
+
+  useEffect(() => {
+    if (!fetchingModules && courseModulesNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingModules, courseModulesNotFound])
 
   function deleteModule(moduleId: string) {
     setDeletingModule(true)
@@ -49,9 +58,8 @@ export default function CourseModulesTable({
     return <Loading />
   }
 
-  // TODO: Add a 404 page
-  if (!courseModules) {
-    return <div>Modules not found</div>
+  if (courseModulesNotFound) {
+    return null
   }
 
   return (

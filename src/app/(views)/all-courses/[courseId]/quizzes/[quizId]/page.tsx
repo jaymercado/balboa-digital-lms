@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
@@ -13,12 +13,18 @@ export default function Quiz() {
   const router = useRouter()
   const params = useParams()
   const { courseId, quizId } = params as { courseId: string; quizId: string }
-  const { fetchingQuiz, courseQuiz, nextQuizId, previousQuizId } = useGetQuiz({
+  const { fetchingQuiz, courseQuiz, nextQuizId, previousQuizId, quizNotFound } = useGetQuiz({
     courseId,
     quizId,
   })
   const [deletingQuiz, setDeletingQuiz] = useState(false)
   const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false)
+
+  useEffect(() => {
+    if (!fetchingQuiz && quizNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingQuiz, quizNotFound, router])
 
   function deleteQuiz(quizId: string) {
     setDeletingQuiz(true)
@@ -41,8 +47,7 @@ export default function Quiz() {
     return <Loading />
   }
 
-  if (!courseQuiz) {
-    // TODO: Handle error
+  if (quizNotFound) {
     return <p>Error loading quiz</p>
   }
 
@@ -83,7 +88,7 @@ export default function Quiz() {
                 >
                   Previous
                 </CButton>
-                <div className="fw-semibold fs-4 align-items-center">{courseQuiz.title}</div>
+                <div className="fw-semibold fs-4 align-items-center">{courseQuiz?.title}</div>
                 <CButton
                   color="light"
                   onClick={() => router.push(`/all-courses/${courseId}/quizzes/${nextQuizId}`)}
@@ -96,17 +101,17 @@ export default function Quiz() {
             </CRow>
             <CRow>
               <CCol>
-                <CCardTitle className="fw-semibold fs-4">{courseQuiz.title}</CCardTitle>
-                <CCardText className="text-secondary">{courseQuiz.description}</CCardText>
+                <CCardTitle className="fw-semibold fs-4">{courseQuiz?.title}</CCardTitle>
+                <CCardText className="text-secondary">{courseQuiz?.description}</CCardText>
               </CCol>
             </CRow>
             <CRow>
               <CCol>
                 <div className="mt-4">
-                  {courseQuiz.questions.length === 0 ? (
+                  {courseQuiz?.questions.length === 0 ? (
                     <p>No questions added</p>
                   ) : (
-                    courseQuiz.questions.map((question, index) => (
+                    courseQuiz?.questions.map((question, index) => (
                       <div key={index} className="mb-4">
                         <div className="fw-semibold fs-5 text-primary">{`Question ${
                           index + 1

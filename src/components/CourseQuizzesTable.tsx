@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   CDropdown,
   CDropdownItem,
@@ -24,9 +25,18 @@ export default function CourseQuizzesTable({
   courseId,
   userIsStudent = false,
 }: CourseQuizzesTableProps) {
-  const { courseQuizzes, fetchingQuizzes, setQuizzes } = useGetQuizzes({ courseId })
+  const router = useRouter()
+  const { courseQuizzes, fetchingQuizzes, setQuizzes, courseQuizzesNotFound } = useGetQuizzes({
+    courseId,
+  })
   const [deletingQuiz, setDeletingQuiz] = useState(false)
   const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false)
+
+  useEffect(() => {
+    if (!fetchingQuizzes && courseQuizzesNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingQuizzes, courseQuizzesNotFound])
 
   function deleteQuiz(quizId: string) {
     setDeletingQuiz(true)
@@ -40,7 +50,7 @@ export default function CourseQuizzesTable({
       })
       .catch((err) => {
         console.error(err)
-        toast('error', 'Error deleting course')
+        toast('error', 'Error deleting quiz')
       })
       .finally(() => setDeletingQuiz(false))
   }
@@ -49,9 +59,8 @@ export default function CourseQuizzesTable({
     return <Loading />
   }
 
-  // TODO: Add a 404 page
-  if (!courseQuizzes) {
-    return <div>Quizzes not found</div>
+  if (courseQuizzesNotFound) {
+    return null
   }
 
   return (
