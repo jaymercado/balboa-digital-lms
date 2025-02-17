@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { CRow, CCol, CCard, CCardBody, CButton } from '@coreui/react-pro'
 import { useGetCourseItem } from '@/hooks/useGetCourseItems'
@@ -12,19 +12,24 @@ export default function Item() {
   const router = useRouter()
   const params = useParams()
   const { courseId, itemId } = params as { courseId: string; itemId: string }
-  const { fetchingCourseItem, courseItem, nextCourseItemId, previousCourseItemId } =
+  const { fetchingCourseItem, courseItem, nextCourseItemId, previousCourseItemId, courseItemNotFound } =
     useGetCourseItem({
       courseId,
       itemId,
     })
 
+  useEffect(() => {
+    if (!fetchingCourseItem && courseItemNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingCourseItem, courseItemNotFound, router])
+
   if (fetchingCourseItem) {
     return <Loading />
   }
 
-  if (!courseItem) {
-    // TODO: Handle this error
-    return <p>Item not found</p>
+  if (courseItemNotFound) {
+    return null
   }
 
   return (
@@ -43,14 +48,14 @@ export default function Item() {
                 <i className="bi bi-chevron-left me-1"></i>
                 Previous
               </CButton>
-              {courseItem.moduleId && (
+              {courseItem?.moduleId && (
                 <div className="fw-semibold fs-4 align-items-center">
-                  {courseItem.modules?.title}
+                  {courseItem?.modules?.title}
                 </div>
               )}
-              {courseItem.quizId && (
+              {courseItem?.quizId && (
                 <div className="fw-semibold fs-4 align-items-center">
-                  {courseItem.quizzes?.title}
+                  {courseItem?.quizzes?.title}
                 </div>
               )}
               <CButton
@@ -64,8 +69,8 @@ export default function Item() {
                 <i className="bi bi-chevron-right ms-1"></i>
               </CButton>
             </div>
-            {courseItem.moduleId && <Module moduleId={courseItem.moduleId} itemId={itemId} />}
-            {courseItem.quizId && <Quiz quizId={courseItem.quizId} itemId={itemId} />}
+            {courseItem?.moduleId && <Module moduleId={courseItem?.moduleId} itemId={itemId} />}
+            {courseItem?.quizId && <Quiz quizId={courseItem?.quizId} itemId={itemId} />}
           </CCardBody>
         </CCard>
       </CCol>

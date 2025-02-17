@@ -4,23 +4,35 @@ import { CourseItem } from '@/types/courseItem'
 export function useGetCourseItems({ courseId }: { courseId: string }) {
   const [fetchingCourseItems, setFetchingCourseItems] = useState<boolean>(false)
   const [courseItems, setCourseItems] = useState<CourseItem[]>([])
+  const [courseItemsNotFound, setCourseItemsNotFound] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchItems = async () => {
       setFetchingCourseItems(true)
+      try {
+        const res = await fetch(`/api/courses/${courseId}/items`)
 
-      let url = `/api/courses/${courseId}/items`
+        if (!res.ok) {
+          if (res.status === 404) {
+            setCourseItemsNotFound(true)
+          }
+          throw new Error('Course items not found or invalid request')
+        }
 
-      const res = await fetch(url)
-      const fetchedCourseItems = ((await res.json()) as CourseItem[]) || []
-
-      setCourseItems(fetchedCourseItems)
+        const fetchedData = (await res.json()) as CourseItem[]
+        setCourseItems(fetchedData || [])
+      } catch (error) {
+        console.error('Error fetching course items:', error)
+        setCourseItemsNotFound(true)
+      } finally {
+        setFetchingCourseItems(false)
+      }
     }
 
-    fetchItems().finally(() => setFetchingCourseItems(false))
+    fetchItems()
   }, [courseId])
 
-  return { fetchingCourseItems, courseItems, setCourseItems }
+  return { fetchingCourseItems, courseItems, setCourseItems, courseItemsNotFound }
 }
 
 export function useGetCourseItem({ courseId, itemId }: { courseId: string; itemId: string }) {
@@ -28,32 +40,44 @@ export function useGetCourseItem({ courseId, itemId }: { courseId: string; itemI
   const [courseItem, setCourseItem] = useState<CourseItem | null>(null)
   const [previousCourseItemId, setPreviousCourseItemId] = useState<string | null>(null)
   const [nextCourseItemId, setNextCourseItemId] = useState<string | null>(null)
+  const [courseItemNotFound, setCourseItemNotFound] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchCourseItem = async () => {
       setFetchingCourseItem(true)
+      try {
+        const res = await fetch(`/api/courses/${courseId}/items/${itemId}`)
 
-      let url = `/api/courses/${courseId}/items/${itemId}`
+        if (!res.ok) {
+          if (res.status === 404) {
+            setCourseItemNotFound(true)
+          }
+          throw new Error('Course item not found or invalid request')
+        }
 
-      const res = await fetch(url)
-      const fetchedCourseItem =
-        ((await res.json()) as {
-          courseItem: CourseItem
+        const fetchedData = (await res.json()) as {
+          courseItem?: CourseItem
           nextCourseItemId?: string
           previousCourseItemId?: string
-        }) || {}
+        }
 
-      setCourseItem(fetchedCourseItem.courseItem)
-      console.log('fetchedCourseItem', fetchedCourseItem)
-      if (fetchedCourseItem.nextCourseItemId) {
-        setNextCourseItemId(fetchedCourseItem.nextCourseItemId)
-      }
-      if (fetchedCourseItem.previousCourseItemId) {
-        setPreviousCourseItemId(fetchedCourseItem.previousCourseItemId)
+        if (!fetchedData.courseItem) {
+          setCourseItemNotFound(true)
+          return
+        }
+
+        setCourseItem(fetchedData.courseItem)
+        setNextCourseItemId(fetchedData.nextCourseItemId || null)
+        setPreviousCourseItemId(fetchedData.previousCourseItemId || null)
+      } catch (error) {
+        console.error('Error fetching course item:', error)
+        setCourseItemNotFound(true)
+      } finally {
+        setFetchingCourseItem(false)
       }
     }
 
-    fetchCourseItem().finally(() => setFetchingCourseItem(false))
+    fetchCourseItem()
   }, [courseId, itemId])
 
   return {
@@ -61,5 +85,6 @@ export function useGetCourseItem({ courseId, itemId }: { courseId: string; itemI
     courseItem,
     nextCourseItemId,
     previousCourseItemId,
+    courseItemNotFound,
   }
 }

@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import React, { useState, useEffect } from 'react'
+import { useParams, useRouter, notFound } from 'next/navigation'
 import { cilPencil, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import {
@@ -25,13 +25,24 @@ export default function Module() {
   const router = useRouter()
   const params = useParams()
   const { courseId, moduleId } = params as { courseId: string; moduleId: string }
-  const { fetchingModule, courseModule, nextCourseModuleId, previousCourseModuleId } =
-    useGetCourseModule({
-      courseId,
-      moduleId,
-    })
+  const {
+    fetchingModule,
+    courseModule,
+    nextCourseModuleId,
+    previousCourseModuleId,
+    courseModuleNotFound,
+  } = useGetCourseModule({
+    courseId,
+    moduleId,
+  })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
+
+  useEffect(() => {
+    if (!fetchingModule && courseModuleNotFound) {
+      router.replace('/404')
+    }
+  }, [fetchingModule, courseModule, router])
 
   function deleteModule(moduleId: string) {
     setDeletingModule(true)
@@ -54,9 +65,8 @@ export default function Module() {
     return <Loading />
   }
 
-  if (!courseModule) {
-    // TODO: Handle error
-    return <p>Error loading module</p>
+  if (courseModuleNotFound) {
+    return null
   }
 
   return (
@@ -80,7 +90,10 @@ export default function Module() {
           <ConfirmDeleteModal
             visible={showDeleteModuleModal}
             onClose={() => setShowDeleteModuleModal(false)}
-            onConfirm={() => [deleteModule(courseModule.id), setShowDeleteModuleModal(false)]}
+            onConfirm={() => [
+              deleteModule(courseModule?.id || ''),
+              setShowDeleteModuleModal(false),
+            ]}
             disabled={deletingModule}
           />
         </div>
@@ -97,7 +110,7 @@ export default function Module() {
                 <i className="bi bi-chevron-left me-1"></i>
                 Previous
               </CButton>
-              <div className="fw-semibold fs-4 align-items-center">{courseModule.title}</div>
+              <div className="fw-semibold fs-4 align-items-center">{courseModule?.title}</div>
               <CButton
                 color="light"
                 onClick={() =>
@@ -120,10 +133,13 @@ export default function Module() {
               </CTabList>
               <CTabContent>
                 <CTabPanel className="py-3" aria-labelledby="content-tab-pane" itemKey={1}>
-                  <CourseModuleContent type={courseModule.type} content={courseModule.content} />
+                  <CourseModuleContent
+                    type={courseModule?.type || 'text'}
+                    content={courseModule?.content || ''}
+                  />
                 </CTabPanel>
                 <CTabPanel className="py-3" aria-labelledby="description-tab-pane" itemKey={2}>
-                  <CCardText>{courseModule.description}</CCardText>
+                  <CCardText>{courseModule?.description}</CCardText>
                 </CTabPanel>
               </CTabContent>
             </CTabs>
