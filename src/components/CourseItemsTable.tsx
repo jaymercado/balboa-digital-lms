@@ -20,7 +20,17 @@ import { useGetUserCourseItemLogs } from '@/hooks/useGetUserCourseItemLogs'
 import { Loading } from '@/components'
 import CertificateGenerator from './CertificateGenerator'
 
-export default function CourseItemsTable({ courseId, userIsStudent }: CourseItemsTableProps) {
+interface CourseItemsTableProps {
+  courseId: string
+  userIsAdmin?: boolean
+  userIsInstructor?: boolean
+}
+
+export default function CourseItemsTable({
+  courseId,
+  userIsAdmin = false,
+  userIsInstructor = false,
+}: CourseItemsTableProps) {
   const router = useRouter()
   const { data: session } = useSession()
   const { course, fetchingCourse } = useGetCourse({ courseId })
@@ -28,6 +38,12 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
   const { userCourseItemLogs, fetchingUserCourseItemLogs } = useGetUserCourseItemLogs({
     courseId,
   })
+
+  const basePath = userIsAdmin
+    ? '/all-courses'
+    : userIsInstructor
+    ? '/managed-courses'
+    : '/enrolled-courses'
 
   useEffect(() => {
     if (!fetchingCourseItems && courseItemsNotFound) {
@@ -67,9 +83,7 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
             <CTableRow key={item.id} align="middle">
               <CTableDataCell>
                 <Link
-                  href={`/${userIsStudent ? 'enrolled' : 'managed'}-courses/${courseId}/items/${
-                    item.id
-                  }`}
+                  href={`${basePath}/${courseId}/items/${item.id}`}
                   className="text-decoration-none"
                 >
                   <span className="fw-semibold">{item.id}</span>
@@ -139,9 +153,4 @@ export default function CourseItemsTable({ courseId, userIsStudent }: CourseItem
       </CTableBody>
     </CTable>
   )
-}
-
-interface CourseItemsTableProps {
-  courseId: string
-  userIsStudent?: boolean
 }

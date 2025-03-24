@@ -26,7 +26,7 @@ export default function Modules() {
           </CButton>
         </div>
 
-        <CourseModulesTable courseId={courseId} />
+        <CourseModulesTable courseId={courseId} userIsAdmin={true}  />
       </CCol>
     </CContainer>
   )

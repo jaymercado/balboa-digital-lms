@@ -21,15 +21,29 @@ import toast from '@/utils/toast'
 import { useGetCourseModules } from '@/hooks/useGetCourseModules'
 import { Loading, ConfirmDeleteModal } from '@/components'
 
+interface CourseModulesTableProps {
+  courseId: string
+  userIsAdmin?: boolean
+  userIsInstructor?: boolean
+}
+
 export default function CourseModulesTable({
   courseId,
-  userIsStudent = false,
+  userIsAdmin = false,
+  userIsInstructor = false,
 }: CourseModulesTableProps) {
   const router = useRouter()
   const { courseModules, fetchingModules, setCourseModules, courseModulesNotFound } =
     useGetCourseModules({ courseId })
   const [deletingModule, setDeletingModule] = useState(false)
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
+
+  const canManageModules = userIsAdmin || userIsInstructor
+  const basePath = userIsAdmin
+    ? '/all-courses'
+    : userIsInstructor
+    ? '/managed-courses'
+    : '/enrolled-courses'
 
   useEffect(() => {
     if (!fetchingModules && courseModulesNotFound) {
@@ -75,7 +89,7 @@ export default function CourseModulesTable({
           <CTableHeaderCell>
             <small>Type</small>
           </CTableHeaderCell>
-          {!userIsStudent && (
+          {canManageModules && (
             <CTableHeaderCell>
               <small>Actions</small>
             </CTableHeaderCell>
@@ -88,9 +102,7 @@ export default function CourseModulesTable({
             <CTableRow key={module.id} align="middle">
               <CTableDataCell>
                 <Link
-                  href={`/${userIsStudent ? 'enrolled' : 'managed'}-courses/${courseId}/modules/${
-                    module.id
-                  }`}
+                  href={`${basePath}/${courseId}/modules/${module.id}`}
                   className="text-decoration-none"
                 >
                   <span className="fw-semibold">{module.id}</span>
@@ -108,16 +120,14 @@ export default function CourseModulesTable({
                   <span className="text-capitalize">{module.type}</span>
                 </small>
               </CTableDataCell>
-              {!userIsStudent && (
+              {canManageModules && (
                 <CTableDataCell>
                   <CDropdown>
                     <CDropdownToggle className="rounded" caret={false}>
                       <i className="bi bi-three-dots-vertical"></i>
                     </CDropdownToggle>
                     <CDropdownMenu className="secondary">
-                      <CDropdownItem
-                        href={`/managed-courses/${courseId}/modules/${module.id}/edit`}
-                      >
+                      <CDropdownItem href={`${basePath}/${courseId}/modules/${module.id}/edit`}>
                         <CIcon icon={cilPencil} className="me-1" />
                         <small>Edit</small>
                       </CDropdownItem>
@@ -150,9 +160,4 @@ export default function CourseModulesTable({
       </CTableBody>
     </CTable>
   )
-}
-
-interface CourseModulesTableProps {
-  courseId: string
-  userIsStudent?: boolean
 }

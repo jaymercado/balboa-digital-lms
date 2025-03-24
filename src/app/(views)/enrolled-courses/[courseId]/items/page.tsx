@@ -12,7 +12,7 @@ export default function Items() {
   return (
     <CCard>
       <CCardBody>
-        <CourseItemsTable courseId={courseId} userIsStudent={true} />
+        <CourseItemsTable courseId={courseId} />
       </CCardBody>
     </CCard>
   )
