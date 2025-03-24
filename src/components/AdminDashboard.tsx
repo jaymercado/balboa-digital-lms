@@ -217,17 +217,25 @@ export default function AdminDashboard() {
             <CCardBody>
               <CCardTitle className="fw-semibold">Course Status</CCardTitle>
               <CChart
-                type="doughnut"
+                type="bar"
                 data={data}
                 options={{
                   responsive: true,
                   aspectRatio: 1.2,
                   plugins: {
                     legend: {
-                      position: 'bottom',
+                      display: false,
                     },
                     tooltip: {
                       enabled: true,
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        stepSize: 1,
+                      },
                     },
                   },
                 }}
