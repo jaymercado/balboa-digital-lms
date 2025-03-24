@@ -26,13 +26,11 @@ const AppHeaderDropdown = () => {
         />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0">
-        <CDropdownHeader className="bg-body-secondary text-body-secondary fw-semibold rounded-top mb-2">
-          Account
+        <CDropdownHeader className="bg-body-tertiary rounded-top p-3">
+          <span className="fw-semibold text-body fs-6">{session?.user?.name}</span>
+          <div className="text-body-secondary fw-normal">{session?.user?.email}</div>
         </CDropdownHeader>
-        <CDropdownItem href="#">
-          <CIcon icon={cilUser} className="me-2" />
-          Profile
-        </CDropdownItem>
+
         <CDropdownDivider />
         <CDropdownItem href="#" onClick={() => signOut()}>
           <CIcon icon={cilAccountLogout} className="me-2" />
