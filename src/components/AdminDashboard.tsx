@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { getStyle } from '@coreui/utils'
 import {
-  CBadge,
   CCard,
   CCardBody,
   CCardTitle,
@@ -25,6 +24,7 @@ import { useGetCourses } from '@/hooks/useGetCourses'
 import useGetUsers from '@/hooks/useGetUsers'
 import Loading from './Loading'
 import EnrolledCoursesTableDashboard from './EnrolledCoursesTableDashboard'
+import GroupsTable from './GroupsTable'
 
 export default function AdminDashboard() {
   const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
@@ -298,7 +298,12 @@ export default function AdminDashboard() {
           <EnrolledCoursesTableDashboard />
         </CCol>
       </CRow>
-      <CRow></CRow>
+
+      <CRow>
+        <CCol>
+          <GroupsTable />
+        </CCol>
+      </CRow>
     </div>
   )
 }

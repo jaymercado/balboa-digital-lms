@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import ReactPaginate from 'react-paginate'
+import Select, { MultiValue } from 'react-select'
 import axios from 'axios'
 import {
   CTable,
@@ -15,17 +16,27 @@ import {
   CCard,
   CCardBody,
   CFormSelect,
+  CRow,
+  CSpinner,
 } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import useGetUsers from '@/hooks/useGetUsers'
+import { useGetGroups, useGetUserGroups } from '@/hooks/useGetGroups'
 import { Loading } from '@/components'
 import { User } from '@/types/user'
 import { roles } from '@/shared/constants'
+
+type GroupOption = {
+  value: string
+  label: string
+}
 
 export default function Users() {
   const router = useRouter()
   const { data: session } = useSession()
   const { users, setUsers, fetchingUsers } = useGetUsers()
+  const { groups, fetchingGroups } = useGetGroups()
+  const { fetchingUserGroups, userGroups, setUserGroups } = useGetUserGroups()
   const [currentPage, setCurrentPage] = useState(0)
   const itemsPerPage = 10
   const offset = currentPage * itemsPerPage
@@ -51,13 +62,44 @@ export default function Users() {
       })
   }
 
+  const handleGroupChange = (userId: string, selectedGroupIds: string[]) => {
+    axios
+      .put(`/api/userGroups/${userId}`, { groupIds: selectedGroupIds })
+      .then((res) => {
+        if (res.status !== 200) throw new Error('Failed to update groups')
+        toast('success', 'Group updated successfully')
+
+        setUserGroups((prevUserGroups) => {
+          const updatedUserGroups = prevUserGroups.filter(
+            (userGroup) => userGroup.user_id !== userId,
+          )
+
+          const newUserGroups = selectedGroupIds.map((groupId) => ({
+            user_id: userId,
+            group_id: groupId,
+          }))
+
+          return [...updatedUserGroups, ...newUserGroups]
+        })
+      })
+      .catch((err) => {
+        toast('error', 'Error updating groups')
+        console.error(err)
+      })
+  }
+
   if (session?.user?.role && session?.user?.role !== 'admin') {
     router.push('/')
   }
 
-  if (fetchingUsers) {
+  if (fetchingUsers || fetchingUserGroups) {
     return <Loading />
   }
+
+  const groupOptions: GroupOption[] = groups.map((group) => ({
+    value: group.id,
+    label: group.name,
+  }))
 
   return (
     <CCard>
@@ -68,6 +110,7 @@ export default function Users() {
               <CTableHeaderCell>Name</CTableHeaderCell>
               <CTableHeaderCell>Email</CTableHeaderCell>
               <CTableHeaderCell>Role</CTableHeaderCell>
+              <CTableHeaderCell>Group</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>
@@ -86,6 +129,31 @@ export default function Users() {
                         value: role.value,
                       }))}
                     />
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    {fetchingUsers ? (
+                      <CRow className="d-flex justify-content-center align-items-center">
+                        <CSpinner color="primary" />
+                      </CRow>
+                    ) : (
+                      <Select
+                        isMulti
+                        options={groupOptions}
+                        value={groupOptions.filter((option) =>
+                          userGroups.some(
+                            (group) => group.group_id === option.value && group.user_id === user.id,
+                          ),
+                        )}
+                        onChange={(selectedOptions: MultiValue<{ value: string; label: string }>) =>
+                          handleGroupChange(
+                            user.id,
+                            selectedOptions.map((option) => option.value),
+                          )
+                        }
+                        className="react-select-container"
+                        classNamePrefix="react-select"
+                      />
+                    )}
                   </CTableDataCell>
                 </CTableRow>
               ))
