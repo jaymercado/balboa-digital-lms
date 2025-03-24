@@ -60,7 +60,7 @@ export default function StudentDashboard() {
     }
   }, [])
 
-  const data: ChartData<'doughnut'> = {
+  const data: ChartData<'bar'> = {
     labels: ['Enrolled', 'Completed', 'In Progress', 'Not Started'],
     datasets: [
       {
@@ -76,6 +76,9 @@ export default function StudentDashboard() {
           inProgressCourses?.length,
           notStartedCourses?.length,
         ],
+        label: 'Course Status',
+        barThickness: 35,
+        borderRadius: 5,
       },
     ],
   }
@@ -132,7 +135,7 @@ export default function StudentDashboard() {
         <CCol>
           <EnrolledCoursesTableDashboard />
         </CCol>
-        <CCol xs={4}>
+        <CCol xs={5}>
           <CCard className="h-100">
             <CCardBody>
               <CCardTitle className="fw-semibold">Course Status</CCardTitle>
@@ -140,8 +143,8 @@ export default function StudentDashboard() {
                 type="bar"
                 data={data}
                 options={{
+                  aspectRatio: 1.5,
                   responsive: true,
-                  aspectRatio: 1.2,
                   plugins: {
                     legend: {
                       display: false,
@@ -151,7 +154,15 @@ export default function StudentDashboard() {
                     },
                   },
                   scales: {
+                    x: {
+                      grid: {
+                        color: getStyle('--cui-border-color'),
+                      },
+                    },
                     y: {
+                      grid: {
+                        color: getStyle('--cui-border-color'),
+                      },
                       beginAtZero: true,
                       ticks: {
                         stepSize: 1,
