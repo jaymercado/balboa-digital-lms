@@ -39,6 +39,12 @@ export default function CourseModulesTable({
   const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false)
 
   const canManageModules = userIsAdmin || userIsInstructor
+  const getBasePath = () => {
+    if (userIsAdmin) return "/all-courses";
+    if (userIsInstructor) return "/managed-courses";
+    return "/enrolled-courses";
+  };
+  
 
   useEffect(() => {
     if (!fetchingModules && courseModulesNotFound) {
@@ -97,13 +103,7 @@ export default function CourseModulesTable({
             <CTableRow key={module.id} align="middle">
               <CTableDataCell>
                 <Link
-                  href={`${
-                    userIsAdmin
-                      ? '/all-courses'
-                      : userIsInstructor
-                      ? '/managed-courses'
-                      : '/enrolled-courses'
-                  }/${courseId}/modules/${module.id}`}
+                  href={`${getBasePath()}/${courseId}/modules/${module.id}`}
                   className="text-decoration-none"
                 >
                   <span className="fw-semibold">{module.id}</span>
@@ -128,15 +128,7 @@ export default function CourseModulesTable({
                       <i className="bi bi-three-dots-vertical"></i>
                     </CDropdownToggle>
                     <CDropdownMenu className="secondary">
-                      <CDropdownItem
-                        href={`${
-                          userIsAdmin
-                            ? '/all-courses'
-                            : userIsInstructor
-                            ? '/managed-courses'
-                            : '/enrolled-courses'
-                        }/${courseId}/modules/${module.id}/edit`}
-                      >
+                      <CDropdownItem href={`${getBasePath()}/${courseId}/modules/${module.id}/edit`}>
                         <CIcon icon={cilPencil} className="me-1" />
                         <small>Edit</small>
                       </CDropdownItem>

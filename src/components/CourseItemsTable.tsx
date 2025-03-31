@@ -39,11 +39,11 @@ export default function CourseItemsTable({
     courseId,
   })
 
-  const basePath = userIsAdmin
-    ? '/all-courses'
-    : userIsInstructor
-    ? '/managed-courses'
-    : '/enrolled-courses'
+  const getBasePath = () => {
+    if (userIsAdmin) return '/all-courses'
+    if (userIsInstructor) return '/managed-courses'
+    return '/enrolled-courses'
+  }
 
   useEffect(() => {
     if (!fetchingCourseItems && courseItemsNotFound) {
@@ -83,7 +83,7 @@ export default function CourseItemsTable({
             <CTableRow key={item.id} align="middle">
               <CTableDataCell>
                 <Link
-                  href={`${basePath}/${courseId}/items/${item.id}`}
+                  href={`${getBasePath()}/${courseId}/items/${item.id}`}
                   className="text-decoration-none"
                 >
                   <span className="fw-semibold">{item.id}</span>
