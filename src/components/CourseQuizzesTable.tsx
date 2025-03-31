@@ -40,11 +40,6 @@ export default function CourseQuizzesTable({
   const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false)
 
   const canManageQuizzes = userIsAdmin || userIsInstructor
-  const basePath = userIsAdmin
-    ? '/all-courses'
-    : userIsInstructor
-    ? '/managed-courses'
-    : '/enrolled-courses'
 
   useEffect(() => {
     if (!fetchingQuizzes && courseQuizzesNotFound) {
@@ -100,7 +95,13 @@ export default function CourseQuizzesTable({
             <CTableRow key={quiz.id} align="middle">
               <CTableDataCell>
                 <Link
-                  href={`${basePath}/${courseId}/quizzes/${quiz.id}`}
+                  href={`${
+                    userIsAdmin
+                      ? '/all-courses'
+                      : userIsInstructor
+                      ? '/managed-courses'
+                      : '/enrolled-courses'
+                  }/${courseId}/quizzes/${quiz.id}`}
                   className="text-decoration-none"
                 >
                   <span className="fw-semibold">{quiz.id}</span>
@@ -116,7 +117,15 @@ export default function CourseQuizzesTable({
                       <i className="bi bi-three-dots-vertical"></i>
                     </CDropdownToggle>
                     <CDropdownMenu className="secondary">
-                      <CDropdownItem href={`${basePath}/${courseId}/quizzes/${quiz.id}/edit`}>
+                      <CDropdownItem
+                        href={`${
+                          userIsAdmin
+                            ? '/all-courses'
+                            : userIsInstructor
+                            ? '/managed-courses'
+                            : '/enrolled-courses'
+                        }/${courseId}/quizzes/${quiz.id}/edit`}
+                      >
                         <CIcon icon={cilPencil} className="me-1" />
                         <small>Edit</small>
                       </CDropdownItem>
