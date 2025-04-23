@@ -177,7 +177,7 @@ export default function Course() {
                           </CButton>
                         </CCol>
                       </CRow>
-                      <CourseModulesTable courseId={course?.id || ''} />
+                      <CourseModulesTable courseId={course?.id || ''} userIsInstructor={true} />
                     </CCol>
                     <CCol>
                       <CRow className="mb-3">
@@ -208,7 +208,7 @@ export default function Course() {
                           </CButton>
                         </CCol>
                       </CRow>
-                      <CourseQuizzesTable courseId={course?.id || ''} />
+                      <CourseQuizzesTable courseId={course?.id || ''} userIsInstructor={true} />
                     </CCol>
                   </CRow>
                 </CTabPanel>

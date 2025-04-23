@@ -21,9 +21,16 @@ import toast from '@/utils/toast'
 import { useGetQuizzes } from '@/hooks/useGetQuizzes'
 import { Loading, ConfirmDeleteModal } from '@/components'
 
+interface CourseQuizzesTableProps {
+  courseId: string
+  userIsAdmin?: boolean
+  userIsInstructor?: boolean
+}
+
 export default function CourseQuizzesTable({
   courseId,
-  userIsStudent = false,
+  userIsAdmin = false,
+  userIsInstructor = false,
 }: CourseQuizzesTableProps) {
   const router = useRouter()
   const { courseQuizzes, fetchingQuizzes, setQuizzes, courseQuizzesNotFound } = useGetQuizzes({
@@ -31,6 +38,13 @@ export default function CourseQuizzesTable({
   })
   const [deletingQuiz, setDeletingQuiz] = useState(false)
   const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false)
+
+  const canManageQuizzes = userIsAdmin || userIsInstructor
+  const getBasePath = () => {
+    if (userIsAdmin) return '/all-courses'
+    if (userIsInstructor) return '/managed-courses'
+    return '/enrolled-courses'
+  }
 
   useEffect(() => {
     if (!fetchingQuizzes && courseQuizzesNotFound) {
@@ -73,7 +87,7 @@ export default function CourseQuizzesTable({
           <CTableHeaderCell>
             <small>Title</small>
           </CTableHeaderCell>
-          {!userIsStudent && (
+          {canManageQuizzes && (
             <CTableHeaderCell>
               <small>Actions</small>
             </CTableHeaderCell>
@@ -86,9 +100,7 @@ export default function CourseQuizzesTable({
             <CTableRow key={quiz.id} align="middle">
               <CTableDataCell>
                 <Link
-                  href={`/${userIsStudent ? 'enrolled' : 'managed'}-courses/${courseId}/quizzes/${
-                    quiz.id
-                  }`}
+                  href={`${getBasePath()}/${courseId}/quizzes/${quiz.id}`}
                   className="text-decoration-none"
                 >
                   <span className="fw-semibold">{quiz.id}</span>
@@ -97,14 +109,14 @@ export default function CourseQuizzesTable({
               <CTableDataCell>
                 <span className="fw-semibold">{quiz.title}</span>
               </CTableDataCell>
-              {!userIsStudent && (
+              {canManageQuizzes && (
                 <CTableDataCell>
                   <CDropdown>
                     <CDropdownToggle className="rounded" caret={false}>
                       <i className="bi bi-three-dots-vertical"></i>
                     </CDropdownToggle>
                     <CDropdownMenu className="secondary">
-                      <CDropdownItem href={`/managed-courses/${courseId}/quizzes/${quiz.id}/edit`}>
+                      <CDropdownItem href={`${getBasePath()}/${courseId}/quizzes/${quiz.id}/edit`}>
                         <CIcon icon={cilPencil} className="me-1" />
                         <small>Edit</small>
                       </CDropdownItem>
@@ -137,9 +149,4 @@ export default function CourseQuizzesTable({
       </CTableBody>
     </CTable>
   )
-}
-
-interface CourseQuizzesTableProps {
-  courseId: string
-  userIsStudent?: boolean
 }

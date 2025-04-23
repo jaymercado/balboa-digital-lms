@@ -26,7 +26,7 @@ export default function Quizzes() {
           </CButton>
         </div>
 
-        <CourseQuizzesTable courseId={courseId} />
+        <CourseQuizzesTable courseId={courseId} userIsAdmin={true} />
       </CCol>
     </CContainer>
   )
