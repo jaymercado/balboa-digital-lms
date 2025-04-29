@@ -5,10 +5,7 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request })
   const role = token?.role as string
-
-  console.log(token)
-  console.log(token)
-
+  
   const { pathname } = request.nextUrl
 
   // Define access rules

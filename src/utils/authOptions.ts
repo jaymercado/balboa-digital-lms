@@ -47,7 +47,6 @@ const authOptions: NextAuthOptions = {
           .single()
 
         token.role = data?.role || 'student'
-        console.log(token)
       }
       return token
     },
