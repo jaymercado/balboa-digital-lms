@@ -28,7 +28,8 @@ import EnrolledCoursesTableDashboard from './EnrolledCoursesTableDashboard'
 
 export default function AdminDashboard() {
   const { courses, setCourses, fetchingCourses } = useGetCourses({ type: 'managed' })
-  const { coursesWithCompletionStatus, fetchingUserCourseItemLogs } = useGetAllUserCourseItemLogs()
+  const { enrolledCourses, coursesWithCompletionStatus, fetchingUserCourseItemLogs } =
+    useGetAllUserCourseItemLogs()
   const { users, fetchingUsers } = useGetUsers()
 
   const notStartedCourses = coursesWithCompletionStatus.filter(
@@ -78,7 +79,7 @@ export default function AdminDashboard() {
         ],
         data: [
           courses?.length,
-          coursesWithCompletionStatus?.length,
+          enrolledCourses?.length,
           completedCourses?.length,
           inProgressCourses?.length,
           notStartedCourses?.length,
@@ -120,7 +121,7 @@ export default function AdminDashboard() {
           <CCard className="p-3 bg-primary-subtle text-primary-emphasis d-flex justify-content-between flex-row">
             <div className="border-start border-start-4 border-start-primary py-1 px-3">
               <div className="text-secondary text-truncate small">Enrolled Courses</div>
-              <div className="fs-4 fw-semibold">{coursesWithCompletionStatus?.length}</div>
+              <div className="fs-4 fw-semibold">{enrolledCourses?.length}</div>
             </div>
             <div className="bg-primary bg-opacity-25 rounded p-3 d-flex align-items-center">
               <CIcon icon={cilEducation} color="primary" size="xl" />

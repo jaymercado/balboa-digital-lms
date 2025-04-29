@@ -25,7 +25,8 @@ import Loading from './Loading'
 import EnrolledCoursesTableDashboard from './EnrolledCoursesTableDashboard'
 
 export default function StudentDashboard() {
-  const { coursesWithCompletionStatus, fetchingUserCourseItemLogs } = useGetAllUserCourseItemLogs()
+  const { enrolledCourses, coursesWithCompletionStatus, fetchingUserCourseItemLogs } =
+    useGetAllUserCourseItemLogs()
 
   const notStartedCourses = coursesWithCompletionStatus.filter(
     (course) => course.status === 'notStarted',
@@ -71,7 +72,7 @@ export default function StudentDashboard() {
           getStyle('--cui-danger'),
         ],
         data: [
-          coursesWithCompletionStatus?.length,
+          enrolledCourses?.length,
           completedCourses?.length,
           inProgressCourses?.length,
           notStartedCourses?.length,
@@ -90,7 +91,7 @@ export default function StudentDashboard() {
           <CCard className="p-3 bg-primary-subtle text-primary-emphasis d-flex justify-content-between flex-row">
             <div className="border-start border-start-4 border-start-primary py-1 px-3">
               <div className="text-secondary text-truncate small">Enrolled Courses</div>
-              <div className="fs-4 fw-semibold">{coursesWithCompletionStatus?.length}</div>
+              <div className="fs-4 fw-semibold">{enrolledCourses?.length}</div>
             </div>
             <div className="bg-primary bg-opacity-25 rounded p-3 d-flex align-items-center">
               <CIcon icon={cilEducation} color="primary" size="xl" />
@@ -123,7 +124,7 @@ export default function StudentDashboard() {
           <CCard className="p-3 bg-danger-subtle text-danger-emphasis d-flex justify-content-between flex-row">
             <div className="border-start border-start-4 border-start-danger py-1 px-3">
               <div className="text-secondary text-truncate small">Not Started</div>
-              <div className="fs-4 fw-semibold">{inProgressCourses?.length}</div>
+              <div className="fs-4 fw-semibold">{notStartedCourses?.length}</div>
             </div>
             <div className="bg-danger bg-opacity-25 rounded p-3 d-flex align-items-center">
               <CIcon icon={cilBook} color="danger" size="xl" />
