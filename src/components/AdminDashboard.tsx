@@ -65,7 +65,7 @@ export default function AdminDashboard() {
     }
   }, [])
 
-  const data: ChartData<'doughnut'> = {
+  const data: ChartData<'bar'> = {
     labels: ['Managed', 'Enrolled', 'Completed', 'In Progress', 'Not Started'],
     datasets: [
       {
@@ -83,6 +83,9 @@ export default function AdminDashboard() {
           inProgressCourses?.length,
           notStartedCourses?.length,
         ],
+        label: 'Course Status',
+        barThickness: 35,
+        borderRadius: 5,
       },
     ],
   }
@@ -212,22 +215,38 @@ export default function AdminDashboard() {
             </CCardBody>
           </CCard>
         </CCol>
-        <CCol xs={4}>
+        <CCol xs={5}>
           <CCard className="h-100">
             <CCardBody>
               <CCardTitle className="fw-semibold">Course Status</CCardTitle>
               <CChart
-                type="doughnut"
+                type="bar"
                 data={data}
                 options={{
+                  aspectRatio: 1.5,
                   responsive: true,
-                  aspectRatio: 1.2,
                   plugins: {
                     legend: {
-                      position: 'bottom',
+                      display: false,
                     },
                     tooltip: {
                       enabled: true,
+                    },
+                  },
+                  scales: {
+                    x: {
+                      grid: {
+                        color: getStyle('--cui-border-color'),
+                      },
+                    },
+                    y: {
+                      grid: {
+                        color: getStyle('--cui-border-color'),
+                      },
+                      beginAtZero: true,
+                      ticks: {
+                        stepSize: 1,
+                      },
                     },
                   },
                 }}

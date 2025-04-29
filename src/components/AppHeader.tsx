@@ -1,17 +1,14 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import classNames from 'classnames'
-import { 
-  CContainer, 
-  CForm, 
-  CFormInput, 
-  CHeader, 
-  CHeaderNav, 
-  CHeaderToggler, 
-  CInputGroup, 
-  CInputGroupText, 
-  useColorModes, 
-  CButton 
+import {
+  CContainer,
+  CForm,
+  CHeader,
+  CHeaderNav,
+  CHeaderToggler,
+  useColorModes,
+  CButton,
 } from '@coreui/react-pro'
 import { cilMenu, cilMoon, cilSearch, cilSun } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
@@ -49,26 +46,10 @@ const AppHeader = (): JSX.Element => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
 
-        <CForm className="d-none d-sm-flex">
-          <CInputGroup>
-            <CInputGroupText id="search-addon" className="bg-body-secondary border-0 px-1">
-              <CIcon icon={cilSearch} size="lg" className="my-1 mx-2 text-body-secondary" />
-            </CInputGroupText>
-            <CFormInput
-              placeholder="Search"
-              aria-label="Search"
-              aria-describedby="search-addon"
-              className="bg-body-secondary border-0"
-            />
-          </CInputGroup>
-        </CForm>
-        
+        <CForm className="d-none d-sm-flex"></CForm>
+
         <CHeaderNav className="ms-auto ms-md-0">
-          <CButton 
-            color="transparent" 
-            onClick={toggleColorMode} 
-            className="p-0"
-          >
+          <CButton color="transparent" onClick={toggleColorMode} className="p-0">
             <CIcon icon={colorMode === 'light' ? cilSun : cilMoon} size="lg" />
           </CButton>
 
