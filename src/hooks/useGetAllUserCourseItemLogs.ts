@@ -10,8 +10,7 @@ export function useGetAllUserCourseItemLogs() {
     const fetchUserCourseItemLogs = async () => {
       if (!courses || courses.length === 0) return // If no courses, return early
 
-      // Limit the courses to the first 5
-      const coursesToFetch = courses.slice(0, 5)
+      const coursesToFetch = courses
 
       setFetchingUserCourseItemLogs(true)
 
@@ -78,5 +77,5 @@ export function useGetAllUserCourseItemLogs() {
     }
   }, [courses, fetchingCourses])
 
-  return { fetchingUserCourseItemLogs, coursesWithCompletionStatus }
+  return { enrolledCourses: courses, fetchingUserCourseItemLogs, coursesWithCompletionStatus }
 }
