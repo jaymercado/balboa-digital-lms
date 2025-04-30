@@ -36,7 +36,18 @@ const authOptions: NextAuthOptions = {
       const foundUser = await supabase.from('users').select('*').eq('email', session?.user?.email)
       return { ...session, user: { ...session.user, role: foundUser.data?.[0].role } }
     },
-    async jwt({ token }) {
+    async jwt({ token, user }) {
+      if (user) {
+        const supabase = await connectSupabase()
+        if (!supabase) throw new Error('Failed to connect to Supabase')
+        const { data } = await supabase
+          .from('users')
+          .select('role')
+          .eq('email', user.email)
+          .single()
+
+        token.role = data?.role || 'student'
+      }
       return token
     },
   },
