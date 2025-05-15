@@ -46,6 +46,7 @@ export async function GET(req: NextRequest, { params }: { params: { quizId: stri
       id: courseQuiz.id,
       title: courseQuiz.title,
       description: courseQuiz.description,
+      numQuestions: courseQuiz.numQuestions,
       questions: courseQuiz.quizQuestions.map((question: any) => ({
         id: question.id,
         question: question.question,
@@ -75,7 +76,7 @@ export async function PUT(
   try {
     const { courseId, quizId } = params
     const body = await req.json()
-    const { title, description, questions } = body
+    const { title, description, questions, numQuestions } = body
 
     const supabase = await connectSupabase()
     if (!supabase) {
@@ -89,6 +90,7 @@ export async function PUT(
         title,
         description,
         courseId,
+        numQuestions,
       })
       .eq('id', quizId)
 

@@ -2,6 +2,7 @@ export interface Quiz {
   id: string
   title: string
   description: string
+  numQuestions: number
   questions: QuizQuestion[]
 }
 

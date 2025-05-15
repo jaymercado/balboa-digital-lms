@@ -50,16 +50,18 @@ export default function Quiz({
   useEffect(() => {
     if (courseQuiz?.questions) {
       setAnswers(
-        shuffle(courseQuiz?.questions)?.map((question: any, index: number) => ({
-          questionId: question.id,
-          answers: [],
-          question: question.question,
-          options: question.options,
-          onDisplay: index === 0,
-        })) || [],
+        shuffle(courseQuiz?.questions)
+          .slice(0, courseQuiz?.numQuestions)
+          ?.map((question: any, index: number) => ({
+            questionId: question.id,
+            answers: [],
+            question: question.question,
+            options: question.options,
+            onDisplay: index === 0,
+          })) || [],
       )
     }
-  }, [courseQuiz?.questions])
+  }, [courseQuiz?.questions, courseQuiz?.numQuestions])
 
   if (fetchingQuiz) {
     return <Loading />
