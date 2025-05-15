@@ -57,6 +57,7 @@ export default function EditQuiz() {
     if (courseQuiz) {
       setValue('title', courseQuiz.title)
       setValue('description', courseQuiz.description)
+      setValue('numQuestions', courseQuiz.numQuestions)
       setQuestions(courseQuiz?.questions || [{ ...defaultQuizQuestion }])
     }
   }, [courseQuiz, setValue, setQuestions])
@@ -120,6 +121,23 @@ export default function EditQuiz() {
       </CCard>
       <CCard>
         <CCardBody className="p-4">
+          <CFormLabel htmlFor="numQuestions">Number of Questions</CFormLabel>
+          <CFormInput
+            id="numQuestions"
+            type="number"
+            min={1}
+            {...register('numQuestions', { required: true })}
+          />
+          <hr className="mb-3" />
+          {questions.map((_, index) => (
+            <QuizQuestionInput
+              key={`question-${index + 1}`}
+              index={index}
+              question={questions[index]}
+              setQuestions={setQuestions}
+            />
+          ))}
+
           {questions.map((_, index) => (
             <QuizQuestionInput
               key={`question-${index + 1}`}
@@ -165,5 +183,6 @@ type Inputs = {
   title: string
   description: string
   type: string
+  numQuestions: number
   content: string
 }
