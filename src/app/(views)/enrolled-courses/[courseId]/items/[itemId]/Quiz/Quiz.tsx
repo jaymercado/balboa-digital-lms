@@ -6,6 +6,14 @@ import { CRow, CCol, CButton, CFormCheck } from '@coreui/react-pro'
 import toast from '@/utils/toast'
 import { Loading } from '@/components'
 
+const shuffle = (array: any) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
 export default function Quiz({
   fetchingQuiz,
   courseQuiz,
@@ -42,7 +50,7 @@ export default function Quiz({
   useEffect(() => {
     if (courseQuiz?.questions) {
       setAnswers(
-        courseQuiz?.questions?.map((question: any, index: number) => ({
+        shuffle(courseQuiz?.questions)?.map((question: any, index: number) => ({
           questionId: question.id,
           answers: [],
           question: question.question,
@@ -77,7 +85,7 @@ export default function Quiz({
     <CRow>
       <CCol>
         {answers?.length === 0 ? <p>No questions found.</p> : ''}
-        {answers?.map(({ question, onDisplay, options }, index) =>
+        {answers?.map(({ question, onDisplay, options }: any, index: any) =>
           onDisplay ? (
             <div key={index} className="mb-4">
               <div className="fw-semibold fs-5 text-primary">{`Question ${index + 1}`}</div>
