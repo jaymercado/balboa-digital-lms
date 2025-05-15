@@ -103,6 +103,9 @@ export default function Quiz() {
               <CCol>
                 <CCardTitle className="fw-semibold fs-4">{courseQuiz?.title}</CCardTitle>
                 <CCardText className="text-secondary">{courseQuiz?.description}</CCardText>
+                <CCardText className="text-secondary">
+                  {courseQuiz?.numQuestions} question(s) will be used.
+                </CCardText>
               </CCol>
             </CRow>
             <CRow>

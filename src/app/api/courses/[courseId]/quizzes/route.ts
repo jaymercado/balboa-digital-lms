@@ -36,7 +36,7 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
   try {
     const { courseId } = params
     const body = await req.json()
-    const { title, description, questions } = body
+    const { title, description, questions, numQuestions } = body
 
     const supabase = await connectSupabase()
     if (!supabase) {
@@ -50,6 +50,7 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
         title,
         description,
         courseId,
+        numQuestions,
       })
       .select()
     const courseQuiz = courseQuizDB.data?.[0]
