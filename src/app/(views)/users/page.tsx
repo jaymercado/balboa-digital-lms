@@ -21,6 +21,7 @@ import useGetUsers from '@/hooks/useGetUsers'
 import { Loading } from '@/components'
 import { User } from '@/types/user'
 import { roles } from '@/shared/constants'
+import Link from 'next/link'
 
 export default function Users() {
   const router = useRouter()
@@ -74,7 +75,11 @@ export default function Users() {
             {paginatedData.length > 0 ? (
               paginatedData.map((user) => (
                 <CTableRow key={user.id}>
-                  <CTableDataCell>{user.name}</CTableDataCell>
+                  <CTableDataCell>
+                    <Link href={`/users/${user.id}`} className="text-decoration-none">
+                      {user.name}
+                    </Link>
+                  </CTableDataCell>
                   <CTableDataCell>{user.email}</CTableDataCell>
                   <CTableDataCell>
                     <CFormSelect
