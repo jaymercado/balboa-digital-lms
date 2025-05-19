@@ -12,7 +12,6 @@ import {
   CTableHeaderCell,
   CTableDataCell,
 } from '@coreui/react-pro'
-import useGetUserCourses from '@/hooks/useGetUserCourses'
 import Link from 'next/link'
 
 export default function User() {
