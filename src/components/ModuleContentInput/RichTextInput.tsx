@@ -7,8 +7,6 @@ import 'react-quill/dist/quill.snow.css'
 
 import ImageResize from 'quill-image-resize-module-react'
 
-Quill.register('modules/imageResize', ImageResize)
-
 interface Inputs {
   title: string
   description: string
@@ -64,7 +62,13 @@ const formats = [
   'link',
   'image',
   'video',
+  'height',
+  'width',
+  'class',
+  'style',
 ]
+
+Quill.register('modules/imageResize', ImageResize)
 
 export default function RichTextInput({ value, setValue }: RichTextInputProps) {
   return (
