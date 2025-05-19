@@ -54,6 +54,7 @@ export default function User() {
           <CTable>
             <CTableHead>
               <CTableRow>
+                <CTableHeaderCell>ID</CTableHeaderCell>
                 <CTableHeaderCell>Course Name</CTableHeaderCell>
                 <CTableHeaderCell>Description</CTableHeaderCell>
               </CTableRow>
@@ -62,6 +63,11 @@ export default function User() {
               {courses.length > 0 ? (
                 courses.map((course) => (
                   <CTableRow key={course.id}>
+                    <CTableDataCell>
+                      <Link href={`/all-courses/${course.id}`} className="text-decoration-none">
+                        {course.id}
+                      </Link>
+                    </CTableDataCell>
                     <CTableDataCell>
                       <Link href={`/all-courses/${course.id}`} className="text-decoration-none">
                         {course.title}
