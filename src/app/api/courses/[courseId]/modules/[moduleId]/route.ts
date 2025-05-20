@@ -6,7 +6,7 @@ import connectSupabase from '@/utils/databaseConnection'
 import { getAwsS3UploadUrl } from '@/utils/awsS3Connection'
 import isModuleContentMultimedia from '@/utils/isModuleContentMultimedia'
 import { awsBucketUrl } from '@/constants'
-
+import { sendCourseNotificationEmail } from '@/lib/mailer'
 export async function GET(req: NextRequest, { params }: { params: { moduleId: string } }) {
   try {
     const supabase = await connectSupabase()
@@ -72,6 +72,39 @@ export async function PUT(req: NextRequest, { params }: { params: { moduleId: st
         ...(content ? { content } : {}),
       })
       .eq('id', params.moduleId)
+
+    // 2. Fetch course name and enrolled users
+    const courseRes = await supabase.from('courses').select('title').eq('id', courseId).single()
+
+    if (courseRes.error) {
+      console.error('Failed to fetch course:', courseRes.error)
+      return
+    }
+
+    const courseName = courseRes.data.title
+
+    const enrolledUsersRes = await supabase
+      .from('enrollments')
+      .select('user:users(email)')
+      .eq('courseId', courseId)
+
+    if (enrolledUsersRes.error) {
+      console.error('Failed to fetch enrolled users:', enrolledUsersRes.error)
+    } else {
+      const enrolledUsers = enrolledUsersRes.data as unknown as { user: { email: string } }[]
+
+      // 3. Send notification emails
+      for (const enrollment of enrolledUsers) {
+        const userEmail = enrollment.user.email
+        sendCourseNotificationEmail({
+          to: userEmail,
+          courseName,
+          itemName: title as string,
+          itemLink: `${process.env.NEXT_PUBLIC_BASE_URL}/enrolled-courses/${courseId}/modules/${moduleId}`, // adjust URL as needed
+          notificationType: 'edited-module',
+        })
+      }
+    }
 
     let awsS3UploadUrl = null
     if (isMultimedia && fileExtension) {

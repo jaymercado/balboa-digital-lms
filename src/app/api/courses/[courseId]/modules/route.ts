@@ -7,6 +7,7 @@ import connectSupabase from '@/utils/databaseConnection'
 import { getAwsS3UploadUrl } from '@/utils/awsS3Connection'
 import isModuleContentMultimedia from '@/utils/isModuleContentMultimedia'
 import { awsBucketUrl } from '@/constants'
+import { sendCourseNotificationEmail } from '@/lib/mailer'
 
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
@@ -102,6 +103,35 @@ export async function POST(req: NextRequest) {
 
       const courseContent = `${awsBucketUrl}${fileName}`
       await supabase.from('modules').update({ content: courseContent }).eq('id', courseModule?.id)
+    }
+
+    // Notify users enrolled in the course
+    const enrolledUsersRes = await supabase
+      .from('enrollments')
+      .select('user:users(email)')
+      .eq('courseId', courseId)
+
+    const courseDb = await supabase.from('courses').select('title').eq('id', courseId).single()
+    const courseName = courseDb.data?.title ?? 'Your Course'
+
+    const moduleLink = `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${courseId}/modules/${courseModule?.id}`
+
+    if (enrolledUsersRes.error) {
+      console.error('Failed to fetch enrolled users:', enrolledUsersRes.error)
+    } else {
+      const enrolledUsers = enrolledUsersRes.data as unknown as { user: { email: string } }[]
+      const notifyPromises = enrolledUsers.map(({ user }) =>
+        sendCourseNotificationEmail({
+          to: user.email,
+          courseName,
+          itemName: title as string,
+          itemLink: moduleLink,
+          notificationType: 'created-module',
+        }),
+      )
+
+      // Don't block response waiting for all emails to send
+      Promise.allSettled(notifyPromises)
     }
 
     return NextResponse.json({ awsS3UploadUrl }, { status: 200 })
