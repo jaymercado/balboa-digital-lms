@@ -19,9 +19,6 @@ export default function User() {
   const { userId } = params as { userId: string }
   const { user, fetchingUser, userNotFound, courses } = useGetUser(userId)
 
-  console.log(user)
-  console.log(courses)
-
   if (fetchingUser) {
     return <Loading />
   }
