@@ -39,7 +39,7 @@ export default function CourseModuleContent({ type, content }: CourseModuleConte
         {type === 'pdf' && <PDFRenderer file={content} />}
         {type === 'text' && (
           <div className="text-content">
-            <div dangerouslySetInnerHTML={{ __html: content }} className="text-justify" />
+            <div className="ql-editor" dangerouslySetInnerHTML={{ __html: content }} />
           </div>
         )}
       </CCardBody>
