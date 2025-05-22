@@ -121,23 +121,15 @@ export default function EditQuiz() {
       </CCard>
       <CCard>
         <CCardBody className="p-4">
-          <CFormLabel htmlFor="numQuestions">Number of Questions</CFormLabel>
+          <CFormLabel htmlFor="numQuestions">Number of Question(s) to be used</CFormLabel>
           <CFormInput
             id="numQuestions"
             type="number"
             min={1}
+            max={questions.length}
             {...register('numQuestions', { required: true })}
           />
           <hr className="mb-3" />
-          {questions.map((_, index) => (
-            <QuizQuestionInput
-              key={`question-${index + 1}`}
-              index={index}
-              question={questions[index]}
-              setQuestions={setQuestions}
-            />
-          ))}
-
           {questions.map((_, index) => (
             <QuizQuestionInput
               key={`question-${index + 1}`}

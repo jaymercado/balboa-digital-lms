@@ -172,27 +172,15 @@ export default function EditModule() {
             )}
           </CCol>
         </CRow>
-        <CRow className="mt-3">
+        <CRow className="my-3">
           <CCol>
-            <CFormLabel htmlFor="type">Type</CFormLabel>
-            <CInputGroup className="mb-3">
-              <CFormSelect id="type" {...register('type', { required: true })}>
-                {typeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </CFormSelect>
-              {errors.type && <CFormText className="text-danger">This field is required</CFormText>}
-            </CInputGroup>
-
             <ModuleContentInput
               type={watch('type')}
               value={watch('content')}
               setValue={setValue}
               setFile={setFile}
               setFileExtension={setFileExtension}
-              currentFile={currentFile}
+              currentFile={null}
             />
           </CCol>
         </CRow>

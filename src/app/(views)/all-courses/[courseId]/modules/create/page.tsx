@@ -22,13 +22,7 @@ import {
 import toast from '@/utils/toast'
 import ModuleContentInput from '@/components/ModuleContentInput'
 
-const typeOptions = [
-  { value: '', label: '-- Select --' },
-  { value: 'text', label: 'Text' },
-  { value: 'video', label: 'Video' },
-  { value: 'image', label: 'Image' },
-  { value: 'pdf', label: 'PDF' },
-]
+const typeOptions = [{ value: 'text', label: 'Text' }]
 
 export default function CreateModule() {
   const router = useRouter()
@@ -127,9 +121,8 @@ export default function CreateModule() {
         </CRow>
         <CRow className="mt-3">
           <CCol>
-            <CFormLabel htmlFor="type">Type</CFormLabel>
-            <CInputGroup className="mb-3">
-              <CFormSelect id="type" {...register('type', { required: true })}>
+            <CInputGroup className="mb-3 ">
+              <CFormSelect id="type" {...register('type', { required: true })} defaultValue="text">
                 {typeOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}

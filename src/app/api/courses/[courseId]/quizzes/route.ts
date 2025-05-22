@@ -2,7 +2,7 @@ export const revalidate = 0
 
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
-
+import { sendCourseNotificationEmail } from '@/lib/mailer'
 import connectSupabase from '@/utils/databaseConnection'
 
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
@@ -101,6 +101,35 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
         isCorrect: option.isCorrect,
       }))
       await supabase.from('questionOptions').insert(options).select()
+    }
+
+    // Notify users enrolled in the course
+    const enrolledUsersRes = await supabase
+      .from('enrollments')
+      .select('user:users(email)')
+      .eq('courseId', courseId)
+
+    const courseDb = await supabase.from('courses').select('title').eq('id', courseId).single()
+    const courseName = courseDb.data?.title ?? 'Your Course'
+
+    const quizLink = `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${courseId}/quizzes/${courseQuiz?.id}`
+
+    if (enrolledUsersRes.error) {
+      console.error('Failed to fetch enrolled users:', enrolledUsersRes.error)
+    } else {
+      const enrolledUsers = enrolledUsersRes.data as unknown as { user: { email: string } }[]
+      const notifyPromises = enrolledUsers.map(({ user }) =>
+        sendCourseNotificationEmail({
+          to: user.email,
+          courseName,
+          itemName: title as string,
+          itemLink: quizLink,
+          notificationType: 'created-quiz',
+        }),
+      )
+
+      // Don't block response waiting for all emails to send
+      Promise.allSettled(notifyPromises)
     }
 
     return NextResponse.json(courseQuiz, { status: 200 })

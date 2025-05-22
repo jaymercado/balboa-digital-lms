@@ -102,6 +102,7 @@ export default function CreateQuiz() {
             id="numQuestions"
             type="number"
             min={1}
+            max={questions.length}
             {...register('numQuestions', { required: true })}
           />
           <hr className="mb-3" />

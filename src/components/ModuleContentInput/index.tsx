@@ -6,7 +6,7 @@ import RichTextInput from './RichTextInput'
 import FileInput from './FileInput'
 
 export default function ModuleContentInput({
-  type,
+  type = 'text',
   value,
   setValue,
   setFile,
